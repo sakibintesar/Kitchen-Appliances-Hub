@@ -1,0 +1,9 @@
+[submodule "external-repos/obra-superpowers"]
+	path = external-repos/obra-superpowers
+	url = https://github.com/obra/superpowers.git
+[submodule "external-repos/multica"]
+	path = external-repos/multica
+	url = https://github.com/multica-ai/multica.git
+[submodule "external-repos/claude-octopus"]
+	path = external-repos/claude-octopus
+	url = https://github.com/nyldn/claude-octopus.git
