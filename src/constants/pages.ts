@@ -23,20 +23,23 @@ export const HOME = {
   },
   collections: { title: 'Shop by Collection' },
   products: { title: 'Featured Appliances', countLabel: 'products' },
-  values: [
-    {
-      title: 'Professional Heritage',
-      text: 'Brands trusted in Michelin-starred kitchens worldwide. The same performance, engineered for home.',
-    },
-    {
-      title: 'White-Glove Delivery',
-      text: 'Scheduled delivery, professional installation, and packaging removal. We treat your home with care.',
-    },
-    {
-      title: 'Lifetime Support',
-      text: 'Expert consultation, warranty registration, and dedicated service network. We\'re here for the long haul.',
-    },
-  ],
+  values: {
+    title: 'Why KitchenHub',
+    items: [
+      {
+        title: 'Professional Heritage',
+        text: 'Brands trusted in Michelin-starred kitchens worldwide. The same performance, engineered for home.',
+      },
+      {
+        title: 'White-Glove Delivery',
+        text: 'Scheduled delivery, professional installation, and packaging removal. We treat your home with care.',
+      },
+      {
+        title: 'Lifetime Support',
+        text: 'Expert consultation, warranty registration, and dedicated service network. We\'re here for the long haul.',
+      },
+    ],
+  },
   quote: {
     text: '"The Wolf range changed how I cook. The precision, the power — it\'s restaurant quality at home. Worth every penny."',
     author: 'Marcus V., Executive Chef & Homeowner',

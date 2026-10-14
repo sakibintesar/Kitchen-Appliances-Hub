@@ -184,7 +184,7 @@ const heroSlides = [
   <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14">
     <h2 class="font-display text-3xl font-bold tracking-tight">{T.values.title}</h2>
     <div class="mt-7 grid gap-5 md:grid-cols-3">
-      {T.values.map((v) => (
+      {T.values.items.map((v) => (
         <article class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 transition hover:border-gold-300 dark:hover:border-gold-700">
           <h3 class="font-display text-xl font-bold">{v.title}</h3>
           <p class="mt-3 text-[15px] leading-relaxed text-muted">{v.text}</p>
@@ -272,20 +272,21 @@ const heroSlides = [
   <!-- Hero Webslide Script -->
   <script>
     (function() {
-      const container = document.querySelector('[data-hero-webslide]');
+      const container = document.querySelector<HTMLElement>('[data-hero-webslide]');
       if (!container) return;
 
-      const slides = container.querySelectorAll('[data-slide]');
-      const contents = container.querySelectorAll('[data-content]');
-      const dots = container.querySelectorAll('[data-dot]');
+      const slides = container.querySelectorAll<HTMLElement>('[data-slide]');
+      const contents = container.querySelectorAll<HTMLElement>('[data-content]');
+      const dots = container.querySelectorAll<HTMLButtonElement>('[data-dot]');
       const totalSlides = slides.length;
       let currentSlide = 0;
       let isTransitioning = false;
+      /** @type {number | null} */
       let autoSlideInterval = null;
       const AUTO_SLIDE_DELAY = 6000;
       const TRANSITION_DURATION = 1000;
 
-      function showSlide(index, direction = 'next') {
+      function showSlide(index: number, direction = 'next') {
         if (isTransitioning || index === currentSlide) return;
         isTransitioning = true;
 
@@ -372,11 +373,11 @@ const heroSlides = [
 
       // Touch/swipe support
       let touchStartX = 0;
-      container.addEventListener('touchstart', (e) => {
+      container.addEventListener('touchstart', (e: TouchEvent) => {
         touchStartX = e.touches[0].clientX;
       }, { passive: true });
 
-      container.addEventListener('touchend', (e) => {
+      container.addEventListener('touchend', (e: TouchEvent) => {
         const touchEndX = e.changedTouches[0].clientX;
         const diff = touchStartX - touchEndX;
         if (Math.abs(diff) > 50) {
@@ -398,7 +399,7 @@ const heroSlides = [
       // Auto-slide
       function startAutoSlide() {
         clearInterval(autoSlideInterval);
-        autoSlideInterval = setInterval(nextSlide, AUTO_SLIDE_DELAY);
+        autoSlideInterval = window.setInterval(nextSlide, AUTO_SLIDE_DELAY);
       }
 
       function resetAutoSlide() {
