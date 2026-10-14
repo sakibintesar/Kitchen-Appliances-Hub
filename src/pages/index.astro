@@ -1,0 +1,426 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { commerce } from '../lib/commerce';
+import { HOME as T } from '../constants/pages';
+
+const [products, collections] = await Promise.all([
+  commerce.listProducts({ limit: 8 }),
+  commerce.listCollections(),
+]);
+
+// Collection image mapping for the collections shelf
+const collectionImages: Record<string, string> = {
+  cooking: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=600&fit=crop',
+  refrigeration: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=800&h=600&fit=crop',
+  dishwashers: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=600&fit=crop',
+  ventilation: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
+  'small-appliances': 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=600&fit=crop',
+};
+
+// Hero slides for the animated webslide
+const heroSlides = [
+  {
+    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1200&h=800&fit=crop',
+    alt: 'Woman cooking with Wolf range',
+    badge: 'Professional Cooking',
+    title: 'Craft your culinary masterpiece',
+    subtitle: 'Wolf ranges deliver restaurant-grade precision for the home chef',
+    cta: { label: 'Shop Cooking', href: '/collections/cooking' },
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=1200&h=800&fit=crop',
+    alt: 'Woman opening Sub-Zero refrigerator',
+    badge: 'Premium Refrigeration',
+    title: 'Preserve perfection',
+    subtitle: 'Sub-Zero dual refrigeration keeps ingredients at peak freshness',
+    cta: { label: 'Explore Refrigeration', href: '/collections/refrigeration' },
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop',
+    alt: 'Woman using Miele dishwasher',
+    badge: 'German Engineering',
+    title: 'Effortless cleanup',
+    subtitle: 'Miele dishwashers with 3D+ cutlery tray and AutoOpen drying',
+    cta: { label: 'View Dishwashers', href: '/collections/dishwashers' },
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&h=800&fit=crop',
+    alt: 'Woman making espresso with La Marzocco',
+    badge: 'Barista Quality',
+    title: 'Café experience at home',
+    subtitle: 'La Marzocco commercial espresso machines for the discerning palate',
+    cta: { label: 'Shop Espresso', href: '/collections/small-appliances' },
+  },
+];
+---
+
+<Layout>
+  <!-- Hero Webslide -->
+  <section class="relative w-full overflow-hidden" data-hero-webslide>
+    <!-- Background Slides -->
+    <div class="absolute inset-0" data-slides-container>
+      {heroSlides.map((slide, i) => (
+        <div
+          class={`absolute inset-0 transition-all duration-1000 ease-out ${i === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+          data-slide={String(i)}
+          style={`z-index: ${heroSlides.length - i}`}
+        >
+          <img
+            src={slide.image}
+            alt={slide.alt}
+            class="w-full h-full object-cover"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            fetchpriority={i === 0 ? 'high' : 'low'}
+          />
+          <div class="absolute inset-0 bg-gradient-to-r from-neutral-900/60 via-neutral-900/30 to-transparent" />
+          <div class="absolute inset-0 bg-gradient-to-t from-neutral-900/50 to-transparent" />
+        </div>
+      ))}
+    </div>
+
+    <!-- Navigation Dots -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20" data-slide-dots>
+      {heroSlides.map((_, i) => (
+        <button
+          type="button"
+          data-dot={String(i)}
+          class={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${i === 0 ? 'bg-white w-8' : 'bg-white/40 hover:bg-white/60'}`}
+          aria-label={`Go to slide ${i + 1}`}
+          aria-current={i === 0 ? 'true' : 'false'}
+        />
+      ))}
+    </div>
+
+    <!-- Content Overlay -->
+    <div class="relative z-10 mx-auto max-w-6xl px-5 py-20 md:py-32 lg:py-40">
+      <div class="max-w-3xl" data-slide-content>
+        {heroSlides.map((slide, i) => (
+          <div
+            class={`absolute inset-0 transition-all duration-700 ease-out ${i === 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+            data-content={String(i)}
+          >
+            <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[13px] font-medium text-white backdrop-blur border border-white/20">
+              {slide.badge}
+            </span>
+            <h1 class="mt-5 font-display text-[clamp(36px,6vw,64px)] font-extrabold leading-[0.95] tracking-tight text-white">
+              {slide.title}
+            </h1>
+            <p class="mt-4 text-[clamp(16px,2.5vw,20px)] leading-relaxed text-white/80 max-w-[48ch]">
+              {slide.subtitle}
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a
+                href={slide.cta.href}
+                class="rounded-md bg-gold-500 px-7 py-3.5 text-[15px] font-semibold text-white hover:bg-gold-600 transition-colors shadow-lg shadow-gold-500/30"
+              >
+                {slide.cta.label}
+              </a>
+              <a
+                href="/collections"
+                class="rounded-md border border-white/30 bg-white/5 px-7 py-3.5 text-[15px] font-semibold text-white hover:bg-white/10 transition-colors backdrop-blur"
+              >
+                View All Collections
+              </a>
+            </div>
+            <p class="mt-6 text-[14px] text-white/60">
+              Free shipping on orders over $500. White-glove delivery & installation available.
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce z-20" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white/60">
+        <path d="M12 5v14M19 12l-7 7-7-7" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- Theme bar: quiet strip under the hero -->
+  <div class="border-y border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-5 gap-y-1 px-5 py-3 text-[13px] text-muted">
+      <span>{T.themeBar.text}</span>
+      <a href={T.themeBar.cta.href} class="font-semibold text-neutral-900 dark:text-white underline underline-offset-4 hover:text-gold-600">{T.themeBar.cta.label}</a>
+      <a href={T.themeBar.cta2.href} class="font-semibold text-neutral-900 dark:text-white underline underline-offset-4 hover:text-gold-600">{T.themeBar.cta2.label}</a>
+    </div>
+  </div>
+
+  <!-- Collections shelf -->
+  <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14">
+    <h2 class="font-display text-3xl font-bold tracking-tight">{T.collections.title}</h2>
+    <div class="mt-7 grid gap-5 sm:grid-cols-3">
+      {collections.map((c) => (
+        <a href={`/collections/${c.handle}`} class="group block">
+          <div class="overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800">
+            <img
+              src={collectionImages[c.handle] || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=600&fit=crop'}
+              alt={c.title}
+              class="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+              loading="lazy"
+            />
+          </div>
+          <h3 class="mt-3 text-[17px] font-semibold group-hover:underline group-hover:underline-offset-4">{c.title}</h3>
+          <p class="mt-1 text-[14px] text-muted">{c.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14">
+    <div class="flex items-baseline justify-between">
+      <h2 class="font-display text-3xl font-bold tracking-tight">{T.products.title}</h2>
+      <p class="text-[14px] text-muted">{products.length} {T.products.countLabel}</p>
+    </div>
+    <div class="mt-7 grid grid-cols-2 gap-x-5 gap-y-5 md:grid-cols-4">
+      {products.map((p) => <ProductCard product={p} />)}
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14">
+    <h2 class="font-display text-3xl font-bold tracking-tight">{T.values.title}</h2>
+    <div class="mt-7 grid gap-5 md:grid-cols-3">
+      {T.values.map((v) => (
+        <article class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 transition hover:border-gold-300 dark:hover:border-gold-700">
+          <h3 class="font-display text-xl font-bold">{v.title}</h3>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">{v.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Quote -->
+  <section class="border-y border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50">
+    <div class="mx-auto max-w-6xl px-5 py-14 text-center">
+      <blockquote class="font-display text-[clamp(22px,3vw,30px)] font-semibold leading-snug">
+        {T.quote.text}
+      </blockquote>
+      <p class="mt-4 text-[14px] text-muted">{T.quote.author}</p>
+    </div>
+  </section>
+
+  <!-- Theme colophon: this store is the product -->
+  <section class="mx-auto max-w-6xl px-5 pb-4 sm:pb-8">
+    <div class="grid gap-5 rounded-2xl border border-gold-300 dark:border-gold-700 bg-gold-50 dark:bg-gold-900/20 p-4 text-neutral-900 dark:text-white sm:gap-10 sm:p-10 md:grid-cols-[1.2fr_1fr] md:items-center">
+      <div>
+        <p class="text-[13px] font-medium text-gold-700 dark:text-gold-300">{T.colophon.eyebrow}</p>
+        <h2 class="mt-3 font-display text-[clamp(26px,3.5vw,38px)] font-bold leading-tight tracking-tight">
+          {T.colophon.title}
+        </h2>
+        <p class="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-neutral-700 dark:text-neutral-300">{T.colophon.text}</p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href={T.colophon.ctaPrimary.href} class="rounded-md bg-neutral-900 dark:bg-white px-6 py-3.5 text-[15px] font-semibold text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-100">
+            {T.colophon.ctaPrimary.label}
+          </a>
+          <a href={T.colophon.ctaSecondary.href} class="rounded-md border border-neutral-300 dark:border-neutral-600 px-6 py-3.5 text-[15px] font-semibold text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            {T.colophon.ctaSecondary.label}
+          </a>
+          <a href={T.colophon.ctaThemes.href} class="px-2 py-3.5 text-[15px] font-semibold text-neutral-700 dark:text-neutral-300 underline decoration-neutral-400 dark:decoration-neutral-600 underline-offset-4 hover:text-gold-600 dark:hover:text-gold-400">
+            {T.colophon.ctaThemes.label}
+          </a>
+        </div>
+      </div>
+      <ul class="grid min-w-0 gap-3 rounded-xl bg-neutral-900/10 dark:bg-neutral-900/30 p-4 text-[14px] leading-relaxed sm:p-7">
+        {T.colophon.stack.map((s, i) => (
+          <li class="flex gap-3">
+            <span class="mt-0.5 text-neutral-500 dark:text-neutral-400">{String(i + 1).padStart(2, '0')}</span>
+            <span><strong class="font-semibold">{s.strong}</strong> {s.text}</span>
+          </li>
+        ))}
+        {T.colophon.env.value && (
+          <li>
+            <button
+              type="button"
+              data-copy-env={T.colophon.env.copyValue}
+              class="group/copy mt-2 flex w-full items-center justify-between gap-3 rounded-md bg-neutral-900/10 dark:bg-neutral-800 px-4 py-2.5 text-left font-mono text-[13px] text-neutral-700 dark:text-neutral-300 transition hover:bg-neutral-900/20 dark:hover:bg-neutral-700"
+              aria-label={`Copy ${T.colophon.env.copyValue} to clipboard`}
+            >
+              <span>{T.colophon.env.prefix}<span class="text-neutral-900 dark:text-white">{T.colophon.env.value}</span></span>
+              <span data-copy-icon class="text-neutral-500 dark:text-neutral-400 transition group-hover/copy:text-neutral-900 dark:group-hover/copy:text-white">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" />
+                </svg>
+              </span>
+              <span data-copy-done class="hidden text-[12px] font-sans font-semibold text-gold-600 dark:text-gold-400">{T.colophon.env.copiedLabel}</span>
+            </button>
+          </li>
+        )}
+      </ul>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll<HTMLButtonElement>('[data-copy-env]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(btn.dataset.copyEnv!);
+        const icon = btn.querySelector('[data-copy-icon]')!;
+        const done = btn.querySelector('[data-copy-done]')!;
+        icon.classList.add('hidden');
+        done.classList.remove('hidden');
+        setTimeout(() => {
+          done.classList.add('hidden');
+          icon.classList.remove('hidden');
+        }, 1600);
+      });
+    });
+  </script>
+
+  <!-- Hero Webslide Script -->
+  <script>
+    (function() {
+      const container = document.querySelector('[data-hero-webslide]');
+      if (!container) return;
+
+      const slides = container.querySelectorAll('[data-slide]');
+      const contents = container.querySelectorAll('[data-content]');
+      const dots = container.querySelectorAll('[data-dot]');
+      const totalSlides = slides.length;
+      let currentSlide = 0;
+      let isTransitioning = false;
+      let autoSlideInterval = null;
+      const AUTO_SLIDE_DELAY = 6000;
+      const TRANSITION_DURATION = 1000;
+
+      function showSlide(index, direction = 'next') {
+        if (isTransitioning || index === currentSlide) return;
+        isTransitioning = true;
+
+        const prevSlide = currentSlide;
+        currentSlide = index;
+
+        // Update slides
+        slides.forEach((slide, i) => {
+          if (i === currentSlide) {
+            slide.style.opacity = '1';
+            slide.style.transform = 'scale(1)';
+            slide.style.zIndex = String(totalSlides);
+          } else if (i === prevSlide) {
+            slide.style.opacity = '0';
+            slide.style.transform = direction === 'next' ? 'scale(0.95)' : 'scale(1.05)';
+            slide.style.zIndex = String(totalSlides - 1);
+          } else {
+            slide.style.opacity = '0';
+            slide.style.transform = 'scale(1.05)';
+            slide.style.zIndex = String(totalSlides - i - 1);
+          }
+        });
+
+        // Update content
+        contents.forEach((content, i) => {
+          if (i === currentSlide) {
+            content.style.opacity = '1';
+            content.style.transform = 'translateY(0)';
+            content.style.pointerEvents = 'auto';
+          } else {
+            content.style.opacity = '0';
+            content.style.transform = direction === 'next' ? 'translateY(20px)' : 'translateY(-20px)';
+            content.style.pointerEvents = 'none';
+          }
+        });
+
+        // Update dots
+        dots.forEach((dot, i) => {
+          if (i === currentSlide) {
+            dot.classList.remove('bg-white/40', 'hover:bg-white/60', 'w-2.5');
+            dot.classList.add('bg-white', 'w-8');
+          } else {
+            dot.classList.remove('bg-white', 'w-8');
+            dot.classList.add('bg-white/40', 'hover:bg-white/60', 'w-2.5');
+          }
+          dot.setAttribute('aria-current', i === currentSlide ? 'true' : 'false');
+        });
+
+        // Reset transition lock
+        setTimeout(() => {
+          isTransitioning = false;
+        }, TRANSITION_DURATION);
+      }
+
+      function nextSlide() {
+        const next = (currentSlide + 1) % totalSlides;
+        showSlide(next, 'next');
+      }
+
+      function prevSlide() {
+        const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(prev, 'prev');
+      }
+
+      // Dot navigation
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+          const direction = i > currentSlide ? 'next' : 'prev';
+          showSlide(i, direction);
+          resetAutoSlide();
+        });
+      });
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+          nextSlide();
+          resetAutoSlide();
+        } else if (e.key === 'ArrowLeft') {
+          prevSlide();
+          resetAutoSlide();
+        }
+      });
+
+      // Touch/swipe support
+      let touchStartX = 0;
+      container.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      container.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) nextSlide();
+          else prevSlide();
+          resetAutoSlide();
+        }
+      }, { passive: true });
+
+      // Pause on hover
+      container.addEventListener('mouseenter', () => {
+        clearInterval(autoSlideInterval);
+      });
+
+      container.addEventListener('mouseleave', () => {
+        startAutoSlide();
+      });
+
+      // Auto-slide
+      function startAutoSlide() {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(nextSlide, AUTO_SLIDE_DELAY);
+      }
+
+      function resetAutoSlide() {
+        startAutoSlide();
+      }
+
+      // Start auto-slide
+      startAutoSlide();
+
+      // Pause when tab is not visible
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          clearInterval(autoSlideInterval);
+        } else {
+          startAutoSlide();
+        }
+      });
+
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', () => {
+        clearInterval(autoSlideInterval);
+      });
+    })();
+  </script>
+</Layout>

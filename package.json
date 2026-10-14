@@ -1,0 +1,29 @@
+{
+  "name": "kitchenhub-store",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Premium kitchen appliances webstore — Astro + Tailwind v4 with KitchenHub data, mock images from web sources",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "keywords": [
+    "astro",
+    "ecommerce",
+    "kitchen",
+    "appliances",
+    "storefront",
+    "tailwindcss"
+  ],
+  "license": "MIT",
+  "author": "KitchenHub",
+  "dependencies": {
+    "@nanostores/persistent": "^0.10.0",
+    "@studio-freight/lenis": "^1.0.42",
+    "@tailwindcss/vite": "^4.0.0",
+    "astro": "^7.3.3",
+    "nanostores": "^0.11.0",
+    "tailwindcss": "^4.0.0"
+  }
+}

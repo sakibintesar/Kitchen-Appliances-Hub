@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { CONTACTS as T } from '../constants/pages';
+---
+
+<Layout title={T.meta.title} description={T.meta.description}>
+  <section class="mx-auto max-w-6xl px-5 pb-4 sm:pb-8 pt-6 sm:pt-12">
+    <h1 class="font-display text-[clamp(32px,5vw,52px)] font-extrabold tracking-tight">{T.title}</h1>
+    <p class="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-muted">{T.text}</p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 pb-8 sm:pb-16">
+    <h2 class="font-display text-3xl font-bold tracking-tight mb-8">How can we help?</h2>
+    <div class="grid gap-6 md:grid-cols-3">
+      {Object.values(T.cards).map((card) => (
+        <a href={card.cta.href} class="group rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50 p-6 transition hover:border-gold-300 dark:hover:border-gold-700">
+          <h3 class="text-[17px] font-semibold group-hover:underline group-hover:underline-offset-4">{card.title}</h3>
+          <ul class="mt-3 space-y-2 text-[15px] text-muted">
+            {card.lines.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+          <p class="mt-4 text-[14px] font-medium text-gold-600 hover:text-gold-700">{card.cta.label} →</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 pb-8 sm:pb-16">
+    <h2 class="font-display text-3xl font-bold tracking-tight mb-8">Visit Our Showrooms</h2>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {T.showrooms.locations.map((loc) => (
+        <article class="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50 p-6">
+          <h3 class="font-semibold">{loc.city}</h3>
+          <p class="mt-1 text-[14px] text-muted">{loc.address}</p>
+          <p class="mt-1 text-[13px] text-muted">{loc.hours}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-5 pb-4 sm:pb-8">
+    <h2 class="font-display text-3xl font-bold tracking-tight mb-8">Send an Inquiry</h2>
+    <form
+      class="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50 p-6 sm:p-8"
+      x-ignore
+      data-contact-form
+      novalidate
+    >
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="block">
+          <span class="text-[13px] font-medium">{T.form.nameLabel}</span>
+          <input type="text" name="name" required placeholder={T.form.namePlaceholder}
+            class="mt-1.5 w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-gold-500" />
+        </label>
+        <label class="block">
+          <span class="text-[13px] font-medium">{T.form.emailLabel}</span>
+          <input type="email" name="email" required placeholder={T.form.emailPlaceholder}
+            class="mt-1.5 w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-gold-500" />
+        </label>
+        <label class="block">
+          <span class="text-[13px] font-medium">{T.form.phoneLabel}</span>
+          <input type="tel" name="phone" placeholder={T.form.phonePlaceholder}
+            class="mt-1.5 w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-gold-500" />
+        </label>
+        <label class="block">
+          <span class="text-[13px] font-medium">{T.form.projectTypeLabel}</span>
+          <select name="projectType" class="mt-1.5 w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 px-3.5 py-3 text-[15px] outline-none focus:border-gold-500">
+            <option value="" disabled selected>{T.form.projectTypePlaceholder}</option>
+            <option value="new-build">New Construction</option>
+            <option value="remodel">Kitchen Remodel</option>
+            <option value="appliance-replacement">Appliance Replacement</option>
+            <option value="trade">Trade / Contract Project</option>
+            <option value="service">Service / Support</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+      </div>
+      <label class="mt-4 block">
+        <span class="text-[13px] font-medium">{T.form.messageLabel}</span>
+        <textarea name="message" rows="6" required placeholder={T.form.messagePlaceholder}
+          class="mt-1.5 w-full resize-y rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-gold-500"></textarea>
+      </label>
+      <button type="submit" class="mt-5 w-full rounded-md bg-gold-600 py-3.5 text-[15px] font-semibold text-white hover:bg-gold-700 sm:w-auto sm:px-8">
+        {T.form.submitLabel}
+      </button>
+    </form>
+  </section>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>('[data-contact-form]')!;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      alert('Thank you for your inquiry! Our team will respond within 24 hours.');
+      form.reset();
+    });
+  </script>
+</Layout>

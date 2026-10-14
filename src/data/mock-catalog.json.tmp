@@ -1,0 +1,87 @@
+{
+  "collections": [
+    {
+      "id": "c1",
+      "handle": "cooking",
+      "title": "Cooking",
+      "description": "Professional-grade ranges, ovens, and cooktops for the serious home chef."
+    },
+    {
+      "id": "c2",
+      "handle": "refrigeration",
+      "title": "Refrigeration",
+      "description": "Built-in and freestanding refrigerators that preserve freshness with precision."
+    },
+    {
+      "id": "c3",
+      "handle": "dishwashers",
+      "title": "Dishwashers",
+      "description": "Whisper-quiet, high-capacity dishwashers with advanced cleaning technology."
+    },
+    {
+      "id": "c4",
+      "handle": "ventilation",
+      "title": "Ventilation",
+      "description": "Powerful range hoods and ventilation systems that clear the air beautifully."
+    },
+    {
+      "id": "c5",
+      "handle": "small-appliances",
+      "title": "Small Appliances",
+      "description": "Countertop essentials: coffee machines, blenders, stand mixers, and more."
+    }
+  ],
+  "products": [
+    {
+      "id": "p1",
+      "handle": "wolf-36-dual-fuel-range",
+      "title": "Wolf 36\" Dual Fuel Range",
+      "description": "The iconic dual fuel range that defines professional cooking at home. Six dual-stacked sealed burners deliver precise control from 300 to 20,000 BTU. The electric convection oven with dual fans ensures even baking across all racks. Signature red knobs, stainless steel construction, and a temperature probe for perfect roasts.",
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=800&fit=crop",
+          "alt": "Wolf 36-inch Dual Fuel Range in stainless steel with red knobs"
+        },
+        {
+          "src": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=800&fit=crop",
+          "alt": "Wolf range oven interior showing convection fans"
+        },
+        {
+          "src": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=800&fit=crop",
+          "alt": "Wolf range control panel detail"
+        }
+      ],
+      "price": { "amount": 7499, "currency": "USD" },
+      "compareAtPrice": { "amount": 8299, "currency": "USD" },
+      "variants": [
+        { "id": "p1v1", "title": "Natural Gas", "price": { "amount": 7499, "currency": "USD" }, "available": true },
+        { "id": "p1v2", "title": "Liquid Propane", "price": { "amount": 7499, "currency": "USD" }, "available": true }
+      ],
+      "tags": ["dual-fuel", "professional", "sale", "red-knobs"],
+      "collectionHandles": ["cooking"]
+    },
+    {
+      "id": "p2",
+      "handle": "sub-zero-36-french-door-refrigerator",
+      "title": "Sub-Zero 36\" French Door Refrigerator",
+      "description": "The gold standard in food preservation. Dual refrigeration system keeps produce fresh up to 2x longer. NASA-inspired air purification scrubs ethylene and odors every 20 minutes. Stainless steel interior, soft-close doors and drawers, and a water dispenser with advanced filtration. Panel-ready for seamless cabinetry integration.",
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=800&h=800&fit=crop",
+          "alt": "Sub-Zero 36-inch French Door Refrigerator in stainless steel"
+        },
+        {
+          "src": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=800&fit=crop",
+          "alt": "Sub-Zero refrigerator interior with crisper drawers"
+        }
+      ],
+      "price": { "amount": 9499, "currency": "USD" },
+      "variants": [
+        { "id": "p2v1", "title": "Stainless Steel", "price": { "amount": 9499, "currency": "USD" }, "available": true },
+        { "id": "p2v2", "title": "Panel Ready", "price": { "amount": 9499, "currency": "USD" }, "available": true }
+      ],
+      "tags": ["built-in", "dual-refrigeration", "air-purification", "panel-ready"],
+      "collectionHandles": ["refrigeration"]
+    }
+  ]
+}

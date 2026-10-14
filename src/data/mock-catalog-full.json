@@ -1,0 +1,35 @@
+{
+  "collections": [
+    {
+      "id": "c1",
+      "handle": "cooking",
+      "title": "Cooking",
+      "description": "Professional-grade ranges, ovens, and cooktops for the serious home chef."
+    },
+    {
+      "id": "c2",
+      "handle": "refrigeration",
+      "title": "Refrigeration",
+      "description": "Built-in and freestanding refrigerators that preserve freshness with precision."
+    },
+    {
+      "id": "c3",
+      "handle": "dishwashers",
+      "title": "Dishwashers",
+      "description": "Whisper-quiet, high-capacity dishwashers with advanced cleaning technology."
+    },
+    {
+      "id": "c4",
+      "handle": "ventilation",
+      "title": "Ventilation",
+      "description": "Powerful range hoods and ventilation systems that clear the air beautifully."
+    },
+    {
+      "id": "c5",
+      "handle": "small-appliances",
+      "title": "Small Appliances",
+      "description": "Countertop essentials: coffee machines, blenders, stand mixers, and more."
+    }
+  ],
+  "products": []
+}
