@@ -44,7 +44,7 @@ import { FAVORITES_PAGE as T } from '../constants/pages';
           (p) => `
           <a href="/products/${p.handle}" class="group block rounded-lg transition hover:bg-tile/60">
             <div class="relative overflow-hidden rounded-lg bg-tile">
-              <img src="${p.image}" alt="${p.title}" class="aspect-square w-full object-cover transition duration-300 group-hover:scale-[1.03]" loading="lazy"/>
+              <img src="${p.image}" alt="${p.title}" class="aspect-square w-full object-cover transition duration-300 group-hover:scale-[1.03]" loading="lazy" decoding="async" width="400" height="400"/>
               <button type="button" data-fav-toggle="${p.handle}" onclick="event.preventDefault()"
                 class="is-fav absolute right-3 top-3 rounded-md bg-paper/85 p-2 text-ink shadow-sm backdrop-blur transition hover:text-pine"
                 aria-label="${T.ariaRemove(p.title)}">

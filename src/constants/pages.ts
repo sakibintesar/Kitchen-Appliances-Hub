@@ -44,6 +44,147 @@ export const HOME = {
     text: '"The Wolf range changed how I cook. The precision, the power — it\'s restaurant quality at home. Worth every penny."',
     author: 'Marcus V., Executive Chef & Homeowner',
   },
+  // Proposal Masterclass — tailored kitchen proposals by project type
+  proposalMasterclass: {
+    title: 'Proposal Masterclass',
+    subtitle: 'Explore curated appliance proposals designed for every project type — from Michelin-starred restaurants to modern residences.',
+    categories: [
+      {
+        id: 'restaurant',
+        label: 'Fine Dining Restaurant',
+        tagline: 'Michelin-grade performance for professional kitchens',
+        description: 'Built for the intensity of service. Every appliance engineered for precision, speed, and reliability under the most demanding conditions.',
+        heroImage: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1200&h=800&fit=crop',
+        heroAlt: 'Professional restaurant kitchen with Wolf range and Sub-Zero refrigeration',
+        stats: [
+          { label: 'Covers per Service', value: '200+' },
+          { label: 'Stations Equipped', value: '8' },
+          { label: 'Uptime Guarantee', value: '99.9%' },
+        ],
+        appliances: [
+          { name: 'Wolf 60" Gas Range', model: 'GR606CG', price: 24999, image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=300&fit=crop' },
+          { name: 'Sub-Zero Pro 48" Refrigerator', model: 'PRO4850', price: 18999, image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=300&fit=crop' },
+          { name: 'Miele Combi-Steam Oven', model: 'DGC7840', price: 8499, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop' },
+          { name: 'Meiko Hood-Type Dishwasher', model: 'M-iQ', price: 15999, image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=300&fit=crop' },
+        ],
+        totalInvestment: 68496,
+        cta: { label: 'Request Restaurant Proposal', href: '/proposals/restaurant' },
+      },
+      {
+        id: 'modern-home',
+        label: 'Modern Luxury Residence',
+        tagline: 'Architectural integration meets culinary excellence',
+        description: 'Seamless design for open-concept living. Panel-ready, flush-mounted appliances that disappear into cabinetry while delivering uncompromising performance.',
+        heroImage: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop',
+        heroAlt: 'Modern luxury kitchen with integrated Sub-Zero and Wolf appliances',
+        stats: [
+          { label: 'Linear Feet', value: '36' },
+          { label: 'Integrated Units', value: '6' },
+          { label: 'Design Timeline', value: '12 wks' },
+        ],
+        appliances: [
+          { name: 'Sub-Zero 36" Column Refrigerator', model: 'IC-36CI', price: 12999, image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=300&fit=crop' },
+          { name: 'Sub-Zero 36" Column Freezer', model: 'IC-36FI', price: 12499, image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=300&fit=crop' },
+          { name: 'Wolf 36" Transitional Induction', model: 'TI36', price: 7999, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop' },
+          { name: 'Wolf 30" Convection Steam Oven', model: 'CSO30', price: 6499, image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=300&fit=crop' },
+          { name: 'Miele Futura Dishwasher', model: 'G7566', price: 2199, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop' },
+          { name: 'Zephyr 36" Insert Hood', model: 'AK8100BS', price: 2899, image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=300&fit=crop' },
+        ],
+        totalInvestment: 45094,
+        cta: { label: 'Request Modern Home Proposal', href: '/proposals/modern-home' },
+      },
+      {
+        id: 'single-family',
+        label: 'Single Family Estate',
+        tagline: 'Generational quality for the heart of the home',
+        description: 'Timeless appliances for the family that cooks together. Professional performance with approachable controls — built to last through generations of meals and memories.',
+        heroImage: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&h=800&fit=crop',
+        heroAlt: 'Estate kitchen with La Marzocco espresso and Wolf range',
+        stats: [
+          { label: 'Appliance Zones', value: '4' },
+          { label: 'Warranty Coverage', value: 'Lifetime' },
+          { label: 'Energy Star Rated', value: '100%' },
+        ],
+        appliances: [
+          { name: 'Wolf 48" Dual Fuel Range', model: 'DF486', price: 16999, image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=300&fit=crop' },
+          { name: 'Sub-Zero 48" French Door', model: 'PRO4850FD', price: 19999, image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=300&fit=crop' },
+          { name: 'Miele Built-in Coffee System', model: 'CVA7840', price: 4999, image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop' },
+          { name: 'La Marzocco Linea Micra', model: 'Micra', price: 3900, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop' },
+          { name: 'Thermador 36" Wall Hood', model: 'VCIN36JS', price: 1849, image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=300&fit=crop' },
+          { name: 'Cove 24" Dishwasher', model: 'CVE24', price: 2499, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop' },
+        ],
+        totalInvestment: 50245,
+        cta: { label: 'Request Estate Proposal', href: '/proposals/single-family' },
+      },
+    ],
+  },
+  // Lead capture / consultation section
+  consultation: {
+    eyebrow: 'Ready to Transform Your Kitchen?',
+    title: 'Book Your Complimentary Design Consultation',
+    description: 'Our kitchen specialists will assess your space, understand your cooking style, and curate a professional-grade appliance package tailored to your needs — at no obligation.',
+    benefits: [
+      'Personalized appliance specification sheet',
+      'Space planning & ventilation guidance',
+      'Exclusive trade pricing access',
+      'Project timeline & budget estimation',
+    ],
+    ctaPrimary: { label: 'Schedule Free Consultation', href: '/design-services' },
+    ctaSecondary: { label: 'Start with a Quick Quote', href: '/quick-quote' },
+    trustBadges: [
+      'No-pressure consultation',
+      'Virtual or in-home options',
+      'Trade pricing for qualified projects',
+      'Dedicated project manager',
+    ],
+  },
+  // Trust signals / guarantees
+  guarantees: {
+    title: 'The KitchenHub Promise',
+    items: [
+      {
+        icon: 'shield',
+        title: 'Price Match Guarantee',
+        text: 'Find a lower authorized price — we\'ll match it plus 5% of the difference.',
+      },
+      {
+        icon: 'truck',
+        title: 'White-Glove Delivery',
+        text: 'Scheduled 2-hour windows, professional install, packaging removal, and first-use walkthrough.',
+      },
+      {
+        icon: 'wrench',
+        title: 'Lifetime Support',
+        text: 'Direct access to certified technicians, warranty concierge, and priority service scheduling.',
+      },
+      {
+        icon: 'star',
+        title: 'Curated Excellence',
+        text: 'Every brand passes our 50-point performance audit. No mass-market fillers, ever.',
+      },
+    ],
+  },
+  // Newsletter / Lead capture section
+  newsletter: {
+    eyebrow: 'Stay Inspired',
+    title: 'Join the KitchenHub Insider Circle',
+    description: 'Receive exclusive access to new collections, design inspiration, chef collaborations, and private sale events — curated for the discerning home chef.',
+    benefits: [
+      'Early access to limited-edition releases',
+      'Seasonal recipes from Michelin chefs',
+      'Design trends & kitchen planning guides',
+      'Invitation-only showroom events',
+    ],
+    placeholder: 'Enter your email address',
+    buttonLabel: 'Subscribe',
+    privacyText: 'No spam. Unsubscribe anytime. Your data is protected per our <a href="/privacy" class="underline hover:text-gold-400">Privacy Policy</a>.',
+    trustBadges: [
+      { label: '50K+', text: 'Subscribers' },
+      { label: 'Weekly', text: 'Curated Editions' },
+      { label: 'Zero', text: 'Spam Guarantee' },
+    ],
+  },
+
   colophon: {
     eyebrow: 'KitchenHub — Professional Kitchen Appliances',
     title: 'Your kitchen deserves the best.',

@@ -1,0 +1,62 @@
+{
+  "order": 1,
+  "label": "Modern Luxury",
+  "tagline": "Elevated Living, Redefined",
+  "description": "A curated collection of statement appliances that transform daily rituals into moments of joy. Where minimalist aesthetics meet maximalist performance.",
+  "heroImage": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=1200&h=800&fit=crop",
+  "heroImageMobile": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=800&h=1000&fit=crop",
+  "heroAlt": "Modern luxury kitchen with Gaggenau oven and Sub-Zero refrigeration",
+  "gradientFrom": "from-slate-900/30",
+  "gradientTo": "via-slate-800/20 to-transparent",
+  "stats": [
+    {
+      "value": "5",
+      "label": "Zones"
+    },
+    {
+      "value": "200+",
+      "label": "Wine Capacity"
+    },
+    {
+      "value": "Whisper",
+      "label": "Quiet"
+    }
+  ],
+  "appliances": [
+    {
+      "name": "Gaggenau 400 Series Oven",
+      "model": "BO480",
+      "price": 8900,
+      "image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Sub-Zero IC-30CI",
+      "model": "IC30CI",
+      "price": 10800,
+      "image": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Miele CVA 7840 Coffee",
+      "model": "CVA7840",
+      "price": 4200,
+      "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Liebherr WTes 5872",
+      "model": "WTes5872",
+      "price": 6800,
+      "image": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Gaggenau VI 461 Ventilation",
+      "model": "VI461",
+      "price": 3400,
+      "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop"
+    }
+  ],
+  "totalInvestment": 34100,
+  "cta": {
+    "label": "Build This Kitchen",
+    "href": "/builder?preset=modern-luxury"
+  }
+}

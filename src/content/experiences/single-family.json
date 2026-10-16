@@ -1,0 +1,62 @@
+{
+  "order": 2,
+  "label": "Single Family",
+  "tagline": "The Heart of Every Home",
+  "description": "Thoughtfully selected appliances that grow with your family. Durability, efficiency, and timeless design for the kitchen that does it all.",
+  "heroImage": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop",
+  "heroImageMobile": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=1000&fit=crop",
+  "heroAlt": "Family kitchen with Wolf range and Sub-Zero refrigerator",
+  "gradientFrom": "from-emerald-900/30",
+  "gradientTo": "via-emerald-800/20 to-transparent",
+  "stats": [
+    {
+      "value": "4",
+      "label": "Burners"
+    },
+    {
+      "value": "27",
+      "label": "Cu. Ft."
+    },
+    {
+      "value": "10yr",
+      "label": "Warranty"
+    }
+  ],
+  "appliances": [
+    {
+      "name": "Wolf 30\" Gas Range",
+      "model": "GR304",
+      "price": 9800,
+      "image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Sub-Zero IC-30R",
+      "model": "IC30R",
+      "price": 8900,
+      "image": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Miele G 7566 Dishwasher",
+      "model": "G7566",
+      "price": 2200,
+      "image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Sharp SMD2470AS Microwave",
+      "model": "SMD2470AS",
+      "price": 800,
+      "image": "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Zephyr AK6500 Ventilation",
+      "model": "AK6500",
+      "price": 1200,
+      "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop"
+    }
+  ],
+  "totalInvestment": 22900,
+  "cta": {
+    "label": "Build This Kitchen",
+    "href": "/builder?preset=single-family"
+  }
+}

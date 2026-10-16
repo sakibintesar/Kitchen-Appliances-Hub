@@ -4,6 +4,14 @@
 import '../styles/global.css';
 import { commerce, providerName } from '../lib/commerce';
 import { SITE, ANNOUNCEMENT, HEADER, SEARCH, FOOTER, THANKS_MODAL, CART, NAV_DRAWER } from '../constants/components';
+import { Image } from 'astro:assets';
+import logoDark from '../assets/kitchenhub-dark.svg';
+import logoLight from '../assets/kitchenhub-light.svg';
+import bkash from '../assets/payments/bkash.svg';
+import nagad from '../assets/payments/nagad.svg';
+import sslCommerce from '../assets/payments/ssl-commerce.svg';
+import visa from '../assets/payments/visa.svg';
+import mastercard from '../assets/payments/mastercard.svg';
 
 interface Props {
   title?: string;
@@ -72,8 +80,8 @@ const searchIndex = JSON.stringify(
       <nav class="flex h-14 items-center justify-between px-3 sm:h-16 sm:px-5">
         <div class="flex items-center gap-3">
           <a href="/" class="flex items-center gap-2.5">
-            <img src={SITE.logoDark} alt="" class="logo-on-light h-8 w-8 rounded-lg" />
-            <img src={SITE.logoLight} alt="" class="logo-on-dark h-8 w-8 rounded-lg" />
+            <Image src={logoDark} alt="" class="logo-on-light h-8 w-8 rounded-lg" width={32} height={32} />
+            <Image src={logoLight} alt="" class="logo-on-dark h-8 w-8 rounded-lg" width={32} height={32} />
             <span class="font-display text-[21px] font-bold tracking-tight">{SITE.name}</span>
           </a>
           <!-- on mobile the theme toggle lives in the nav drawer -->
@@ -159,7 +167,7 @@ const searchIndex = JSON.stringify(
       <div class="rounded-2xl border border-line bg-tile/60">
       <div class="grid gap-8 px-5 py-8 sm:grid-cols-[1.2fr_1fr] sm:gap-10 sm:px-10 sm:py-12">
         <div>
-          <p class="flex items-center gap-2 font-display text-xl font-bold"><img src={SITE.logoDark} alt="" class="logo-on-light h-7 w-7 rounded-md" /><img src={SITE.logoLight} alt="" class="logo-on-dark h-7 w-7 rounded-md" />{SITE.name}</p>
+          <p class="flex items-center gap-2 font-display text-xl font-bold"><Image src={logoDark} alt="" class="logo-on-light h-7 w-7 rounded-md" width={28} height={28} /><Image src={logoLight} alt="" class="logo-on-dark h-7 w-7 rounded-md" width={28} height={28} />{SITE.name}</p>
           <p class="mt-3 max-w-[36ch] text-[14px] leading-relaxed text-muted">{FOOTER.tagline}</p>
         </div>
         <nav class="grid grid-cols-2 gap-8 text-[14px] sm:grid-cols-3" aria-label="Footer">
@@ -192,11 +200,11 @@ const searchIndex = JSON.stringify(
         </div>
         <!-- Payment partners row -->
         <div class="tech-row grid w-full grid-cols-6 items-center justify-items-center gap-y-3 sm:flex sm:w-auto sm:flex-wrap sm:gap-5">
-          <img src="/payments/bkash.svg" alt="bKash" title="bKash" class="col-span-2 h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
-          <img src="/payments/nagad.svg" alt="Nagad" title="Nagad" class="col-span-2 h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
-          <img src="/payments/ssl-commerce.svg" alt="SSLCOMMERZ" title="SSLCOMMERZ" class="col-span-2 h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
-          <img src="/payments/visa.svg" alt="Visa" title="Visa" class="col-span-2 col-start-2 h-6 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
-          <img src="/payments/mastercard.svg" alt="Mastercard" title="Mastercard" class="col-span-2 h-6 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
+          <Image src={bkash} alt="bKash" title="bKash" class="col-span-2 h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
+          <Image src={nagad} alt="Nagad" title="Nagad" class="col-span-2 h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
+          <Image src={sslCommerce} alt="SSLCOMMERZ" title="SSLCOMMERZ" class="col-span-2 h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
+          <Image src={visa} alt="Visa" title="Visa" class="col-span-2 col-start-2 h-6 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
+          <Image src={mastercard} alt="Mastercard" title="Mastercard" class="col-span-2 h-6 w-auto opacity-80 hover:opacity-100 transition-opacity" loading="lazy" />
         </div>
       </div>
       </div>
@@ -233,7 +241,7 @@ const searchIndex = JSON.stringify(
       aria-label={CART.ariaDrawer}
     >
       <div class="flex items-center justify-between border-b border-line px-6 py-5">
-        <h2 class="flex items-center gap-2 font-display text-xl font-bold"><img src={SITE.logoDark} alt="" class="logo-on-light h-7 w-7 rounded-md" /><img src={SITE.logoLight} alt="" class="logo-on-dark h-7 w-7 rounded-md" />{SITE.name}</h2>
+        <h2 class="flex items-center gap-2 font-display text-xl font-bold"><Image src={logoDark} alt="" class="logo-on-light h-7 w-7 rounded-md" width={28} height={28} /><Image src={logoLight} alt="" class="logo-on-dark h-7 w-7 rounded-md" width={28} height={28} />{SITE.name}</h2>
         <div class="flex items-center gap-1">
           <button id="cart-clear" class="hidden rounded-md px-2.5 py-2 text-[13px] text-muted hover:text-ink" aria-label={CART.ariaClear}>
             {CART.clearLabel}
@@ -262,7 +270,7 @@ const searchIndex = JSON.stringify(
     <div id="nav-backdrop" class="fixed inset-0 z-40 bg-ink/40" aria-hidden="true"></div>
     <aside id="nav-drawer" class="fixed bottom-4 right-4 top-4 z-50 flex w-[calc(100%-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-line bg-paper shadow-2xl" aria-label={NAV_DRAWER.ariaDrawer}>
       <div class="flex items-center justify-between border-b border-line px-4 py-4">
-        <h2 class="flex items-center gap-2 font-display text-xl font-bold"><img src={SITE.logoDark} alt="" class="logo-on-light h-7 w-7 rounded-md" /><img src={SITE.logoLight} alt="" class="logo-on-dark h-7 w-7 rounded-md" />{SITE.name}</h2>
+        <h2 class="flex items-center gap-2 font-display text-xl font-bold"><Image src={logoDark} alt="" class="logo-on-light h-7 w-7 rounded-md" width={28} height={28} /><Image src={logoLight} alt="" class="logo-on-dark h-7 w-7 rounded-md" width={28} height={28} />{SITE.name}</h2>
         <!-- icon actions: favorites, account, theme -->
         <div class="flex items-center gap-0.5">
           <a href="/favorites" class="rounded-md p-2 text-muted hover:bg-tile hover:text-ink" aria-label={HEADER.aria.favorites}>
@@ -335,7 +343,7 @@ const searchIndex = JSON.stringify(
                 <button class="absolute right-0 top-4 rounded-md p-1.5 text-muted transition hover:bg-tile hover:text-ink" data-remove aria-label="Remove ${l.title} from cart">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
                 </button>
-                ${l.image ? `<img src="${l.image.src}" alt="" class="h-20 w-20 rounded-md bg-tile object-cover"/>` : ''}
+                ${l.image ? `<img src="${l.image.src}" alt="" class="h-20 w-20 rounded-md bg-tile object-cover" decoding="async" width="80" height="80"/>` : ''}
                 <div class="flex-1 pr-8">
                   <p class="text-[15px] font-medium">${l.title}</p>
                   <p class="text-[13px] text-muted">${l.variantTitle}</p>
@@ -402,7 +410,7 @@ const searchIndex = JSON.stringify(
           .map(
             (p) => `
             <a href="/products/${p.handle}" class="group flex items-center gap-3 rounded-md p-2 hover:bg-tile">
-              <img src="${p.image}" alt="" class="h-14 w-14 rounded-md bg-tile object-cover"/>
+              <img src="${p.image}" alt="" class="h-14 w-14 rounded-md bg-tile object-cover" decoding="async" width="56" height="56"/>
               <span class="min-w-0">
                 <span class="block truncate text-[14px] font-medium group-hover:underline group-hover:underline-offset-4">${p.title}</span>
                 <span class="text-[13px] text-muted">$${p.price}</span>
@@ -560,29 +568,34 @@ const searchIndex = JSON.stringify(
       render();
     </script>
 
-    <script is:inline>
-      // Initialize Lenis smooth scroll
+    <script>
+      // Initialize Lenis smooth scroll (bundled by Astro/Vite — npm imports work here)
       import Lenis from '@studio-freight/lenis';
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        direction: 'vertical',
-        gestureDirection: 'vertical',
-        smooth: true,
-        mouseMultiplier: 1,
-        smoothTouch: false,
-        touchMultiplier: 2,
-        infinite: false,
-      });
 
-      function raf(time) {
-        lenis.raf(time);
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReducedMotion) {
+        const lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          direction: 'vertical',
+          gestureDirection: 'vertical',
+          smooth: true,
+          mouseMultiplier: 1,
+          smoothTouch: false,
+          touchMultiplier: 2,
+          infinite: false,
+        });
+
+        function raf(time) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
         requestAnimationFrame(raf);
-      }
-      requestAnimationFrame(raf);
 
-      // Make lenis globally accessible for other scripts
-      window.lenis = lenis;
+        // Make lenis globally accessible for other scripts
+        window.lenis = lenis;
+      }
     </script>
 
     <!-- ── Demo device bar (demo-only — safe to delete this whole block in production) ── -->

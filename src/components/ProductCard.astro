@@ -1,6 +1,7 @@
 ---
 import type { Product } from '../lib/commerce';
 import { PRODUCT_CARD as T } from '../constants/components';
+import { Image } from 'astro:assets';
 
 interface Props {
   product: Product;
@@ -25,11 +26,13 @@ const cartLine = JSON.stringify({
   <div class="relative overflow-hidden rounded-lg bg-tile">
     <div class="aspect-square">
       {img && (
-        <img
+        <Image
           src={img.src}
           alt={img.alt}
           class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
           loading="lazy"
+          width={400}
+          height={400}
         />
       )}
     </div>

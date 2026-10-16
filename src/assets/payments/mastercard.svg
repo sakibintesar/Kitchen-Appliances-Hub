@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" fill="none">
+  <!-- Mastercard Logo -->
+  <!-- Red circle -->
+  <circle cx="25" cy="30" r="24" fill="#EB001B"/>
+  <!-- Orange circle -->
+  <circle cx="50" cy="30" r="24" fill="#F79E1B"/>
+  <!-- Overlap blend area (simulated with a path) -->
+  <ellipse cx="37.5" cy="30" rx="12" ry="24" fill="#FF5F00" opacity="0.5"/>
+  <!-- Mastercard text -->
+  <text x="80" y="38" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#1A1A1A" text-anchor="end">
+    Mastercard
+  </text>
+</svg>

@@ -1,35 +1,48 @@
 @import 'tailwindcss';
 
-/* ── njX Shop design tokens ─────────────────────────────────────
-   Paper-cool background + ink text + pine green brand accent.
+/* ── KitchenHub design tokens ────────────────────────────────────
+   Coffee & Matte Black palette — premium, warm, professional.
    Headlines: Bricolage Grotesque · UI/body: Inter (see Layout head). */
 @theme {
-  --color-paper: #f7f6f2;
-  --color-tile: #eceae4;
-  --color-ink: #191817;
-  --color-muted: #6b6862;
-  --color-line: #dad7ce;
-  --color-pine: #1e4d3b;
-  --color-pine-deep: #143728;
-  --color-pine-soft: #e4ece7;
+  /* Light theme (warm coffee tones) */
+  --color-paper: #f5f0eb;        /* warm off-white / cream */
+  --color-tile: #e8e0d8;         /* soft latte */
+  --color-ink: #1a1612;          /* rich espresso black */
+  --color-muted: #7a6f66;        /* warm coffee grounds */
+  --color-line: #d4c8bc;         /* milk foam */
+  --color-pine: #3d2f22;         /* dark roast (was green, now coffee) */
+  --color-pine-deep: #2a1f14;    /* espresso */
+  --color-pine-soft: #ede5dc;    /* cream foam */
+
+  /* Gold accent (kept for premium feel) */
+  --color-gold-50: #fdf8f0;
+  --color-gold-100: #faeccf;
+  --color-gold-200: #f5d8a0;
+  --color-gold-300: #edc06e;
+  --color-gold-400: #e4a33d;
+  --color-gold-500: #d4881e;
+  --color-gold-600: #b86d16;
+  --color-gold-700: #935112;
+  --color-gold-800: #754112;
+  --color-gold-900: #5f3511;
 
   --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-sans: 'Inter', system-ui, sans-serif;
 }
 
-/* Dark theme = re-mapped tokens; every bg-paper/text-ink utility follows. */
+/* Dark theme = Matte Black + Coffee accents */
 .dark {
-  --color-paper: #171614;
-  --color-tile: #22201d;
-  --color-ink: #ece9e2;
-  --color-muted: #9b968c;
-  --color-line: #363329;
-  --color-pine: #2f8059;
-  --color-pine-deep: #26684a;
-  --color-pine-soft: #1e2b25;
+  --color-paper: #0d0c0a;        /* matte black */
+  --color-tile: #161411;         /* slightly elevated matte */
+  --color-ink: #f5f0eb;          /* cream text */
+  --color-muted: #9a8d7f;        /* warm gray */
+  --color-line: #2a251f;         /* subtle coffee line */
+  --color-pine: #c9a86d;         /* gold accent for dark mode */
+  --color-pine-deep: #b8905a;
+  --color-pine-soft: #1e1a15;
 }
 .dark img {
-  filter: brightness(0.92);
+  filter: brightness(0.9) contrast(1.05);
 }
 
 /* Logo swap: dark mark on light theme, light mark on dark theme */
@@ -95,6 +108,36 @@ input[type='radio'] {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* Fade-up animation for section reveals */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+/* Staggered children animation */
+.animate-fade-up > * {
+  animation: fade-up 0.7s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+.animate-fade-up > *:nth-child(1) { animation-delay: 0ms; }
+.animate-fade-up > *:nth-child(2) { animation-delay: 80ms; }
+.animate-fade-up > *:nth-child(3) { animation-delay: 160ms; }
+.animate-fade-up > *:nth-child(4) { animation-delay: 240ms; }
+.animate-fade-up > *:nth-child(5) { animation-delay: 320ms; }
+.animate-fade-up > *:nth-child(6) { animation-delay: 400ms; }
 
 /* Cart & nav drawers open state */
 body.cart-open,

@@ -1,0 +1,62 @@
+{
+  "order": 0,
+  "label": "Fine Dining",
+  "tagline": "A Symphony of Culinary Precision",
+  "description": "Where commercial-grade performance meets residential elegance. Every appliance engineered for the chef who demands perfection in every plate.",
+  "heroImage": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1200&h=800&fit=crop",
+  "heroImageMobile": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=1000&fit=crop",
+  "heroAlt": "Fine dining kitchen with La Marzocco espresso machine and Miele steam oven",
+  "gradientFrom": "from-amber-900/30",
+  "gradientTo": "via-amber-800/20 to-transparent",
+  "stats": [
+    {
+      "value": "3",
+      "label": "Michelin Stars"
+    },
+    {
+      "value": "15+",
+      "label": "Courses"
+    },
+    {
+      "value": "24/7",
+      "label": "Performance"
+    }
+  ],
+  "appliances": [
+    {
+      "name": "La Marzocco Linea Micra",
+      "model": "LM-MICRA-SS",
+      "price": 5900,
+      "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Miele DG 7840 Steam Oven",
+      "model": "DG7840",
+      "price": 8499,
+      "image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Sub-Zero IC-36CI",
+      "model": "IC36CI",
+      "price": 12400,
+      "image": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Wolf 36\" Gas Range",
+      "model": "GR366",
+      "price": 14800,
+      "image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&h=400&fit=crop"
+    },
+    {
+      "name": "Gaggenau EB 333",
+      "model": "EB333",
+      "price": 7200,
+      "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop"
+    }
+  ],
+  "totalInvestment": 48799,
+  "cta": {
+    "label": "Build This Kitchen",
+    "href": "/builder?preset=fine-dining"
+  }
+}

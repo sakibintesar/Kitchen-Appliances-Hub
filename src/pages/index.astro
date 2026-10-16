@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
 import { commerce } from '../lib/commerce';
 import { HOME as T } from '../constants/pages';
+import { getCollection } from 'astro:content';
 
 const [products, collections] = await Promise.all([
   commerce.listProducts({ limit: 8 }),
@@ -53,6 +54,11 @@ const heroSlides = [
     cta: { label: 'Shop Espresso', href: '/collections/small-appliances' },
   },
 ];
+
+// Experience slides from the content collection (src/content/experiences/*.json)
+const experienceSlides = (await getCollection('experiences'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => entry.data);
 ---
 
 <Layout>
@@ -191,19 +197,278 @@ const heroSlides = [
         </article>
       ))}
     </div>
-  </section>
+  </section><!-- Experiences & Testimonials Grid -->
+  <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14" aria-labelledby="experience-heading">
+    <div class="flex items-baseline justify-between mb-7">
+      <header>
+        <span class="inline-flex items-center gap-2 rounded-full bg-gold-500/10 px-3 py-1 text-[12px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20">
+          Curated Experiences
+        </span>
+        <h2 id="experience-heading" class="mt-3 font-display text-3xl font-bold tracking-tight">
+          Kitchens Designed for How You Live
+        </h2>
+      </header>
+      <a href="/builder" class="hidden sm:inline-flex items-center gap-1.5 text-[14px] font-medium text-muted hover:text-ink transition-colors">
+        View All
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
 
-  <!-- Quote -->
-  <section class="border-y border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50">
-    <div class="mx-auto max-w-6xl px-5 py-14 text-center">
-      <blockquote class="font-display text-[clamp(22px,3vw,30px)] font-semibold leading-snug">
-        {T.quote.text}
-      </blockquote>
-      <p class="mt-4 text-[14px] text-muted">{T.quote.author}</p>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+      {experienceSlides.map((slide, i) => (
+        <article class="group relative overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition hover:border-gold-300 dark:hover:border-gold-700" style={{animationDelay: `${i * 100}ms`}}>
+          <a href={slide.cta.href} class="block" aria-label={"View " + slide.label + " experience"}>
+            <div class="aspect-[4/3] overflow-hidden">
+              <picture>
+                <source media="(max-width: 767px)" srcSet={slide.heroImageMobile} />
+                <img
+                  src={slide.heroImage}
+                  alt={slide.heroAlt}
+                  class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                  loading="lazy"
+                  width={600}
+                  height={450}
+                />
+              </picture>
+            </div>
+          </a>
+
+          <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-neutral-900/90 via-neutral-900/20 to-transparent" aria-hidden="true" />
+
+          <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white backdrop-blur border border-white/20">
+              {slide.label}
+            </span>
+
+            <h3 class="mt-3 font-display text-[clamp(20px,3vw,28px)] font-extrabold leading-[1.05] tracking-tight text-white group-hover:underline group-hover:underline-offset-4 transition-colors">
+              <a href={slide.cta.href}>{slide.tagline}</a>
+            </h3>
+
+            <p class="mt-2 text-[14px] leading-relaxed text-neutral-300 line-clamp-2 max-w-[42ch]">
+              {slide.description}
+            </p>
+
+            <div class="mt-4 flex flex-wrap gap-3" role="list" aria-label="Key highlights">
+              {slide.stats.map((stat, sIdx) => (
+                <div class="flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 text-white/80 transition hover:bg-white/10" role="listitem" style={{animationDelay: `${300 + sIdx * 60}ms`}}>
+                  <span class="font-display font-extrabold text-white">{stat.value}</span>
+                  <span class="text-[11px] font-medium uppercase tracking-wider">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <div class="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-white/10">
+              <div class="flex flex-col">
+                <span class="text-[10px] font-medium text-gold-400 uppercase tracking-wider">Total Investment</span>
+                <span class="font-display text-lg font-bold text-white">${slide.totalInvestment.toLocaleString()}</span>
+              </div>
+              <a
+                href={slide.cta.href}
+                class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-lg bg-gold-500 text-neutral-900 font-semibold text-sm hover:bg-gold-400 transition-all duration-300 shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40"
+              >
+                {slide.cta.label}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+
+      <!-- Customer Testimonial Card -->
+      <article class="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-2 group relative overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition hover:border-gold-300 dark:hover:border-gold-700 flex flex-col">
+        <div class="relative flex-1 flex flex-col p-6 sm:p-8 lg:p-10 bg-gradient-to-br from-neutral-50 via-white to-neutral-50 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-900/50">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500" aria-hidden="true" />
+          <div class="absolute top-6 left-6 w-12 h-12 text-gold-500/20" aria-hidden="true">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 9.012-9.57 2.526 0 4.623 1.145 5.914 2.838l-1.672 1.568c-1.079-1.316-2.55-2.105-4.242-2.105-3.641 0-6.593 3.031-6.593 6.763v4.076h-2.829v-4.076c0-4.381 3.486-7.924 7.831-7.924 2.414 0 4.45 1.189 5.411 2.958l1.905-1.773C19.89 2.855 17.145 1 14.017 1c-7.732 0-14 6.268-14 14v7.391h-2.829v-7.391c0-3.764 3.02-6.763 6.763-6.763 2.072 0 3.954 0.877 5.252 2.273l-1.717 1.714c-0.882-0.947-2.027-1.502-3.535-1.502-1.778 0-3.23 1.452-3.23 3.239v4.076H7.983v7.391h6.034zM2.829 21v-7.391c0-5.704 3.731-9.57 9.012-9.57 2.526 0 4.623 1.145 5.914 2.838l-1.672 1.568c-1.079-1.316-2.55-2.105-4.242-2.105-3.641 0-6.593 3.031-6.593 6.763v4.076H2.829v-4.076c0-4.381 3.486-7.924 7.831-7.924 2.414 0 4.45 1.189 5.411 2.958l1.905-1.773C19.89 2.855 17.145 1 14.017 1c-7.732 0-14 6.268-14 14v7.391h2.829z"/>
+            </svg>
+          </div>
+
+          <div class="absolute bottom-6 right-6 w-12 h-12 text-gold-500/20 rotate-180" aria-hidden="true">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 9.012-9.57 2.526 0 4.623 1.145 5.914 2.838l-1.672 1.568c-1.079-1.316-2.55-2.105-4.242-2.105-3.641 0-6.593 3.031-6.593 6.763v4.076h-2.829v-4.076c0-4.381 3.486-7.924 7.831-7.924 2.414 0 4.45 1.189 5.411 2.958l1.905-1.773C19.89 2.855 17.145 1 14.017 1c-7.732 0-14 6.268-14 14v7.391h-2.829v-7.391c0-3.764 3.02-6.763 6.763-6.763 2.072 0 3.954 0.877 5.252 2.273l-1.717 1.714c-0.882-0.947-2.027-1.502-3.535-1.502-1.778 0-3.23 1.452-3.23 3.239v4.076H7.983v7.391h6.034zM2.829 21v-7.391c0-5.704 3.731-9.57 9.012-9.57 2.526 0 4.623 1.145 5.914 2.838l-1.672 1.568c-1.079-1.316-2.55-2.105-4.242-2.105-3.641 0-6.593 3.031-6.593 6.763v4.076H2.829v-4.076c0-4.381 3.486-7.924 7.831-7.924 2.414 0 4.45 1.189 5.411 2.958l1.905-1.773C19.89 2.855 17.145 1 14.017 1c-7.732 0-14 6.268-14 14v7.391h2.829z"/>
+            </svg>
+          </div>
+
+          <blockquote class="relative z-10 flex-1 flex flex-col justify-center">
+            <p class="font-display text-[clamp(20px,2.5vw,28px)] font-semibold leading-snug text-neutral-900 dark:text-white">
+              "{T.quote.text}"
+            </p>
+
+            <figcaption class="mt-8 flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-gold-100 dark:bg-gold-900/30 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-gold-600 dark:text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                </svg>
+              </div>
+              <div class="text-left">
+                <p class="font-medium text-neutral-900 dark:text-white" set:html={T.quote.author} />
+                <p class="text-[13px] text-muted">Verified Owner</p>
+              </div>
+            </figcaption>
+          </blockquote>
+        </div>
+
+        <div class="px-6 sm:px-8 lg:px-10 pb-6 sm:pb-8 lg:pb-10 pt-4 border-t border-neutral-200 dark:border-neutral-700 bg-white/50 dark:bg-neutral-900/50">
+          <a
+            href="/reviews"
+            class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-gold-500 text-gold-600 dark:text-gold-400 font-semibold text-sm hover:bg-gold-500 hover:text-neutral-900 dark:hover:text-neutral-900 transition-all duration-300"
+          >
+            Read More Reviews
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+<!-- Newsletter Section -->
+  <section class="relative overflow-hidden bg-neutral-950 py-16 md:py-24 lg:py-28" aria-labelledby="newsletter-heading">
+    <!-- Subtle background pattern -->
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2760%27 height=%2760%27 viewBox=%270 0 60 60%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cg fill=%27none%27 fill-rule=%27evenodd%27%3E%3Cg fill=%27%23ffffff%27 fill-opacity=%270.015%27%3E%3Cpath d=%27M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h-4zm0-30V0H4v4H0v2h4v4h2V6h4V4H0z%27/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" aria-hidden="true" />
+    <!-- Radial gradient glow -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.08)_0%,_transparent_70%)]" aria-hidden="true" />
+    <!-- Top accent line -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-px bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-6xl px-5">
+      <!-- Header -->
+      <header class="text-center max-w-3xl mx-auto mb-12">
+        <span class="inline-flex items-center gap-2 rounded-full bg-gold-500/10 px-4 py-1.5 text-[12px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20 animate-fade-up">
+          {T.newsletter.eyebrow}
+        </span>
+        <h2 id="newsletter-heading" class="mt-5 font-display text-[clamp(28px,4.5vw,42px)] font-extrabold leading-[0.95] tracking-tight text-white animate-slide-up" style={{animationDelay: '80ms'}}>
+          {T.newsletter.title}
+        </h2>
+        <p class="mt-4 text-[clamp(15px,2vw,18px)] leading-relaxed text-neutral-300 max-w-[50ch] mx-auto animate-slide-up" style={{animationDelay: '160ms'}}>
+          {T.newsletter.description}
+        </p>
+      </header>
+
+      <!-- Main content grid -->
+      <div class="grid lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-12 items-start">
+        <!-- Left: Signup Form + Benefits -->
+        <div class="space-y-8 animate-slide-up" style={{animationDelay: '240ms'}}>
+          <!-- Signup Form Card -->
+          <div class="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 p-6 md:p-8 shadow-2xl shadow-black/30">
+            <form class="space-y-4" action="/newsletter" method="POST" data-newsletter-form>
+              <label for="newsletter-email" class="sr-only">Email address</label>
+              <div class="relative">
+                <input
+                  type="email"
+                  id="newsletter-email"
+                  name="email"
+                  placeholder={T.newsletter.placeholder}
+                  required
+                  class="w-full appearance-none rounded-lg bg-neutral-950 border border-white/10 px-5 py-4 text-[16px] text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50 transition-all duration-300"
+                  autocomplete="email"
+                  aria-describedby="newsletter-privacy"
+                />
+                <button
+                  type="submit"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-gold-500 px-5 py-2.5 text-sm font-semibold text-neutral-900 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/30 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 focus:ring-offset-neutral-950 transition-all duration-300"
+                  aria-label={T.newsletter.buttonLabel}
+                >
+                  {T.newsletter.buttonLabel}
+                  <svg class="ml-2 w-4 h-4 -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </button>
+              </div>
+              <p id="newsletter-privacy" class="text-[12px] text-neutral-500 text-center" set:html={T.newsletter.privacyText} />
+            </form>
+
+            <!-- Success state (hidden by default) -->
+            <div id="newsletter-success" class="hidden text-center py-4">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/20 text-green-400 mb-3">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </div>
+              <p class="font-semibold text-white">You're on the list!</p>
+              <p class="text-sm text-neutral-400 mt-1">Check your inbox for a welcome note.</p>
+            </div>
+          </div><!-- Benefits List -->
+          <ul class="grid sm:grid-cols-2 gap-3" role="list" aria-label="Newsletter benefits">
+            {T.newsletter.benefits.map((benefit, i) => (
+              <li class="flex items-start gap-3 rounded-lg bg-neutral-900/40 backdrop-blur-sm border border-white/5 p-4 transition-all duration-300 hover:border-gold-500/30 hover:bg-white/5 animate-slide-up" style={{animationDelay: `${320 + i * 80}ms`}}>
+                <span class="flex-shrink-0 mt-0.5 w-6 h-6 rounded-full bg-gold-500/15 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gold-400">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="text-[14px] leading-relaxed text-neutral-200">{benefit}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Right: Trust Badges / Social Proof -->
+        <div class="hidden lg:block animate-slide-right" style={{animationDelay: '300ms'}}>
+          <div class="sticky top-24 space-y-4">
+            <!-- Trust badges card -->
+            <div class="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 p-6 shadow-2xl shadow-black/30">
+              <h3 class="font-display text-lg font-bold text-white mb-5 tracking-tight">Trusted by Culinary Enthusiasts</h3>
+              <div class="grid grid-cols-3 gap-4">
+                {T.newsletter.trustBadges.map((badge, i) => (
+                  <div class="text-center p-4 rounded-xl bg-neutral-950 border border-white/5 hover:border-gold-500/20 transition-all duration-300" style={{animationDelay: `${400 + i * 100}ms`}}>
+                    <div class="font-display text-2xl md:text-3xl font-extrabold text-gold-400 leading-none mb-1">{badge.label}</div>
+                    <div class="text-[11px] font-medium text-neutral-400 uppercase tracking-wider">{badge.text}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Decorative accent -->
+            <div class="rounded-2xl bg-gradient-to-br from-gold-500/10 to-gold-600/5 border border-gold-500/20 p-6 text-center">
+              <svg class="mx-auto w-12 h-12 text-gold-500/50 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 9.09a3 3 0 1 1 5.83 1c0 2-3 3-3 3" />
+              </svg>
+              <p class="font-display text-lg font-semibold text-white mb-1">Curated Weekly</p>
+              <p class="text-sm text-neutral-400">Hand-picked inspiration, no algorithms</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Theme colophon: this store is the product -->
+  
+
+  <!-- Newsletter Success Toast Script -->
+  <script>
+    (() => {
+      const form = document.querySelector('[data-newsletter-form]');
+      const successEl = document.getElementById('newsletter-success');
+      if (!form || !successEl) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = form.querySelector('input[name="email"]').value;
+        if (!email) return;
+
+        try {
+          // Simulate API call - replace with actual endpoint
+          await new Promise(r => setTimeout(r, 800));
+          // form.reset();
+          form.style.display = 'none';
+          successEl.classList.remove('hidden');
+          successEl.classList.add('animate-fade-up');
+        } catch {
+          // Handle error silently or show toast
+        }
+      });
+    })();
+  </script>
+
+<!-- Theme colophon: this store is the product -->
   <section class="mx-auto max-w-6xl px-5 pb-4 sm:pb-8">
     <div class="grid gap-5 rounded-2xl border border-gold-300 dark:border-gold-700 bg-gold-50 dark:bg-gold-900/20 p-4 text-neutral-900 dark:text-white sm:gap-10 sm:p-10 md:grid-cols-[1.2fr_1fr] md:items-center">
       <div>
@@ -424,4 +689,6 @@ const heroSlides = [
       });
     })();
   </script>
+
+  
 </Layout>
