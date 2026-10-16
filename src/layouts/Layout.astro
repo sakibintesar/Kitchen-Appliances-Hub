@@ -569,32 +569,30 @@ const searchIndex = JSON.stringify(
     </script>
 
     <script>
-      // Initialize Lenis smooth scroll (bundled by Astro/Vite — npm imports work here)
+      // Lenis smooth scroll — lerp mode: frame-rate independent, snappy glide.
+      // (duration: 1.2 + CSS scroll-behavior:smooth was fighting the raf loop = laggy feel)
       import Lenis from '@studio-freight/lenis';
 
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       if (!prefersReducedMotion) {
         const lenis = new Lenis({
-          duration: 1.2,
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          direction: 'vertical',
-          gestureDirection: 'vertical',
-          smooth: true,
-          mouseMultiplier: 1,
-          smoothTouch: false,
-          touchMultiplier: 2,
+          lerp: 0.11,            // lower = floatier, higher = snappier (0.08–0.16 is the sweet spot)
+          wheelMultiplier: 1.1,  // responsive wheel feel
+          touchMultiplier: 1.6,
+          smoothWheel: true,
+          syncTouch: false,      // keep native touch on mobile — instant, no artificial lag
           infinite: false,
         });
 
-        function raf(time) {
+        const raf = (time: number) => {
           lenis.raf(time);
           requestAnimationFrame(raf);
-        }
+        };
         requestAnimationFrame(raf);
 
         // Make lenis globally accessible for other scripts
-        window.lenis = lenis;
+        (window as any).lenis = lenis;
       }
     </script>
 

@@ -41,9 +41,9 @@
   --color-pine-deep: #b8905a;
   --color-pine-soft: #1e1a15;
 }
-.dark img {
-  filter: brightness(0.9) contrast(1.05);
-}
+/* Perf note: the old `.dark img { filter: brightness(...) }` rule was removed —
+   CSS filters on images force re-rasterization every scroll frame (jank).
+   Dark-mode images now render at full brightness, compositor-cheap. */
 
 /* Logo swap: dark mark on light theme, light mark on dark theme */
 .logo-on-dark {
@@ -82,8 +82,32 @@
   stroke: var(--color-pine);
 }
 
-html {
+/* Native smooth anchor scrolling ONLY when Lenis isn't running —
+   once Lenis adds `lenis lenis-smooth` to <html>, this stops applying
+   so native CSS smoothing never fights Lenis' raf loop (laggy double-smooth). */
+html:not(.lenis) {
   scroll-behavior: smooth;
+}
+
+/* ── Lenis smooth scroll — official required styles ─────────────
+   Without these, native `scroll-behavior: smooth` fights Lenis'
+   raf loop (double smoothing = the laggy scroll feel). Lenis adds
+   the `lenis lenis-smooth` classes to <html> automatically. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 /* Tailwind v4 preflight makes buttons cursor:default — restore pointer
