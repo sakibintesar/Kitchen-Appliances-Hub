@@ -106,7 +106,11 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: hidden;
 }
-.lenis.lenis-smooth iframe {
+/* Lenis' stock CSS makes ALL iframes inert (pointer-events: none) so wheel
+   events over embedded third-party content scroll the host page instead.
+   Our demo device-preview iframe must stay interactive, so exempt it —
+   without this the Desktop/Laptop/iPhone preview modes cannot scroll. */
+.lenis.lenis-smooth iframe:not([data-pv-frame]) {
   pointer-events: none;
 }
 
