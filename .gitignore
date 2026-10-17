@@ -23,3 +23,5 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+# unrelated repos bundled with the original folder download
+external-repos/
