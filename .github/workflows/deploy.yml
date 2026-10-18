@@ -1,0 +1,49 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Pages build: Astro picks up `base` from DEPLOY_TARGET (see astro.config.mjs);
+      # fix-base-paths.mjs prefixes the remaining root-relative URLs with BASE_PATH.
+      DEPLOY_TARGET: pages
+      BASE_PATH: /Kitchen-Appliances-Hub
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/fix-base-paths.mjs
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true # auto-enables Pages — no manual Settings toggle needed
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
