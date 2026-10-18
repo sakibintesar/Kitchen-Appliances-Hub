@@ -29,6 +29,7 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci --prefer-offline --no-audit --progress=false
+      - run: echo "DEPLOY_TARGET=$DEPLOY_TARGET BASE_PATH=$BASE_PATH"
       - run: npm run build --if-present
       - run: node scripts/fix-base-paths.mjs
       - uses: actions/configure-pages@v5
