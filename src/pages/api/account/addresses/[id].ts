@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { getDb } from '../../../../db';
-import { addresses, eq } from '../../../../db/schema';
+import { getDb } from '@db';
+import { addresses, eq } from '@db/schema';
 
 const VALID_COUNTRIES = ['US', 'CA', 'GB', 'AU', 'BD'];
 

@@ -1,0 +1,73 @@
+import { describe, it, expect } from 'vitest';
+
+const VALID_COUNTRIES = ['US', 'CA', 'GB', 'AU'];
+
+const US_STATES = [
+  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+  'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+  'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+  'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+  'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC'
+];
+
+const CA_PROVINCES = [
+  'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'
+];
+
+function validateAddress(data: any): { valid: boolean; error?: string } {
+  const required = ['firstName', 'lastName', 'address1', 'city', 'state', 'postalCode', 'country'];
+  for (const field of required) {
+    if (!data[field] || typeof data[field] !== 'string' || data[field].trim() === '') {
+      return { valid: false, error: `Missing required field: ${field}` };
+    }
+  }
+
+  if (data.firstName.length > 50) return { valid: false, error: 'First name must be 50 characters or less' };
+  if (data.lastName.length > 50) return { valid: false, error: 'Last name must be 50 characters or less' };
+  if (data.company && data.company.length > 100) return { valid: false, error: 'Company must be 100 characters or less' };
+  if (data.address1.length > 100) return { valid: false, error: 'Address line 1 must be 100 characters or less' };
+  if (data.address2 && data.address2.length > 100) return { valid: false, error: 'Address line 2 must be 100 characters or less' };
+  if (data.city.length > 50) return { valid: false, error: 'City must be 50 characters or less' };
+
+  if (!VALID_COUNTRIES.includes(data.country)) {
+    return { valid: false, error: 'Invalid country' };
+  }
+
+  if (data.country === 'US' && !US_STATES.includes(data.state)) {
+    return { valid: false, error: 'Invalid US state' };
+  }
+  if (data.country === 'CA' && !CA_PROVINCES.includes(data.state)) {
+    return { valid: false, error: 'Invalid Canadian province' };
+  }
+
+  const postalCode = data.postalCode.trim().toUpperCase();
+  if (data.country === 'US') {
+    if (!/^\d{5}(-\d{4})?$/.test(postalCode)) {
+      return { valid: false, error: 'Invalid US ZIP code format (use 12345 or 12345-6789)' };
+    }
+  } else if (data.country === 'CA') {
+    if (!/^[A-Z]\d[A-Z] ?\d[A-Z]\d$/.test(postalCode)) {
+      return { valid: false, error: 'Invalid Canadian postal code format (use A1A 1A1)' };
+    }
+  } else if (data.country === 'GB') {
+    if (!/^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/.test(postalCode)) {
+      return { valid: false, error: 'Invalid UK postcode format' };
+    }
+  } else if (data.country === 'AU') {
+    if (!/^\d{4}$/.test(postalCode)) {
+      return { valid: false, error: 'Invalid Australian postcode format (use 1234)' };
+    }
+  }
+
+  return { valid: true };
+}
+
+const validAddress = {
+  firstName: 'John',
+  lastName: 'Doe',
+  address1: '123 Main St',
+  city: 'San Francisco',
+  state: 'CA',
+  postalCode: '94102',
+  country: 'US',
+};

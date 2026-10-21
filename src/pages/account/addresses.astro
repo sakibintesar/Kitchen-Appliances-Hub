@@ -1,0 +1,334 @@
+﻿---
+// Account Addresses - Saved Addresses page
+import Layout from '../../layouts/Layout.astro';
+import { ACCOUNT as T } from '../../constants/pages';
+---
+
+<Layout title="Saved Addresses - KitchenHub" description="Manage your shipping addresses">
+  <section class="mx-auto max-w-3xl px-5 py-10 sm:py-16">
+    <div class="rounded-xl border border-line bg-tile/40 p-5 sm:p-8">
+      <header class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="font-display text-2xl font-bold">Saved Addresses</h1>
+          <p class="mt-1 text-[14px] text-muted">Manage your shipping and billing addresses</p>
+        </div>
+        <button id="add-address-btn" class="rounded-md bg-pine px-4 py-2.5 text-sm font-semibold text-white hover:bg-pine-deep transition-colors">
+          Add Address
+        </button>
+      </header>
+
+      <div id="addresses-loading" class="space-y-4">
+        <div class="animate-pulse space-y-4">
+          <div class="h-28 bg-tile rounded-lg"></div>
+          <div class="h-28 bg-tile rounded-lg"></div>
+        </div>
+      </div>
+
+      <div id="addresses-empty" class="hidden text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <h2 class="mt-4 font-display text-lg font-semibold">No saved addresses</h2>
+        <p class="mt-1 text-sm text-muted">Add an address to speed up checkout.</p>
+        <button id="add-first-address" class="mt-4 inline-block rounded-md bg-pine px-4 py-2 text-sm font-semibold text-white hover:bg-pine-deep">Add Address</button>
+      </div>
+
+      <div id="addresses-list" class="hidden space-y-4"></div>
+    </div>
+  </section>
+
+  <!-- Add/Edit Address Modal -->
+  <div id="address-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 py-12">
+    <div class="fixed inset-0 bg-black/50 transition-opacity" aria-hidden="true"></div>
+    <div class="relative w-full max-w-md rounded-xl bg-paper p-6 shadow-xl animate-in fade-in zoom-in-95">
+      <div class="flex items-center justify-between mb-6">
+        <h2 id="modal-title" class="font-display text-xl font-bold">Add Address</h2>
+        <button id="close-modal" class="rounded-lg p-1.5 text-muted hover:bg-tile hover:text-ink transition-colors" aria-label="Close">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <form id="address-form" class="space-y-4" novalidate>
+        <input type="hidden" id="address-id" name="id" />
+        <input type="hidden" id="address-is-default" name="isDefault" value="false" />
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="firstName" class="block text-[13px] font-medium mb-1.5">First Name *</label>
+            <input type="text" id="firstName" name="firstName" required autocomplete="given-name" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+          </div>
+          <div>
+            <label for="lastName" class="block text-[13px] font-medium mb-1.5">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" required autocomplete="family-name" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+          </div>
+        </div>
+
+        <div>
+          <label for="company" class="block text-[13px] font-medium mb-1.5">Company (optional)</label>
+          <input type="text" id="company" name="company" autocomplete="organization" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+        </div>
+
+        <div>
+          <label for="address1" class="block text-[13px] font-medium mb-1.5">Address Line 1 *</label>
+          <input type="text" id="address1" name="address1" required autocomplete="street-address" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+        </div>
+
+        <div>
+          <label for="address2" class="block text-[13px] font-medium mb-1.5">Address Line 2 (optional)</label>
+          <input type="text" id="address2" name="address2" autocomplete="address-line2" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="city" class="block text-[13px] font-medium mb-1.5">City *</label>
+            <input type="text" id="city" name="city" required autocomplete="address-level2" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+          </div>
+          <div>
+            <label for="state" class="block text-[13px] font-medium mb-1.5">State/Province *</label>
+            <input type="text" id="state" name="state" required autocomplete="address-level1" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="postalCode" class="block text-[13px] font-medium mb-1.5">ZIP/Postal Code *</label>
+            <input type="text" id="postalCode" name="postalCode" required autocomplete="postal-code" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+          </div>
+          <div>
+            <label for="country" class="block text-[13px] font-medium mb-1.5">Country *</label>
+            <select id="country" name="country" required autocomplete="country" class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none focus:border-pine">
+              <option value="US">United States</option>
+              <option value="CA">Canada</option>
+              <option value="GB">United Kingdom</option>
+              <option value="AU">Australia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="setDefault" name="setDefault" class="h-4 w-4 rounded border-line text-pine focus:ring-pine" />
+          <label for="setDefault" class="text-[14px]">Set as default shipping address</label>
+        </div>
+
+        <div id="modal-note" class="hidden rounded-md px-4 py-3 text-center text-[13px] leading-relaxed"></div>
+
+        <div class="flex gap-3 pt-4">
+          <button type="button" id="cancel-modal" class="flex-1 rounded-md border border-line bg-paper py-2.5 text-sm font-semibold text-ink hover:bg-tile transition-colors">Cancel</button>
+          <button type="submit" id="submit-address" class="flex-1 rounded-md bg-pine py-2.5 text-sm font-semibold text-white hover:bg-pine-deep transition-colors">
+            <span id="submit-text">Save Address</span>
+            <span id="submit-loading" class="hidden">Saving...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let editingAddressId = null;
+
+    async function loadAddresses() {
+      try {
+        const res = await fetch('/api/account/addresses', { credentials: 'include' });
+        const data = await res.json();
+
+        document.getElementById('addresses-loading')!.classList.add('hidden');
+
+        if (!res.ok || !data.addresses) {
+          document.getElementById('addresses-empty')!.classList.remove('hidden');
+          return;
+        }
+
+        if (data.addresses.length === 0) {
+          document.getElementById('addresses-empty')!.classList.remove('hidden');
+          return;
+        }
+
+        const list = document.getElementById('addresses-list')!;
+        list.classList.remove('hidden');
+
+        list.innerHTML = data.addresses.map((addr) => {
+          let html = '<article class="relative rounded-lg border border-line bg-paper p-5 sm:p-6">';
+          if (addr.isDefault) html += '<span class="absolute -top-2 left-4 rounded-full bg-pine px-2 py-0.5 text-[10px] font-semibold text-white">Default</span>';
+          html += '<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">';
+          html += '<div class="flex-1">';
+          html += '<p class="font-medium">' + addr.firstName + ' ' + addr.lastName + '</p>';
+          if (addr.company) html += '<p class="text-sm text-muted">' + addr.company + '</p>';
+          html += '<p class="mt-1 text-sm text-muted">' + addr.address1 + (addr.address2 ? ', ' + addr.address2 : '') + '</p>';
+          html += '<p class="text-sm text-muted">' + addr.city + ', ' + addr.state + ' ' + addr.postalCode + '</p>';
+          html += '<p class="text-sm text-muted">' + getCountryName(addr.country) + '</p>';
+          html += '</div>';
+          html += '<div class="flex flex-col gap-2 sm:ml-4">';
+          html += '<button data-edit="' + addr.id + '" class="text-sm text-pine hover:underline font-medium">Edit</button>';
+          if (!addr.isDefault) html += '<button data-delete="' + addr.id + '" class="text-sm text-red-600 hover:underline font-medium">Delete</button>';
+          if (!addr.isDefault) html += '<button data-set-default="' + addr.id + '" class="text-sm text-muted hover:text-ink font-medium">Set as Default</button>';
+          html += '</div></div></article>';
+          return html;
+        }).join('');
+
+        list.querySelectorAll('[data-edit]').forEach(btn => {
+          btn.addEventListener('click', (e) => openModal(e.currentTarget.dataset.edit));
+        });
+        list.querySelectorAll('[data-delete]').forEach(btn => {
+          btn.addEventListener('click', (e) => deleteAddress(e.currentTarget.dataset.delete));
+        });
+        list.querySelectorAll('[data-set-default]').forEach(btn => {
+          btn.addEventListener('click', (e) => setDefaultAddress(e.currentTarget.dataset.setDefault));
+        });
+      } catch (err) {
+        console.error('Failed to load addresses:', err);
+        document.getElementById('addresses-loading')!.classList.add('hidden');
+        document.getElementById('addresses-empty')!.classList.remove('hidden');
+      }
+    }
+
+    function getCountryName(code) {
+      const countries = { US: 'United States', CA: 'Canada', GB: 'United Kingdom', AU: 'Australia' };
+      return countries[code] || code;
+    }
+
+    const modal = document.getElementById('address-modal')!;
+    const form = document.getElementById('address-form');
+    const modalNote = document.getElementById('modal-note')!;
+    const submitBtn = document.getElementById('submit-address')!;
+    const submitText = document.getElementById('submit-text')!;
+    const submitLoading = document.getElementById('submit-loading')!;
+
+    function showNote(message, type = 'info') {
+      modalNote.textContent = message;
+      modalNote.classList.remove('hidden', 'bg-pine-soft', 'bg-red-soft', 'bg-green-soft');
+      if (type === 'success') modalNote.classList.add('bg-green-soft', 'text-green-800');
+      else if (type === 'error') modalNote.classList.add('bg-red-soft', 'text-red-800');
+      else modalNote.classList.add('bg-pine-soft', 'text-pine-800');
+    }
+
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      submitText.classList.toggle('hidden', isLoading);
+      submitLoading.classList.toggle('hidden', !isLoading);
+    }
+
+    function openModal(addressId) {
+      editingAddressId = addressId || null;
+      form.reset();
+      document.getElementById('address-id').value = '';
+      document.getElementById('address-is-default').value = 'false';
+      document.getElementById('modal-title').textContent = addressId ? 'Edit Address' : 'Add Address';
+      submitText.textContent = addressId ? 'Update Address' : 'Save Address';
+      modalNote.classList.add('hidden');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('firstName').focus();
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      editingAddressId = null;
+    }
+
+    async function loadAddressForEdit(id) {
+      try {
+        const res = await fetch('/api/account/addresses/' + id, { credentials: 'include' });
+        const data = await res.json();
+        if (res.ok && data.address) {
+          const addr = data.address;
+          document.getElementById('address-id').value = addr.id;
+          document.getElementById('firstName').value = addr.firstName;
+          document.getElementById('lastName').value = addr.lastName;
+          document.getElementById('company').value = addr.company || '';
+          document.getElementById('address1').value = addr.address1;
+          document.getElementById('address2').value = addr.address2 || '';
+          document.getElementById('city').value = addr.city;
+          document.getElementById('state').value = addr.state;
+          document.getElementById('postalCode').value = addr.postalCode;
+          document.getElementById('country').value = addr.country;
+          document.getElementById('setDefault').checked = addr.isDefault;
+          document.getElementById('address-is-default').value = String(addr.isDefault);
+        }
+      } catch (err) {
+        console.error('Failed to load address:', err);
+      }
+    }
+
+    document.getElementById('add-address-btn')!.addEventListener('click', () => openModal());
+    document.getElementById('add-first-address')!.addEventListener('click', () => openModal());
+    document.getElementById('close-modal')!.addEventListener('click', closeModal);
+    document.getElementById('cancel-modal')!.addEventListener('click', closeModal);
+    modal.querySelector('.fixed.inset-0')!.addEventListener('click', closeModal);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+
+      setLoading(true);
+      modalNote.classList.add('hidden');
+
+      const formData = new FormData(form);
+      const payload = {};
+      formData.forEach((value, key) => {
+        if (key !== 'setDefault') payload[key] = value;
+      });
+      payload.isDefault = document.getElementById('setDefault').checked;
+
+      const url = editingAddressId ? '/api/account/addresses/' + editingAddressId : '/api/account/addresses';
+      const method = editingAddressId ? 'PUT' : 'POST';
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          closeModal();
+          loadAddresses();
+        } else {
+          showNote(data.error || 'Failed to save address', 'error');
+        }
+      } catch {
+        showNote('Network error. Please try again.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    async function deleteAddress(id) {
+      if (!confirm('Are you sure you want to delete this address?')) return;
+
+      try {
+        const res = await fetch('/api/account/addresses/' + id, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+
+        if (res.ok) {
+          loadAddresses();
+        }
+      } catch (err) {
+        console.error('Failed to delete address:', err);
+      }
+    }
+
+    async function setDefaultAddress(id) {
+      try {
+        const res = await fetch('/api/account/addresses/' + id + '/default', {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (res.ok) {
+          loadAddresses();
+        }
+      } catch (err) {
+        console.error('Failed to set default address:', err);
+      }
+    }
+
+    loadAddresses();
+  </script>
+</Layout>

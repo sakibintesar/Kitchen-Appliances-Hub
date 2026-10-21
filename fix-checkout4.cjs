@@ -1,0 +1,11 @@
+const fs = require('fs');
+
+let content = fs.readFileSync('C:\\Users\\sakib\\.cline\\data\\workspaces\\chat\\Kitchen-Appliances-Hub\\src\\pages\\checkout.astro', 'utf8');
+
+// Remove the old step 4 review form (it's a duplicate)
+const target = `{/* Step 4: Review */}\n          <div data-step-form='4' class='hidden space-y-6'>\n            <div class='rounded-2xl border border-line bg-paper/90 p-5 sm:p-6'>\n              <h3 class='font-heading text-lg font-semibold text-ink'>Review Your Order</h3>\n              <div class='mt-4 space-y-3' data-review-items></div>\n              <div class='mt-4 pt-4 border-t border-line space-y-2'>\n                <div class='flex justify-between text-sm'><span class='text-muted'>Subtotal</span><span class='font-medium text-ink' data-review-subtotal>{fmtSS(initialSubtotal)}</span></div>\n                <div class='flex justify-between text-sm'><span class='text-muted'>Shipping</span><span class='font-medium text-ink' data-review-shipping>{initialShipping === 0 ? 'FREE' : fmtSS(initialShipping)}</span></div>\n                <div class='flex justify-between text-sm'><span class='text-muted'>Tax (8%)</span><span class='font-medium text-ink' data-review-tax>{fmtSS(initialTax)}</span></div>\n                <div class='flex justify-between text-sm'><span class='text-muted'>Discount</span><span class='font-medium text-pine' data-review-discount>-.00</span></div>\n                <div class='flex justify-between pt-2 border-t border-line'><span class='font-semibold text-ink'>Total</span><span class='font-semibold text-ink' data-review-total>{fmtSS(initialTotal)}</span></div>\n              </div>\n            </div>\n\n            <div class='rounded-2xl border border-line bg-paper/90 p-5 sm:p-6'>\n              <h3 class='font-heading text-lg font-semibold text-ink'>Contact & Shipping</h3>`;
+
+content = content.replace(target, '');
+
+fs.writeFileSync('C:\\Users\\sakib\\.cline\\data\\workspaces\\chat\\Kitchen-Appliances-Hub\\src\\pages\\checkout.astro', content);
+console.log('Done');

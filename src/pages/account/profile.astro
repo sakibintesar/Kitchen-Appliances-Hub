@@ -1,0 +1,196 @@
+---
+// Account Profile - Profile Settings page
+import Layout from '../../layouts/Layout.astro';
+import { ACCOUNT as T } from '../../constants/pages';
+---
+
+<Layout title="Profile Settings - KitchenHub" description="Update your account information">
+  <section class="mx-auto max-w-md px-5 py-10 sm:py-16">
+    <div class="rounded-xl border border-line bg-tile/40 p-5 sm:p-8">
+      <header class="mb-8">
+        <h1 class="font-display text-2xl font-bold">Profile Settings</h1>
+        <p class="mt-1 text-[14px] text-muted">Manage your personal information</p>
+      </header>
+
+      <form id="profile-form" class="space-y-5" novalidate>
+        <div>
+          <label for="name" class="block text-[13px] font-medium mb-1.5">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            autocomplete="name"
+            placeholder="Enter your name"
+            class="w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine"
+          />
+        </div>
+
+        <div>
+          <label for="email" class="block text-[13px] font-medium mb-1.5">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="email"
+            disabled
+            class="w-full rounded-md border border-line bg-tile px-3.5 py-3 text-[15px] outline-none text-muted cursor-not-allowed"
+          />
+          <p class="mt-1.5 text-[12px] text-muted">Email cannot be changed. Contact support if you need to update it.</p>
+        </div>
+
+        <div class="pt-4 border-t border-line">
+          <button type="submit" class="w-full rounded-md bg-pine py-3.5 text-[15px] font-semibold text-white hover:bg-pine-deep disabled:opacity-50">
+            <span id="btn-text">Save Changes</span>
+            <span id="btn-loading" class="hidden">Saving...</span>
+          </button>
+        </div>
+
+        <p id="form-note" class="hidden rounded-md px-4 py-3 text-center text-[13px] leading-relaxed"></p>
+      </form>
+
+      <div class="mt-8 pt-8 border-t border-line">
+        <h2 class="font-display text-lg font-semibold mb-4">Change Password</h2>
+        <form id="password-form" class="space-y-5" novalidate>
+          <div>
+            <label for="current-password" class="block text-[13px] font-medium mb-1.5">Current Password</label>
+            <input type="password" id="current-password" name="currentPassword" autocomplete="current-password" class="w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+          </div>
+          <div>
+            <label for="new-password" class="block text-[13px] font-medium mb-1.5">New Password</label>
+            <input type="password" id="new-password" name="newPassword" autocomplete="new-password" minlength="8" class="w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+            <p class="mt-1.5 text-[12px] text-muted">Must be at least 8 characters</p>
+          </div>
+          <div>
+            <label for="confirm-password" class="block text-[13px] font-medium mb-1.5">Confirm New Password</label>
+            <input type="password" id="confirm-password" name="confirmPassword" autocomplete="new-password" class="w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine" />
+          </div>
+          <div class="pt-4 border-t border-line">
+            <button type="submit" class="w-full rounded-md border border-line bg-paper py-3.5 text-[15px] font-semibold text-ink hover:bg-tile transition-colors">
+              <span id="pwd-btn-text">Update Password</span>
+              <span id="pwd-btn-loading" class="hidden">Updating...</span>
+            </button>
+          </div>
+          <p id="pwd-form-note" class="hidden rounded-md px-4 py-3 text-center text-[13px] leading-relaxed"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    async function loadProfile() {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        const data = await res.json();
+        if (data.user) {
+          (document.getElementById('name') as HTMLInputElement).value = data.user.name || '';
+          (document.getElementById('email') as HTMLInputElement).value = data.user.email;
+        }
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+      }
+    }
+
+    function showNote(el: HTMLElement, message: string, type: 'success' | 'error' | 'info' = 'info') {
+      el.textContent = message;
+      el.classList.remove('hidden', 'bg-pine-soft', 'bg-red-soft', 'bg-green-soft');
+      if (type === 'success') el.classList.add('bg-green-soft', 'text-green-800');
+      else if (type === 'error') el.classList.add('bg-red-soft', 'text-red-800');
+      else el.classList.add('bg-pine-soft', 'text-pine-800');
+    }
+
+    function setLoading(formId: string, isLoading: boolean) {
+      const form = document.getElementById(formId)!;
+      const btn = form.querySelector('button[type="submit"]')!;
+      const btnText = btn.querySelector('[id$="-btn-text"], [id$="-text"]')!;
+      const btnLoading = btn.querySelector('[id$="-btn-loading"], [id$="-loading"]')!;
+      btn.disabled = isLoading;
+      btnText.classList.toggle('hidden', isLoading);
+      btnLoading.classList.toggle('hidden', !isLoading);
+    }
+
+    const profileForm = document.getElementById('profile-form') as HTMLFormElement;
+    const profileNote = document.getElementById('form-note')!;
+
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!profileForm.reportValidity()) return;
+
+      setLoading('profile-form', true);
+      profileNote.classList.add('hidden');
+
+      const formData = new FormData(profileForm);
+      const name = formData.get('name') as string;
+
+      try {
+        const res = await fetch('/api/account/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          showNote(profileNote, 'Profile updated successfully!', 'success');
+          window.dispatchEvent(new CustomEvent('auth:login', { detail: { user: data.user } }));
+        } else {
+          showNote(profileNote, data.error || 'Failed to update profile', 'error');
+        }
+      } catch {
+        showNote(profileNote, 'Network error. Please try again.', 'error');
+      } finally {
+        setLoading('profile-form', false);
+      }
+    });
+
+    const passwordForm = document.getElementById('password-form') as HTMLFormElement;
+    const pwdNote = document.getElementById('pwd-form-note')!;
+
+    passwordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!passwordForm.reportValidity()) return;
+
+      const currentPassword = (document.getElementById('current-password') as HTMLInputElement).value;
+      const newPassword = (document.getElementById('new-password') as HTMLInputElement).value;
+      const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement).value;
+
+      if (newPassword !== confirmPassword) {
+        showNote(pwdNote, 'Passwords do not match', 'error');
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        showNote(pwdNote, 'New password must be at least 8 characters', 'error');
+        return;
+      }
+
+      setLoading('password-form', true);
+      pwdNote.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/account/password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ currentPassword, newPassword }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          showNote(pwdNote, 'Password updated successfully!', 'success');
+          passwordForm.reset();
+        } else {
+          showNote(pwdNote, data.error || 'Failed to update password', 'error');
+        }
+      } catch {
+        showNote(pwdNote, 'Network error. Please try again.', 'error');
+      } finally {
+        setLoading('password-form', false);
+      }
+    });
+
+    loadProfile();
+  </script>
+</Layout>

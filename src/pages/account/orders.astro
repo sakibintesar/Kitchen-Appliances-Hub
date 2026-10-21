@@ -1,0 +1,103 @@
+---
+// Account Orders - Order History page
+import Layout from '../../layouts/Layout.astro';
+import { ACCOUNT as T } from '../../constants/pages';
+import { getDb } from '../../db';
+import { orders, eq } from '../../db/schema';
+---
+
+<Layout title="Order History - KitchenHub" description="View your past orders">
+  <section class="mx-auto max-w-3xl px-5 py-10 sm:py-16">
+    <div class="rounded-xl border border-line bg-tile/40 p-5 sm:p-8">
+      <header class="mb-8">
+        <h1 class="font-display text-2xl font-bold">Order History</h1>
+        <p class="mt-1 text-[14px] text-muted">Track and review your past purchases</p>
+      </header>
+
+      <div id="orders-loading" class="space-y-4">
+        <div class="animate-pulse space-y-4">
+          <div class="h-20 bg-tile rounded-lg"></div>
+          <div class="h-20 bg-tile rounded-lg"></div>
+          <div class="h-20 bg-tile rounded-lg"></div>
+        </div>
+      </div>
+
+      <div id="orders-empty" class="hidden text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <h2 class="mt-4 font-display text-lg font-semibold">No orders yet</h2>
+        <p class="mt-1 text-sm text-muted">When you place an order, it will appear here.</p>
+        <a href="/products" class="mt-4 inline-block rounded-md bg-pine px-4 py-2 text-sm font-semibold text-white hover:bg-pine-deep">Start Shopping</a>
+      </div>
+
+      <div id="orders-list" class="hidden space-y-4"></div>
+    </div>
+  </section>
+
+  <script>
+    // Fetch orders from API
+    async function loadOrders() {
+      try {
+        const res = await fetch('/api/account/orders', { credentials: 'include' });
+        const data = await res.json();
+        
+        document.getElementById('orders-loading')!.classList.add('hidden');
+        
+        if (!res.ok || !data.orders) {
+          document.getElementById('orders-empty')!.classList.remove('hidden');
+          return;
+        }
+
+        if (data.orders.length === 0) {
+          document.getElementById('orders-empty')!.classList.remove('hidden');
+          return;
+        }
+
+        const list = document.getElementById('orders-list')!;
+        list.classList.remove('hidden');
+        
+        list.innerHTML = data.orders.map((order: any) => `
+          <article class="rounded-lg border border-line bg-paper overflow-hidden">
+            <div class="p-4 sm:p-5">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                <div>
+                  <p class="font-medium">Order #${String(order.id).padStart(6, '0')}</p>
+                  <p class="text-sm text-muted">${new Date(order.createdAt * 1000).toLocaleDateString('en-US', { 
+                    year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                </div>
+                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium 
+                  ${getStatusClass(order.status)}">
+                  ${formatStatus(order.status)}
+                </span>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-line">
+                <p class="font-semibold text-lg">${(order.totalAmount / 100).toFixed(2)} ${order.currency}</p>
+                <a href="/account/orders/${order.id}" class="text-sm text-pine hover:underline font-medium">View Details</a>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      } catch (err) {
+        console.error('Failed to load orders:', err);
+        document.getElementById('orders-loading')!.classList.add('hidden');
+        document.getElementById('orders-empty')!.classList.remove('hidden');
+      }
+    }
+
+    function getStatusClass(status: string): string {
+      switch (status) {
+        case 'paid': return 'bg-green-100 text-green-800';
+        case 'fulfilled': return 'bg-blue-100 text-blue-800';
+        case 'cancelled': return 'bg-red-100 text-red-800';
+        default: return 'bg-yellow-100 text-yellow-800';
+      }
+    }
+
+    function formatStatus(status: string): string {
+      return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+
+    loadOrders();
+  </script>
+</Layout>

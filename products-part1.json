@@ -1,0 +1,49 @@
+[
+  {
+    "handle": "pro-range-36",
+    "title": "Professional 36 Gas Range",
+    "description": "Six sealed burners, 22,000 BTU power burner, convection oven with 6.0 cu. ft. capacity.",
+    "price": {
+      "amount": 4499.99,
+      "currency": "USD"
+    },
+    "compareAtPrice": {
+      "amount": 4999.99,
+      "currency": "USD"
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+        "alt": "Professional gas range"
+      }
+    ],
+    "tags": [
+      "professional",
+      "gas",
+      "range"
+    ],
+    "collectionHandles": [
+      "professional"
+    ],
+    "variants": [
+      {
+        "id": "pro-range-36-ng",
+        "title": "Natural Gas",
+        "price": {
+          "amount": 4499.99,
+          "currency": "USD"
+        },
+        "available": true
+      },
+      {
+        "id": "pro-range-36-lp",
+        "title": "Liquid Propane",
+        "price": {
+          "amount": 4499.99,
+          "currency": "USD"
+        },
+        "available": true
+      }
+    ]
+  }
+]

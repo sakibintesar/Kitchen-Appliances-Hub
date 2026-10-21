@@ -1,0 +1,1084 @@
+{
+  "collections": [
+    {
+      "handle": "professional",
+      "title": "Professional Series",
+      "description": "Restaurant-grade appliances for serious home chefs",
+      "image": {
+        "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+        "alt": "Professional kitchen appliances"
+      }
+    },
+    {
+      "handle": "compact",
+      "title": "Compact Living",
+      "description": "Space-saving appliances for modern apartments",
+      "image": {
+        "src": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800",
+        "alt": "Compact kitchen appliances"
+      }
+    },
+    {
+      "handle": "smart",
+      "title": "Smart Kitchen",
+      "description": "WiFi-enabled appliances with app control",
+      "image": {
+        "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+        "alt": "Smart kitchen appliances"
+      }
+    }
+  ],
+  "products": [
+    {
+      "handle": "pro-range-36",
+      "title": "Professional 36\" Gas Range",
+      "description": "Six sealed burners, 22,000 BTU power burner, convection oven with 6.0 cu. ft. capacity.",
+      "price": {
+        "amount": 4499.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 4999.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Professional gas range"
+        }
+      ],
+      "tags": [
+        "professional",
+        "gas",
+        "range"
+      ],
+      "collectionHandles": [
+        "professional"
+      ],
+      "variants": [
+        {
+          "id": "pro-range-36-ng",
+          "title": "Natural Gas",
+          "price": {
+            "amount": 4499.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "pro-range-36-lp",
+          "title": "Liquid Propane",
+          "price": {
+            "amount": 4499.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "pro-range-48",
+      "title": "Professional 48\" Dual Fuel Range",
+      "description": "Eight burners including 22,000 BTU power burner, dual convection ovens with 4.5 + 2.5 cu. ft. capacity.",
+      "price": {
+        "amount": 7999.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 8999.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Professional dual fuel range"
+        }
+      ],
+      "tags": [
+        "professional",
+        "dual-fuel",
+        "range"
+      ],
+      "collectionHandles": [
+        "professional"
+      ],
+      "variants": [
+        {
+          "id": "pro-range-48-ng",
+          "title": "Natural Gas",
+          "price": {
+            "amount": 7999.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "pro-range-48-lp",
+          "title": "Liquid Propane",
+          "price": {
+            "amount": 7999.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "pro-ventilation-36",
+      "title": "Professional 36\" Wall Hood",
+      "description": "1200 CFM blower, 4-speed fan, LED lighting, baffle filters, auto heat detection.",
+      "price": {
+        "amount": 1499.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 1699.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Professional wall hood"
+        }
+      ],
+      "tags": [
+        "professional",
+        "ventilation",
+        "hood"
+      ],
+      "collectionHandles": [
+        "professional"
+      ],
+      "variants": [
+        {
+          "id": "pro-vent-36",
+          "title": "36\" Wall Mount",
+          "price": {
+            "amount": 1499.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "pro-vent-48",
+          "title": "48\" Wall Mount",
+          "price": {
+            "amount": 1799.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "pro-fridge-36",
+      "title": "Professional 36\" Built-In Refrigerator",
+      "description": "23.5 cu. ft., dual compressor, air purification, soft-close doors, internal water dispenser.",
+      "price": {
+        "amount": 6999.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 7499.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1571175443880-49e1d143d5ca?w=800",
+          "alt": "Professional built-in refrigerator"
+        }
+      ],
+      "tags": [
+        "professional",
+        "refrigerator",
+        "built-in"
+      ],
+      "collectionHandles": [
+        "professional"
+      ],
+      "variants": [
+        {
+          "id": "pro-fridge-36-r",
+          "title": "Right Hinge",
+          "price": {
+            "amount": 6999.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "pro-fridge-36-l",
+          "title": "Left Hinge",
+          "price": {
+            "amount": 6999.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "pro-dishwasher",
+      "title": "Professional 24\" Dishwasher",
+      "description": "Six wash cycles, 42 dBA, third rack, auto-open dry, stainless steel interior, panel ready.",
+      "price": {
+        "amount": 1899.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 2099.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Professional dishwasher"
+        }
+      ],
+      "tags": [
+        "professional",
+        "dishwasher",
+        "panel-ready"
+      ],
+      "collectionHandles": [
+        "professional"
+      ],
+      "variants": [
+        {
+          "id": "pro-dw-panel",
+          "title": "Panel Ready",
+          "price": {
+            "amount": 1899.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "pro-dw-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 1799.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "pro-coffee",
+      "title": "Professional Built-In Coffee System",
+      "description": "Bean-to-cup, 20+ drink options, dual bean hoppers, auto milk frother, plumbed water connection.",
+      "price": {
+        "amount": 3499.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 3999.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800",
+          "alt": "Professional coffee system"
+        }
+      ],
+      "tags": [
+        "professional",
+        "coffee",
+        "built-in"
+      ],
+      "collectionHandles": [
+        "professional",
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "pro-coffee-plumbed",
+          "title": "Plumbed",
+          "price": {
+            "amount": 3499.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "pro-coffee-tank",
+          "title": "Water Tank",
+          "price": {
+            "amount": 3299.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "pro-microwave-drawer",
+      "title": "Professional 24\" Microwave Drawer",
+      "description": "1.2 cu. ft., 950W, sensor cook, auto touch open/close, 11 power levels, keep warm.",
+      "price": {
+        "amount": 1499.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 1699.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Professional microwave drawer"
+        }
+      ],
+      "tags": [
+        "professional",
+        "microwave",
+        "drawer"
+      ],
+      "collectionHandles": [
+        "professional"
+      ],
+      "variants": [
+        {
+          "id": "pro-mwd-24",
+          "title": "24\" Drawer",
+          "price": {
+            "amount": 1499.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "pro-wine-24",
+      "title": "Professional 24\" Wine Column",
+      "description": "152 bottles, dual zone, UV-resistant glass, vibration dampening, carbon filtration, WiFi monitoring.",
+      "price": {
+        "amount": 4499.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 4999.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800",
+          "alt": "Professional wine column"
+        }
+      ],
+      "tags": [
+        "professional",
+        "wine",
+        "smart"
+      ],
+      "collectionHandles": [
+        "professional",
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "pro-wine-24",
+          "title": "24\" Column",
+          "price": {
+            "amount": 4499.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "compact-range-24",
+      "title": "Compact 24\" Gas Range",
+      "description": "Four sealed burners, 18,000 BTU max, convection oven with 2.8 cu. ft., sleek design.",
+      "price": {
+        "amount": 1899.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 2199.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800",
+          "alt": "Compact gas range"
+        }
+      ],
+      "tags": [
+        "compact",
+        "gas",
+        "range"
+      ],
+      "collectionHandles": [
+        "compact"
+      ],
+      "variants": [
+        {
+          "id": "comp-range-24-ng",
+          "title": "Natural Gas",
+          "price": {
+            "amount": 1899.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "comp-range-24-lp",
+          "title": "Liquid Propane",
+          "price": {
+            "amount": 1899.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "compact-fridge-24",
+      "title": "Compact 24\" Counter-Depth Refrigerator",
+      "description": "11.5 cu. ft., counter-depth design, adjustable shelves, humidity-controlled crisper, Energy Star.",
+      "price": {
+        "amount": 1599.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 1799.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1571175443880-49e1d143d5ca?w=800",
+          "alt": "Compact refrigerator"
+        }
+      ],
+      "tags": [
+        "compact",
+        "refrigerator",
+        "counter-depth"
+      ],
+      "collectionHandles": [
+        "compact"
+      ],
+      "variants": [
+        {
+          "id": "comp-fridge-24-r",
+          "title": "Right Hinge",
+          "price": {
+            "amount": 1599.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "comp-fridge-24-l",
+          "title": "Left Hinge",
+          "price": {
+            "amount": 1599.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "compact-dishwasher-18",
+      "title": "Compact 18\" Dishwasher",
+      "description": "Eight place settings, six cycles, 46 dBA, delay start, sanitize option, stainless interior.",
+      "price": {
+        "amount": 899.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 999.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Compact dishwasher"
+        }
+      ],
+      "tags": [
+        "compact",
+        "dishwasher",
+        "18-inch"
+      ],
+      "collectionHandles": [
+        "compact"
+      ],
+      "variants": [
+        {
+          "id": "comp-dw-18-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 899.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "comp-dw-18-white",
+          "title": "White",
+          "price": {
+            "amount": 849.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "comp-dw-18-black",
+          "title": "Black",
+          "price": {
+            "amount": 849.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "compact-washer-dryer",
+      "title": "Compact 24\" Washer-Dryer Combo",
+      "description": "2.3 cu. ft. washer, 4.1 cu. ft. dryer, ventless heat pump, 15 cycles, WiFi enabled, auto-dosing.",
+      "price": {
+        "amount": 2199.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 2499.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=800",
+          "alt": "Compact washer-dryer combo"
+        }
+      ],
+      "tags": [
+        "compact",
+        "laundry",
+        "smart"
+      ],
+      "collectionHandles": [
+        "compact",
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "comp-wd-24",
+          "title": "White",
+          "price": {
+            "amount": 2199.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "compact-microwave",
+      "title": "Compact 1.1 cu. ft. Countertop Microwave",
+      "description": "1000W, sensor cook, inverter technology, 10 power levels, child lock, compact footprint.",
+      "price": {
+        "amount": 249.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 299.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Compact microwave"
+        }
+      ],
+      "tags": [
+        "compact",
+        "microwave",
+        "countertop"
+      ],
+      "collectionHandles": [
+        "compact"
+      ],
+      "variants": [
+        {
+          "id": "comp-mw-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 249.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "comp-mw-black",
+          "title": "Black",
+          "price": {
+            "amount": 229.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "compact-induction-24",
+      "title": "Compact 24\" Induction Cooktop",
+      "description": "Four zones, power boost, bridge function, touch controls, residual heat indicator, auto pan detection.",
+      "price": {
+        "amount": 1599.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 1799.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Compact induction cooktop"
+        }
+      ],
+      "tags": [
+        "compact",
+        "induction",
+        "cooktop"
+      ],
+      "collectionHandles": [
+        "compact"
+      ],
+      "variants": [
+        {
+          "id": "comp-ind-24",
+          "title": "24\" Frameless",
+          "price": {
+            "amount": 1599.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "compact-vent-24",
+      "title": "Compact 24\" Under-Cabinet Hood",
+      "description": "400 CFM, 3-speed, LED lighting, dishwasher-safe filters, convertible venting, quiet operation.",
+      "price": {
+        "amount": 399.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 449.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Compact under-cabinet hood"
+        }
+      ],
+      "tags": [
+        "compact",
+        "ventilation",
+        "under-cabinet"
+      ],
+      "collectionHandles": [
+        "compact"
+      ],
+      "variants": [
+        {
+          "id": "comp-vent-24-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 399.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "comp-vent-24-white",
+          "title": "White",
+          "price": {
+            "amount": 349.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "comp-vent-24-black",
+          "title": "Black",
+          "price": {
+            "amount": 349.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "smart-fridge-36",
+      "title": "Smart 36\" French Door Refrigerator",
+      "description": "27.8 cu. ft., Family Hub+ touchscreen, AI inventory, internal cameras, WiFi, voice control, auto-fill pitcher.",
+      "price": {
+        "amount": 4299.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 4799.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1571175443880-49e1d143d5ca?w=800",
+          "alt": "Smart French door refrigerator"
+        }
+      ],
+      "tags": [
+        "smart",
+        "refrigerator",
+        "french-door",
+        "wifi"
+      ],
+      "collectionHandles": [
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "smart-fridge-36-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 4299.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "smart-fridge-36-black",
+          "title": "Black Stainless",
+          "price": {
+            "amount": 4499.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "smart-range-30",
+      "title": "Smart 30\" Slide-In Gas Range",
+      "description": "Five burners, 18,000 BTU power burner, air fry, convection, WiFi monitoring, voice preheat, no-preheat air fry.",
+      "price": {
+        "amount": 2499.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 2799.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Smart slide-in gas range"
+        }
+      ],
+      "tags": [
+        "smart",
+        "gas",
+        "range",
+        "air-fry",
+        "wifi"
+      ],
+      "collectionHandles": [
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "smart-range-30-ng",
+          "title": "Natural Gas",
+          "price": {
+            "amount": 2499.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "smart-range-30-lp",
+          "title": "Liquid Propane",
+          "price": {
+            "amount": 2499.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "smart-dishwasher",
+      "title": "Smart 24\" Dishwasher with Auto-Dose",
+      "description": "Third rack, auto-dosing detergent, 39 dBA, WiFi, leak detection, auto-open door dry, half-load option.",
+      "price": {
+        "amount": 1299.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 1499.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Smart dishwasher"
+        }
+      ],
+      "tags": [
+        "smart",
+        "dishwasher",
+        "auto-dose",
+        "wifi"
+      ],
+      "collectionHandles": [
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "smart-dw-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 1299.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "smart-dw-black",
+          "title": "Black Stainless",
+          "price": {
+            "amount": 1399.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "smart-oven-double",
+      "title": "Smart 30\" Double Wall Oven",
+      "description": "Two 5.0 cu. ft. ovens, true convection, air fry, steam clean, WiFi, camera, scan-to-cook, voice control.",
+      "price": {
+        "amount": 3799.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 4299.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Smart double wall oven"
+        }
+      ],
+      "tags": [
+        "smart",
+        "oven",
+        "double",
+        "wifi",
+        "air-fry"
+      ],
+      "collectionHandles": [
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "smart-oven-30-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 3799.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "smart-oven-30-black",
+          "title": "Black Stainless",
+          "price": {
+            "amount": 3999.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "smart-microwave-drawer",
+      "title": "Smart 24\" Microwave Drawer",
+      "description": "1.2 cu. ft., 1000W, sensor cook, inverter, WiFi, voice control, scan-to-cook, auto-open/close.",
+      "price": {
+        "amount": 1399.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 1599.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Smart microwave drawer"
+        }
+      ],
+      "tags": [
+        "smart",
+        "microwave",
+        "drawer",
+        "wifi"
+      ],
+      "collectionHandles": [
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "smart-mwd-24",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 1399.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "smart-cooktop-36",
+      "title": "Smart 36\" Induction Cooktop",
+      "description": "Five zones, power boost, bridge, WiFi, guided cooking, auto pan detection, sync with hood, timer.",
+      "price": {
+        "amount": 2499.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 2799.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Smart induction cooktop"
+        }
+      ],
+      "tags": [
+        "smart",
+        "induction",
+        "cooktop",
+        "wifi",
+        "guided-cooking"
+      ],
+      "collectionHandles": [
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "smart-ict-36",
+          "title": "36\" Frameless",
+          "price": {
+            "amount": 2499.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "smart-vent-36",
+      "title": "Smart 36\" Wall Hood with Auto-Sense",
+      "description": "600 CFM, auto-sense heat/steam, WiFi, voice control, perimeter capture, LED, sync with cooktop.",
+      "price": {
+        "amount": 1299.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 1499.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1584990347449-192c7d8b3773?w=800",
+          "alt": "Smart wall hood"
+        }
+      ],
+      "tags": [
+        "smart",
+        "ventilation",
+        "hood",
+        "wifi",
+        "auto-sense"
+      ],
+      "collectionHandles": [
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "smart-vent-36-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 1299.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    },
+    {
+      "handle": "smart-wine-18",
+      "title": "Smart 18\" Wine & Beverage Center",
+      "description": "45 bottles + 60 cans, dual zone, WiFi temp control, UV glass, vibration dampening, app notifications.",
+      "price": {
+        "amount": 2199.99,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 2499.99,
+        "currency": "USD"
+      },
+      "images": [
+        {
+          "src": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800",
+          "alt": "Smart wine center"
+        }
+      ],
+      "tags": [
+        "smart",
+        "wine",
+        "beverage",
+        "wifi"
+      ],
+      "collectionHandles": [
+        "smart"
+      ],
+      "variants": [
+        {
+          "id": "smart-wine-18-ss",
+          "title": "Stainless Steel",
+          "price": {
+            "amount": 2199.99,
+            "currency": "USD"
+          },
+          "available": true
+        },
+        {
+          "id": "smart-wine-18-panel",
+          "title": "Panel Ready",
+          "price": {
+            "amount": 2099.99,
+            "currency": "USD"
+          },
+          "available": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kitchenhub-store",
+  "compatibility_date": "2026-10-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "migrations_dir": "./migrations",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "kitchenhub-db",
+      "database_id": "9d0f63fb-1446-4908-8319-d39d2fd49d2b"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "16a122d1288542ee89cf31967090098f",
+      "preview_id": "16a122d1288542ee89cf31967090098f"
+    },
+    {
+      "binding": "CART_KV",
+      "id": "531bfdbbb825494a87784e120d557be3",
+      "preview_id": "531bfdbbb825494a87784e120d557be3"
+    },
+    {
+      "binding": "SESSION_KV",
+      "id": "813dbee0f0b949b7a5a2fa0e90fe49b1",
+      "preview_id": "813dbee0f0b949b7a5a2fa0e90fe49b1"
+    }
+  ],
+  "vars": {
+    "NODE_ENV": "production",
+    "COMMERCE_PROVIDER": "d1",
+    "STRIPE_SECRET_KEY": "",
+    "STRIPE_WEBHOOK_SECRET": "",
+    "PUBLIC_SITE_URL": "https://kitchenhub.example.com"
+  }
+}

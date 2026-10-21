@@ -1,0 +1,78 @@
+---
+// Email Verification page
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Verify Email - KitchenHub" description="Verify your email address">
+  <section class="mx-auto max-w-md px-5 py-10 sm:py-16">
+    <div class="rounded-xl border border-line bg-tile/40 p-5 sm:p-8 text-center">
+      <div id="verifying" class="space-y-4">
+        <svg class="mx-auto h-12 w-12 text-pine animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+        <h1 class="font-display text-2xl font-bold">Verifying your email...</h1>
+        <p class="text-muted">Please wait while we verify your email address.</p>
+      </div>
+
+      <div id="success" class="hidden space-y-4">
+        <svg class="mx-auto h-12 w-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <h1 class="font-display text-2xl font-bold">Email Verified!</h1>
+        <p class="text-muted">Your email has been verified successfully. You can now log in to your account.</p>
+        <a href="/account" class="mt-4 inline-block rounded-md bg-pine px-4 py-2.5 text-sm font-semibold text-white hover:bg-pine-deep">Go to Account</a>
+      </div>
+
+      <div id="error" class="hidden space-y-4">
+        <svg class="mx-auto h-12 w-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <h1 class="font-display text-2xl font-bold">Verification Failed</h1>
+        <p id="error-message" class="text-muted"></p>
+        <div class="flex flex-col gap-2 mt-4">
+          <a href="/account" class="rounded-md border border-line bg-paper px-4 py-2.5 text-sm font-semibold text-ink hover:bg-tile transition-colors">Back to Account</a>
+          <a href="/account?resend=true" class="rounded-md bg-pine px-4 py-2.5 text-sm font-semibold text-white hover:bg-pine-deep">Resend Verification Email</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    async function verifyEmail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      if (!token) {
+        showError('Invalid verification link. Please request a new verification email.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/auth/verify-email?token=${encodeURIComponent(token)}`);
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          showSuccess();
+        } else {
+          showError(data.error || 'Verification failed. Please try again.');
+        }
+      } catch {
+        showError('Network error. Please try again.');
+      }
+    }
+
+    function showSuccess() {
+      document.getElementById('verifying')!.classList.add('hidden');
+      document.getElementById('success')!.classList.remove('hidden');
+    }
+
+    function showError(message: string) {
+      document.getElementById('verifying')!.classList.add('hidden');
+      document.getElementById('error')!.classList.remove('hidden');
+      document.getElementById('error-message')!.textContent = message;
+    }
+
+    verifyEmail();
+  </script>
+</Layout>

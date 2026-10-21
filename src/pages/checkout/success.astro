@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const order = Astro.url.searchParams.get('order');
+const orderId = order || 'KH-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+---
+
+<Layout title='Order Confirmed — KitchenHub' description='Your order has been placed successfully.'>
+  <main class='mx-auto max-w-3xl px-5 py-12 sm:py-16'>
+    <div class='text-center space-y-8'>
+      {/* Success Icon */}
+      <div class='inline-flex items-center justify-center w-20 h-20 rounded-full bg-pine/10'>
+        <svg class='w-10 h-10 text-pine' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden='true'>
+          <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 13l4 4L19 7' />
+        </svg>
+      </div>
+
+      <div>
+        <h1 class='font-display text-[clamp(32px,5vw,48px)] font-extrabold tracking-tight text-ink'>
+          Order Confirmed!
+        </h1>
+        <p class='mt-3 text-lg text-muted'>
+          Thank you for your order. We've sent a confirmation email with your order details.
+        </p>
+      </div>
+
+      {/* Order Reference */}
+      <div class='rounded-2xl border border-line bg-paper/90 p-6'>
+        <p class='text-sm text-muted'>Order Reference</p>
+        <p class='mt-1 font-mono text-2xl font-semibold text-ink break-all'>{orderId}</p>
+        <p class='mt-3 text-sm text-muted'>
+          Save this reference for future inquiries.
+        </p>
+      </div>
+
+      {/* Next Steps */}
+      <div class='rounded-2xl border border-line bg-paper/90 p-6 text-left'>
+        <h2 class='font-heading text-lg font-semibold text-ink'>What happens next?</h2>
+        <ol class='mt-4 space-y-3 text-sm text-muted'>
+          <li class='flex items-start gap-3'>
+            <span class='flex-shrink-0 w-5 h-5 rounded-full border border-pine flex items-center justify-center text-pine text-xs font-bold'>1</span>
+            <span>We'll process your order within 1-2 business days.</span>
+          </li>
+          <li class='flex items-start gap-3'>
+            <span class='flex-shrink-0 w-5 h-5 rounded-full border border-pine flex items-center justify-center text-pine text-xs font-bold'>2</span>
+            <span>You'll receive a shipping confirmation with tracking details.</span>
+          </li>
+          <li class='flex items-start gap-3'>
+            <span class='flex-shrink-0 w-5 h-5 rounded-full border border-pine flex items-center justify-center text-pine text-xs font-bold'>3</span>
+            <span>Your premium appliances will be delivered and installed.</span>
+          </li>
+        </ol>
+      </div>
+
+      {/* Actions */}
+      <div class='flex flex-col sm:flex-row items-center justify-center gap-4'>
+        <a href='/account/orders' class='w-full sm:w-auto rounded-xl bg-ink px-6 py-3.5 text-center text-sm font-semibold text-paper hover:bg-ink/90 transition focus:outline-none focus:ring-2 focus:ring-ink/50 focus:ring-offset-2'>
+          View Order History
+        </a>
+        <a href='/collections' class='w-full sm:w-auto rounded-xl border border-line bg-paper px-6 py-3.5 text-center text-sm font-semibold text-ink hover:border-ink/50 transition focus:outline-none focus:ring-2 focus:ring-ink/50 focus:ring-offset-2'>
+          Continue Shopping
+        </a>
+      </div>
+
+      {/* Support */}
+      <p class='text-sm text-muted'>
+        Questions? <a href='/contacts' class='text-ink underline underline-offset-2 hover:text-pine'>Contact our support team</a> — we're here to help.
+      </p>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,28 @@
+---
+// Simple test page without Layout
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Bindings</title>
+</head>
+<body>
+  <h1>Test Bindings</h1>
+  <p>Static content works!</p>
+  <pre id="output"></pre>
+  <script>
+    // Try to fetch from API route
+    fetch('/api/test')
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        document.getElementById('output').textContent = 'Error: ' + err.message;
+      });
+  </script>
+</body>
+</html>

@@ -1,6 +1,5 @@
----
-// Auth page: sign in / create account switcher. Demo-only submit —
-// wire it to Shopify Customer Accounts or your own backend.
+﻿---
+// Auth page: sign in / create account — wired to backend API
 import Layout from '../layouts/Layout.astro';
 import { ACCOUNT as T } from '../constants/pages';
 ---
@@ -8,89 +7,127 @@ import { ACCOUNT as T } from '../constants/pages';
 <Layout title={T.meta.title} description={T.meta.description}>
   <section class="mx-auto max-w-md px-5 py-10 sm:py-16">
     <div class="rounded-xl border border-line bg-tile/40 p-5 sm:p-8">
-      <div class="grid grid-cols-2 gap-1 rounded-md bg-tile p-1 text-[14px] font-medium" role="tablist" aria-label="Auth mode">
-        <button
-          type="button"
-          data-auth-tab="login"
-          role="tab"
-          aria-selected="true"
-          class="rounded-[5px] py-2.5 text-muted transition aria-selected:bg-paper aria-selected:font-semibold aria-selected:text-ink aria-selected:shadow-sm"
-        >{T.tabs.login}</button>
-        <button
-          type="button"
-          data-auth-tab="register"
-          role="tab"
-          aria-selected="false"
-          class="rounded-[5px] py-2.5 text-muted transition aria-selected:bg-paper aria-selected:font-semibold aria-selected:text-ink aria-selected:shadow-sm"
-        >{T.tabs.register}</button>
+      <!-- Authenticated State -->
+      <div id="authenticated-view" class="hidden space-y-4">
+        <div>
+          <h1 class="font-display text-2xl font-bold">Welcome back, <span id="user-name" class="text-pine"></span></h1>
+          <p class="mt-1 text-[14px] text-muted">Manage your account, orders, and preferences.</p>
+        </div>
+        <div class="space-y-3 pt-4 border-t border-line">
+          <a href="/account/orders" class="block rounded-md border border-line bg-paper px-4 py-3 text-ink hover:bg-tile transition-colors">
+            <span class="font-medium">Order History</span>
+            <span class="text-sm text-muted ml-2">View past orders</span>
+          </a>
+          <a href="/account/profile" class="block rounded-md border border-line bg-paper px-4 py-3 text-ink hover:bg-tile transition-colors">
+            <span class="font-medium">Profile Settings</span>
+            <span class="text-sm text-muted ml-2">Update your information</span>
+          </a>
+          <a href="/account/addresses" class="block rounded-md border border-line bg-paper px-4 py-3 text-ink hover:bg-tile transition-colors">
+            <span class="font-medium">Saved Addresses</span>
+            <span class="text-sm text-muted ml-2">Manage shipping addresses</span>
+          </a>
+          <button id="logout-btn" class="w-full rounded-md border border-red-300 bg-red-50 px-4 py-3 text-red-600 font-medium hover:bg-red-100 transition-colors">
+            Sign Out
+          </button>
+        </div>
       </div>
 
-      <h1 data-auth-title class="mt-7 font-display text-2xl font-bold">{T.login.title}</h1>
-      <p data-auth-sub class="mt-1.5 text-[14px] text-muted">{T.login.sub}</p>
-
-      <form data-auth-form class="mt-6 space-y-4" novalidate data-copy={JSON.stringify({ login: T.login, register: T.register })}>
-        <label data-field="name" class="hidden">
-          <span class="text-[13px] font-medium">{T.fields.nameLabel}</span>
-          <input
-            type="text"
-            name="name"
-            autocomplete="name"
-            placeholder={T.fields.namePlaceholder}
-            class="mt-1.5 w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine"
-          />
-        </label>
-        <label class="block">
-          <span class="text-[13px] font-medium">{T.fields.emailLabel}</span>
-          <input
-            type="email"
-            name="email"
-            required
-            autocomplete="email"
-            placeholder={T.fields.emailPlaceholder}
-            class="mt-1.5 w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine"
-          />
-        </label>
-        <label class="block">
-          <span class="text-[13px] font-medium">{T.fields.passwordLabel}</span>
-          <input
-            type="password"
-            name="password"
-            required
-            minlength="8"
-            autocomplete="current-password"
-            placeholder={T.fields.passwordPlaceholder}
-            class="mt-1.5 w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine"
-          />
-        </label>
-        <div class="flex items-center justify-between text-[13px]">
-          <label class="flex items-center gap-2 text-muted">
-            <input type="checkbox" name="remember" class="h-4 w-4 accent-pine" />
-            {T.fields.remember}
-          </label>
-          <a data-field="forgot" href="#" class="text-muted underline underline-offset-2 hover:text-ink">{T.fields.forgot}</a>
+      <!-- Unauthenticated State (Login/Register Forms) -->
+      <div id="unauthenticated-view">
+        <div class="grid grid-cols-2 gap-1 rounded-md bg-tile p-1 text-[14px] font-medium" role="tablist" aria-label="Auth mode">
+          <button
+            type="button"
+            data-auth-tab="login"
+            role="tab"
+            aria-selected="true"
+            class="rounded-[5px] py-2.5 text-muted transition aria-selected:bg-paper aria-selected:font-semibold aria-selected:text-ink aria-selected:shadow-sm"
+          >{T.tabs.login}</button>
+          <button
+            type="button"
+            data-auth-tab="register"
+            role="tab"
+            aria-selected="false"
+            class="rounded-[5px] py-2.5 text-muted transition aria-selected:bg-paper aria-selected:font-semibold aria-selected:text-ink aria-selected:shadow-sm"
+          >{T.tabs.register}</button>
         </div>
-        <button type="submit" data-auth-submit class="w-full rounded-md bg-pine py-3.5 text-[15px] font-semibold text-white hover:bg-pine-deep">
-          {T.login.submit}
-        </button>
-        <p data-auth-note class="hidden rounded-md bg-pine-soft px-4 py-3 text-center text-[13px] leading-relaxed"></p>
-      </form>
+
+        <h1 data-auth-title class="mt-7 font-display text-2xl font-bold">{T.login.title}</h1>
+        <p data-auth-sub class="mt-1.5 text-[14px] text-muted">{T.login.sub}</p>
+
+        <form data-auth-form class="mt-6 space-y-4" novalidate data-copy={JSON.stringify({ login: T.login, register: T.register })}>
+          <label data-field="name" class="hidden">
+            <span class="text-[13px] font-medium">{T.fields.nameLabel}</span>
+            <input
+              type="text"
+              name="name"
+              autocomplete="name"
+              placeholder={T.fields.namePlaceholder}
+              class="mt-1.5 w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine"
+            />
+          </label>
+          <label class="block">
+            <span class="text-[13px] font-medium">{T.fields.emailLabel}</span>
+            <input
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder={T.fields.emailPlaceholder}
+              class="mt-1.5 w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine"
+            />
+          </label>
+          <label class="block">
+            <span class="text-[13px] font-medium">{T.fields.passwordLabel}</span>
+            <input
+              type="password"
+              name="password"
+              required
+              minlength="8"
+              autocomplete="current-password"
+              placeholder={T.fields.passwordPlaceholder}
+              class="mt-1.5 w-full rounded-md border border-line bg-paper px-3.5 py-3 text-[15px] outline-none placeholder:text-muted focus:border-pine"
+            />
+          </label>
+          <div class="flex items-center justify-between text-[13px]">
+            <label class="flex items-center gap-2 text-muted">
+              <input type="checkbox" name="remember" class="h-4 w-4 accent-pine" />
+              {T.fields.remember}
+            </label>
+            <a data-field="forgot" href="#" class="text-muted underline underline-offset-2 hover:text-ink">{T.fields.forgot}</a>
+          </div>
+          <button type="submit" data-auth-submit class="w-full rounded-md bg-pine py-3.5 text-[15px] font-semibold text-white hover:bg-pine-deep disabled:opacity-50 disabled:cursor-not-allowed">
+            <span data-btn-text>{T.login.submit}</span>
+            <span data-btn-loading class="hidden">Processing...</span>
+          </button>
+          <p data-auth-note class="hidden rounded-md px-4 py-3 text-center text-[13px] leading-relaxed"></p>
+        </form>
+      </div>
     </div>
     <p class="mt-5 text-center text-[13px] text-muted">{T.pageNote}</p>
   </section>
 
   <script>
+    // DOM Elements
+    const authenticatedView = document.getElementById('authenticated-view')!;
+    const unauthenticatedView = document.getElementById('unauthenticated-view')!;
+    const userNameEl = document.getElementById('user-name')!;
+    const logoutBtn = document.getElementById('logout-btn')!;
+
     const tabs = document.querySelectorAll<HTMLElement>('[data-auth-tab]');
     const title = document.querySelector('[data-auth-title]')!;
     const sub = document.querySelector('[data-auth-sub]')!;
     const nameField = document.querySelector<HTMLElement>('[data-field="name"]')!;
     const forgot = document.querySelector<HTMLElement>('[data-field="forgot"]')!;
-    const submit = document.querySelector('[data-auth-submit]')!;
+    const submitBtn = document.querySelector<HTMLButtonElement>('[data-auth-submit]')!;
+    const btnText = document.querySelector('[data-btn-text]')!;
+    const btnLoading = document.querySelector('[data-btn-loading]')!;
     const note = document.querySelector<HTMLElement>('[data-auth-note]')!;
     const form = document.querySelector<HTMLFormElement>('[data-auth-form]')!;
     type Copy = { title: string; sub: string; submit: string; demoNote: string };
     const copy: { login: Copy; register: Copy } = JSON.parse(form.dataset.copy!);
     let mode: 'login' | 'register' = 'login';
 
+    // Tab switching
     tabs.forEach((t) =>
       t.addEventListener('click', () => {
         mode = t.dataset.authTab as typeof mode;
@@ -101,16 +138,115 @@ import { ACCOUNT as T } from '../constants/pages';
         forgot.classList.toggle('hidden', reg);
         title.textContent = copy[mode].title;
         sub.textContent = copy[mode].sub;
-        submit.textContent = copy[mode].submit;
+        btnText.textContent = copy[mode].submit;
         note.classList.add('hidden');
+        note.classList.remove('bg-pine-soft', 'bg-red-soft', 'bg-green-soft');
       }),
     );
 
-    form.addEventListener('submit', (e) => {
+    // Check auth state on page load
+    async function checkAuthState() {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        const data = await res.json();
+        if (data.user) {
+          showAuthenticatedView(data.user);
+        } else {
+          showUnauthenticatedView();
+        }
+      } catch {
+        showUnauthenticatedView();
+      }
+    }
+
+    function showAuthenticatedView(user: { id: number; email: string; name: string | null }) {
+      authenticatedView.classList.remove('hidden');
+      unauthenticatedView.classList.add('hidden');
+      userNameEl.textContent = user.name || user.email.split('@')[0];
+    }
+
+    function showUnauthenticatedView() {
+      authenticatedView.classList.add('hidden');
+      unauthenticatedView.classList.remove('hidden');
+    }
+
+    function showNote(message: string, type: 'success' | 'error' | 'info' = 'info') {
+      note.textContent = message;
+      note.classList.remove('hidden', 'bg-pine-soft', 'bg-red-soft', 'bg-green-soft');
+      if (type === 'success') note.classList.add('bg-green-soft', 'text-green-800');
+      else if (type === 'error') note.classList.add('bg-red-soft', 'text-red-800');
+      else note.classList.add('bg-pine-soft', 'text-pine-800');
+    }
+
+    function setLoading(isLoading: boolean) {
+      submitBtn.disabled = isLoading;
+      btnText.classList.toggle('hidden', isLoading);
+      btnLoading.classList.toggle('hidden', !isLoading);
+    }
+
+    // Form submission
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!form.reportValidity()) return;
-      note.textContent = copy[mode].demoNote;
-      note.classList.remove('hidden');
+
+      setLoading(true);
+      note.classList.add('hidden');
+
+      const formData = new FormData(form);
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+      const name = formData.get('name') as string;
+
+      const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
+      const body = mode === 'login' ? { email, password } : { email, password, name };
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(body),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          showNote(data.user ? `Welcome${mode === 'register' ? ' to KitchenHub' : ' back'}! Redirecting...` : 'Success!', 'success');
+          // Dispatch event for header to update
+          window.dispatchEvent(new CustomEvent('auth:login', { detail: { user: data.user } }));
+          setTimeout(() => {
+            const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/account';
+            window.location.href = redirectTo;
+          }, 1000);
+        } else {
+          showNote(data.error || 'Something went wrong. Please try again.', 'error');
+        }
+      } catch (err) {
+        console.error('Auth error:', err);
+        showNote('Network error. Please check your connection and try again.', 'error');
+      } finally {
+        setLoading(false);
+      }
     });
+
+    // Logout
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        showUnauthenticatedView();
+        form.reset();
+        showNote('You have been signed out.', 'info');
+        // Dispatch event for header to update
+        window.dispatchEvent(new CustomEvent('auth:logout'));
+      } catch {
+        showNote('Failed to sign out. Please try again.', 'error');
+      }
+    });
+
+    // Initialize
+    checkAuthState();
   </script>
 </Layout>

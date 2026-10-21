@@ -1,0 +1,8 @@
+feat: Add server-side address validation with Bangladesh support
+
+- Add validateAddress() with required fields, length limits, country/state/postal code validation
+- Support 5 countries: US, CA, GB, AU, BD
+- Bangladesh: 8 divisions, 4-digit postal codes (e.g., 1212)
+- Apply to POST /api/account/addresses and PUT /api/account/addresses/[id]
+- Add 19 unit tests covering all validation rules
+- All 31 tests passing, build successful

@@ -29,6 +29,21 @@ const related = collectionHandle
       .slice(0, 4)
   : [];
 
+// Build variant options grouped by type (e.g., "Fuel Type", "Color")
+const variantOptions: Record<string, Array<{ id: string; title: string; price: number; available: boolean }>> = {};
+product.variants?.forEach((v) => {
+  const parts = v.title.split(' / ');
+  parts.forEach((part, idx) => {
+    const key = idx === 0 ? 'Option 1' : `Option ${idx + 1}`;
+    if (!variantOptions[key]) variantOptions[key] = [];
+    const existing = variantOptions[key].find((o) => o.title === part);
+    if (!existing) {
+      variantOptions[key].push({ id: v.id, title: part, price: v.price.amount, available: v.available });
+    }
+  });
+});
+
+// Generate cart line for quick-add
 const cartLine = JSON.stringify({
   variantId: firstAvailable?.id ?? product.id,
   productHandle: product.handle,
@@ -39,9 +54,14 @@ const cartLine = JSON.stringify({
   quantity: 1,
 });
 const imagesJson = JSON.stringify(images);
+
+// Calculate savings percentage
+const savingsPercent = onSale && product.compareAtPrice
+  ? Math.round(((product.compareAtPrice.amount - product.price.amount) / product.compareAtPrice.amount) * 100)
+  : 0;
 ---
 
-<Layout title={`${product.title} — njX Shop`} description={product.description}>
+<Layout title={`${product.title} — KitchenHub`} description={product.description}>
   <nav class="mx-auto max-w-6xl px-5 pt-6 text-[13px] text-muted">
     <a href="/" class="hover:text-ink">{T.breadcrumbHome}</a>
     <span class="mx-1.5">/</span>
@@ -70,7 +90,9 @@ const imagesJson = JSON.stringify(images);
           />
         )}
         {onSale && (
-          <span class="absolute left-4 top-4 rounded-md bg-ink px-3 py-1 text-[13px] font-semibold text-paper">Sale</span>
+          <span class="absolute left-3 top-3 rounded-md bg-pine px-2.5 py-1 text-[12px] font-semibold text-paper">
+            SALE {savingsPercent}% OFF
+          </span>
         )}
         <span class="absolute bottom-3 right-3 rounded-md bg-paper/85 p-2 text-ink opacity-0 backdrop-blur transition group-hover:opacity-100">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
