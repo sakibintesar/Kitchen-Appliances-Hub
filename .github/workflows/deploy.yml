@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -7,44 +7,34 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
+  deployments: write
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    env:
-      # Pages build: Astro picks up `base` from DEPLOY_TARGET (see astro.config.mjs);
-      # fix-base-paths.mjs prefixes the remaining root-relative URLs with BASE_PATH.
-      DEPLOY_TARGET: pages
-      BASE_PATH: /Kitchen-Appliances-Hub
+    name: Deploy to Cloudflare Pages
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-      - run: npm ci --prefer-offline --no-audit --progress=false
-      - run: echo "DEPLOY_TARGET=$DEPLOY_TARGET BASE_PATH=$BASE_PATH"
-      - run: npm run build --if-present 2>&1 || (cat /tmp/astro-*.log 2>/dev/null || true; exit 1)
-      - run: node scripts/fix-base-paths.mjs
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true # auto-enables Pages — no manual Settings toggle needed
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # Pass Cloudflare bindings as build-time env (if needed for static generation)
+          NODE_ENV: production
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=kitchenhub-store --branch=main
