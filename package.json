@@ -7,7 +7,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "build:pages": "$env:DEPLOY_TARGET='pages'; astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "seed": "tsx scripts/seed.ts",
+    "seed:sql": "tsx scripts/seed.ts --sql",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [
     "astro",
@@ -20,14 +24,27 @@
   "license": "MIT",
   "author": "KitchenHub",
   "dependencies": {
+    "@astrojs/cloudflare": "^14.4.1",
     "@nanostores/persistent": "^0.10.0",
+    "@oslojs/encoding": "^1.1.0",
     "@studio-freight/lenis": "^1.0.42",
     "@tailwindcss/vite": "^4.0.0",
     "astro": "^7.3.3",
+    "bcryptjs": "^3.0.3",
+    "drizzle-orm": "^0.45.4",
     "nanostores": "^0.11.0",
+    "stripe": "^23.0.0",
     "tailwindcss": "^4.0.0"
   },
   "devDependencies": {
-    "typescript": "^7.0.2"
+    "@astrojs/db": "^0.21.3",
+    "@libsql/client": "^0.18.0",
+    "@types/node": "^26.6.5",
+    "@vitest/ui": "^5.0.5",
+    "jsdom": "^30.1.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.151.2"
   }
 }
