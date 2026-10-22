@@ -5,6 +5,7 @@ node_modules/
 .astro/
 dist/
 .build/
+.wrangler/
 
 # Environment files
 .env
