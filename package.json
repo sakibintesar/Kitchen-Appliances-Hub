@@ -5,6 +5,7 @@
   "description": "Premium kitchen appliances webstore — Astro + Tailwind v4 with KitchenHub data, mock images from web sources",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "rm -rf .wrangler",
     "build": "astro build",
     "build:pages": "$env:DEPLOY_TARGET='pages'; astro build",
     "preview": "astro preview",
