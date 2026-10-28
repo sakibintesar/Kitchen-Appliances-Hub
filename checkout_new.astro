@@ -1,0 +1,494 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { cartLines } from '../lib/cart';
+import type { CartLine } from '../lib/commerce/types';
+
+interface Props {
+  mock?: string;
+}
+
+const { mock = 'false' } = Astro.props;
+const isMock = mock === 'true';
+
+const checkoutSteps = [
+  { id: 'info', label: 'Contact Info', icon: 'M16 12a4 4 0 10-8 0 4 4 0 008 0z', step: 1 },
+  { id: 'shipping', label: 'Shipping', icon: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4', step: 2 },
+  { id: 'review', label: 'Review', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', step: 3 },
+];
+
+// Bangladesh-specific constants
+const BD_SHIPPING_THRESHOLD = 50000; // 500 BDT in paisa
+const BD_SHIPPING_COST = 1500; // 15 BDT in paisa
+const BD_TAX_RATE = 0.05; // 5% VAT for Bangladesh
+const COD_FEE = 500; // 5 BDT COD handling fee
+
+// Initial cart data for server-side rendering
+const initialCartLines = cartLines.get();
+
+function calcShippingSS(subtotal: number) {
+  if (subtotal >= BD_SHIPPING_THRESHOLD) return 0;
+  return BD_SHIPPING_COST;
+}
+
+function fmtBDT(n: number) {
+  return '৳' + (n / 100).toLocaleString('en-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+const initialSubtotal = initialCartLines.reduce((s, i) => s + (i.price?.amount || 0) * (i.quantity || 1), 0);
+const initialShipping = calcShippingSS(initialSubtotal);
+const initialTax = Math.round((initialSubtotal + initialShipping) * BD_TAX_RATE);
+const initialTotal = initialSubtotal + initialShipping + initialTax;
+---
+
+<Layout title='Checkout — KitchenHub' description='Complete your purchase securely.'>
+  <main class='mx-auto max-w-6xl px-5 py-8 sm:py-12' data-checkout-page>
+    <h1 class='font-display text-[clamp(28px,4vw,40px)] font-extrabold tracking-tight'>Checkout</h1>
+
+<div class='mt-8 lg:grid lg:grid-cols-12 lg:gap-8'>
+      <section class='lg:col-span-7 space-y-6' aria-labelledby='checkout-form-heading'>
+        <h2 id='checkout-form-heading' class='sr-only'>Checkout form</h2>
+
+        <form class='space-y-6' novalidate>
+          {/* Step 1: Contact Information */}
+          <div data-step-form='1' class='space-y-6'>
+            <div class='rounded-2xl border border-line bg-paper/90 p-5 sm:p-6'>
+              <h3 class='font-heading text-lg font-semibold text-ink'>Contact Information</h3>
+              <div class='mt-4 grid gap-4 sm:grid-cols-2'>
+                <div>
+                  <label for='email' class='block text-sm font-medium text-ink mb-1'>Email <span class='text-red-500'>*</span></label>
+                  <input type='email' id='email' name='email' required autoComplete='email'
+                    class='w-full rounded-md border border-line bg-paper px-4 py-2.5 text-ink placeholder:text-muted focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20'
+                    placeholder='you@example.com' />
+                </div>
+                <div>
+                  <label for='phone' class='block text-sm font-medium text-ink mb-1'>Phone <span class='text-red-500'>*</span></label>
+                  <input type='tel' id='phone' name='phone' required autoComplete='tel'
+                    class='w-full rounded-md border border-line bg-paper px-4 py-2.5 text-ink placeholder:text-muted focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20'
+                    placeholder='01XXX-XXXXXX' pattern='^(\+880|880|0)1[3-9]\d{8}$' />
+                  <p class='mt-1 text-xs text-muted'>Bangladesh mobile number (e.g., 01712345678)</p>
+                </div>
+              </div>
+              <p class='mt-4 text-sm text-muted'>We'll send order updates via email and WhatsApp.</p>
+            </div>
+          </div>
+          {/* Step 2: Shipping Address */}
+          <div data-step-form='2' class='hidden space-y-6'>
+            <div class='rounded-2xl border border-line bg-paper/90 p-5 sm:p-6'>
+              <h3 class='font-heading text-lg font-semibold text-ink'>Shipping Address</h3>
+              <div class='mt-4 space-y-4'>
+                <div class='grid gap-4 sm:grid-cols-2'>
+                  <div>
+                    <label for='firstName' class='block text-sm font-medium text-ink mb-1'>First Name <span class='text-red-500'>*</span></label>
+                    <input type='text' id='firstName' name='firstName' required autoComplete='given-name'
+                      class='w-full rounded-md border border-line bg-paper px-4 py-2.5 text-ink placeholder:text-muted focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20'
+                      placeholder='John' />
+                  </div>
+                  <div>
+                    <label for='lastName' class='block text-sm font-medium text-ink mb-1'>Last Name <span class='text-red-500'>*</span></label>
+                    <input type='text' id='lastName' name='lastName' required autoComplete='family-name'
+                      class='w-full rounded-md border border-line bg-paper px-4 py-2.5 text-ink placeholder:text-muted focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20'
+                      placeholder='Doe' />
+                  </div>
+                </div>
+                <div>
+                  <label for='address1' class='block text-sm font-medium text-ink mb-1'>Address <span class='text-red-500'>*</span></label>
+                  <input type='text' id='address1' name='address1' required autoComplete='street-address'
+                    class='w-full rounded-md border border-line bg-paper px-4 py-2.5 text-ink placeholder:text-muted focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20'
+                    placeholder='123 Main Street' />
+                </div>
+            </div>
+            <div class='rounded-2xl border border-line bg-paper/90 p-5 sm:p-6'>
+              <h3 class='font-heading text-lg font-semibold text-ink'>Shipping Method</h3>
+              <div class='mt-4 space-y-3' role='radiogroup' aria-label='Shipping options'>
+                <label class='flex items-center gap-3 rounded-xl border border-line bg-paper p-4 cursor-pointer hover:border-ink/50 transition'>
+                  <input type='radio' name='shippingMethod' value='standard' checked class='sr-only' />
+                  <span class='flex h-5 w-5 items-center justify-center rounded border-2 border-line bg-paper text-ink'>
+                    <svg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3'><circle cx='12' cy='12' r='5'/></svg>
+                  </span>
+                  <span class='flex-1'>
+                    <p class='font-medium text-ink'>Standard Shipping</p>
+                    <p class='text-sm text-muted'>5-7 business days</p>
+                  </span>
+                  <span class='font-medium text-ink' data-shipping-standard>.00</span>
+                </label>
+                <label class='flex items-center gap-3 rounded-xl border border-line bg-paper p-4 cursor-pointer hover:border-ink/50 transition'>
+                  <input type='radio' name='shippingMethod' value='express' class='sr-only' />
+                  <span class='flex h-5 w-5 items-center justify-center rounded border-2 border-line bg-paper text-ink'>
+                    <svg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3'><circle cx='12' cy='12' r='5'/></svg>
+                  </span>
+                  <span class='flex-1'>
+                    <p class='font-medium text-ink'>Express Shipping</p>
+                    <p class='text-sm text-muted'>2-3 business days</p>
+                  </span>
+                  <span class='font-medium text-ink' data-shipping-express>.00</span>
+                </label>
+                <label class='flex items-center gap-3 rounded-xl border border-line bg-paper p-4 cursor-pointer hover:border-ink/50 transition'>
+                  <input type='radio' name='shippingMethod' value='overnight' class='sr-only' />
+                  <span class='flex h-5 w-5 items-center justify-center rounded border-2 border-line bg-paper text-ink'>
+                    <svg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3'><circle cx='12' cy='12' r='5'/></svg>
+                  </span>
+                  <span class='flex-1'>
+                    <p class='font-medium text-ink'>Overnight Shipping</p>
+                    <p class='text-sm text-muted'>Next business day</p>
+                  </span>
+                  <span class='font-medium text-ink' data-shipping-overnight>.00</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          </div>
+          {/* Step 3: Review */}
+          <div data-step-form='3' class='hidden space-y-6'>
+            <div class='rounded-2xl border border-line bg-paper/90 p-5 sm:p-6'>
+              <h3 class='font-heading text-lg font-semibold text-ink'>Review Your Order</h3>
+              <p class='mt-2 text-sm text-muted'>Please review your order details before proceeding to payment.</p>
+              <div class='mt-4 space-y-3' id='review-items'>
+                <!-- Items rendered by JS -->
+              </div>
+              <div class='mt-4 rounded-xl border border-line bg-paper/50 p-4' id='review-totals'>
+                <!-- Totals rendered by JS -->
+              </div>
+              <div class='mt-4 rounded-xl border border-line bg-paper/50 p-4'>
+                <h4 class='font-heading text-base font-semibold text-ink'>Contact</h4>
+                <p class='mt-1 text-sm text-ink' id='review-email'></p>
+                <p class='text-sm text-muted' id='review-phone'></p>
+              </div>
+              <div class='mt-4 rounded-xl border border-line bg-paper/50 p-4'>
+                <h4 class='font-heading text-base font-semibold text-ink'>Shipping Address</h4>
+                <p class='mt-1 text-sm text-ink' id='review-shipping'></p>
+              </div>
+              <div class='mt-4 rounded-xl border border-line bg-paper/50 p-4'>
+                <h4 class='font-heading text-base font-semibold text-ink'>Shipping Method</h4>
+                <p class='mt-1 text-sm text-ink' id='review-shipping-method'></p>
+              </div>
+              <p class='mt-4 text-sm text-muted'>You will be redirected to Stripe to complete your payment securely.</p>
+            </div>
+          </div>        <div class='flex items-center justify-between pt-4 border-t border-line'>
+            <button type='button' data-prev-step class='hidden rounded-md border border-line bg-paper px-5 py-2.5 text-sm font-medium text-ink hover:border-ink hover:text-ink transition'>Back</button>
+            <div class='flex items-center gap-3'>
+              <button type='button' data-next-step class='rounded-md bg-ink px-6 py-2.5 text-sm font-semibold text-paper hover:bg-ink/90 transition'>Continue<svg class='ml-2 h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' stroke-width='2'><path d='M13.5 4.5L21 12l-7.5 7.5'/></svg></button>
+              <button type='submit' data-place-order class='hidden rounded-md bg-pine px-6 py-2.5 text-sm font-semibold text-pine-soft hover:bg-pine/90 transition'>Place Order</button>
+            </div>
+          </div>
+        </form>
+      </section>
+      <aside class='mt-8 lg:mt-0 lg:col-span-5 lg:self-start lg:sticky lg:top-24' aria-labelledby='summary-heading'>
+        <div class='rounded-2xl border border-line bg-paper/90 p-5 sm:p-6'>
+          <h2 id='summary-heading' class='font-heading text-lg font-semibold text-ink'>Order Summary</h2>
+          <div class='mt-4 max-h-64 overflow-y-auto' data-summary-items></div>
+          <div class='mt-4 space-y-3 border-t border-line pt-4'>
+            <div class='flex justify-between text-sm'><span class='text-muted'>Subtotal</span><span class='font-medium text-ink' data-summary-subtotal>{fmtSS(initialSubtotal)}</span></div>
+            <div class='flex justify-between text-sm'><span class='text-muted'>Shipping</span><span class='font-medium text-ink' data-summary-shipping>{initialShipping === 0 ? 'FREE' : fmtSS(initialShipping)}</span></div>
+            <div class='flex justify-between text-sm'><span class='text-muted'>Estimated Tax (8%)</span><span class='font-medium text-ink' data-summary-tax>{fmtSS(initialTax)}</span></div>
+            <div class='flex justify-between text-sm text-pine'><span>Discount</span><span data-summary-discount>-.00</span></div>
+            <div class='flex justify-between pt-2 border-t border-line'><span class='font-semibold text-ink'>Total</span><span class='font-semibold text-ink text-lg' data-summary-total>{fmtSS(initialTotal)}</span></div>
+          </div>
+          <p class='mt-4 text-xs text-muted text-center'>{isMock ? 'Demo mode: No real payment will be processed.' : 'Secure checkout powered by SSLCOMMERZ'}</p>
+          <div class='mt-6 grid grid-cols-3 gap-4 text-center'>
+            <div class='rounded-xl border border-line bg-paper/50 p-4'><svg class='mx-auto h-8 w-8 text-pine' fill='none' stroke='currentColor' viewBox='0 0 24 24' stroke-width='1.5'><path d='M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'/></svg><p class='mt-2 text-xs font-medium text-ink'>Secure Payment</p><p class='text-[10px] text-muted'>SSL Encrypted</p></div>
+            <div class='rounded-xl border border-line bg-paper/50 p-4'><svg class='mx-auto h-8 w-8 text-pine' fill='none' stroke='currentColor' viewBox='0 0 24 24' stroke-width='1.5'><path d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'/></svg><p class='mt-2 text-xs font-medium text-ink'>30-Day Returns</p><p class='text-[10px] text-muted'>Easy Returns</p></div>
+            <div class='rounded-xl border border-line bg-paper/50 p-4'><svg class='mx-auto h-8 w-8 text-pine' fill='none' stroke='currentColor' viewBox='0 0 24 24' stroke-width='1.5'><path d='M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'/></svg><p class='mt-2 text-xs font-medium text-ink'>Manufacturer Warranty</p><p class='text-[10px] text-muted'>1-5 Years</p></div>
+          </div>
+        </div>
+        </aside>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { cartLines, clearCart } from '../lib/cart';
+
+  document.addEventListener('astro:page-load', () => {
+    const SHIPPING_THRESHOLD = 50000;
+    const SHIPPING_COST = 1500;
+    const TAX_RATE = 0.08;
+
+    const steps = Array.from(document.querySelectorAll('[data-step-form]'));
+    const progressSteps = Array.from(document.querySelectorAll('[data-step]'));
+    const nextBtn = document.querySelector('[data-next-step]');
+    const prevBtn = document.querySelector('[data-prev-step]');
+    const placeOrderBtn = document.querySelector('[data-place-order]');
+    const form = document.querySelector('form');
+
+    let currentStep = 1;
+    let unsubscribe: (() => void) | null = null;
+
+    function fmt(n: number) { return '$' + (n / 100).toFixed(2); }
+
+    function calcShipping(subtotal: number) {
+      if (subtotal >= SHIPPING_THRESHOLD) return 0;
+      const method = document.querySelector('input[name=shippingMethod]:checked')?.value;
+      if (method === 'express') return 2500;
+      if (method === 'overnight') return 5000;
+      return SHIPPING_COST;
+    }
+
+    function updateTotals() {
+      const cart = cartLines.get();
+      const subtotal = cart.reduce((s, i) => s + (i.price?.amount || 0) * (i.quantity || 1), 0);
+      const shipping = calcShipping(subtotal);
+      const tax = Math.round((subtotal + shipping) * TAX_RATE);
+      const total = subtotal + shipping + tax;
+
+      const discountEl = document.querySelector('[data-summary-discount]');
+      const discount = discountEl ? parseInt(discountEl.textContent?.replace(/[^0-9]/g, '') || '0') || 0 : 0;
+      const finalTotal = total - discount;
+
+      const setText = (selector: string, value: string) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = value;
+      };
+
+      setText('[data-summary-subtotal]', fmt(subtotal));
+      setText('[data-summary-shipping]', shipping === 0 ? 'FREE' : fmt(shipping));
+      setText('[data-summary-tax]', fmt(tax));
+      setText('[data-summary-total]', fmt(finalTotal));
+
+      setText('[data-review-subtotal]', fmt(subtotal));
+      setText('[data-review-shipping]', shipping === 0 ? 'FREE' : fmt(shipping));
+      setText('[data-review-tax]', fmt(tax));
+      setText('[data-review-discount]', '-' + fmt(discount));
+      setText('[data-review-total]', fmt(finalTotal));
+
+      setText('[data-shipping-standard]', fmt(0));
+      setText('[data-shipping-express]', fmt(2500));
+      setText('[data-shipping-overnight]', fmt(5000));
+    }
+
+    function renderSummaryItems() {
+      const cart = cartLines.get();
+      const containers = document.querySelectorAll('[data-summary-items], [data-review-items]');
+      containers.forEach(c => {
+        c.innerHTML = cart.map(i =>
+          '<div class="flex gap-3 py-2 border-b border-line last:border-0">' +
+            '<img src=' + (i.image?.src || '/placeholder.jpg') + ' alt="" class="h-16 w-16 rounded-md object-cover" />' +
+            '<div class="flex-1 min-w-0">' +
+              '<p class="font-medium text-ink truncate">' + i.title + '</p>' +
+              '<p class="text-sm text-muted">' + (i.variantTitle || '') + '</p>' +
+              '<p class="text-sm text-ink">' + fmt((i.price?.amount || 0) * (i.quantity || 1)) + ' x ' + (i.quantity || 1) + '</p>' +
+            '</div>' +
+          '</div>'
+        ).join('');
+      });
+    }
+
+    function renderReviewContact() {
+      const email = document.getElementById('email')?.value || '';
+      const phone = document.getElementById('phone')?.value || '';
+      const fn = document.getElementById('firstName')?.value || '';
+      const ln = document.getElementById('lastName')?.value || '';
+      const addr = document.getElementById('address1')?.value || '';
+      const addr2 = document.getElementById('address2')?.value || '';
+      const city = document.getElementById('city')?.value || '';
+      const state = document.getElementById('state')?.value || '';
+      const zip = document.getElementById('zip')?.value || '';
+      const country = document.getElementById('country')?.value || '';
+      const method = document.querySelector('input[name=shippingMethod]:checked')?.value || 'standard';
+      const labels = { standard: 'Standard Shipping (5-7 business days)', express: 'Express Shipping (2-3 business days)', overnight: 'Overnight Shipping (Next business day)' };
+      const contactDiv = document.querySelector('[data-review-contact]');
+      if (contactDiv) {
+        contactDiv.innerHTML = 
+          '<p>' + email + (phone ? ' | ' + phone : '') + '</p>' +
+          '<p>' + fn + ' ' + ln + '</p>' +
+          '<p>' + addr + (addr2 ? ', ' + addr2 : '') + '</p>' +
+          '<p>' + city + ', ' + state + ' ' + zip + ', ' + country + '</p>' +
+          '<p>' + labels[method] + '</p>';
+      }
+    }
+
+    function renderReviewPayment() {
+      const method = document.querySelector('input[name=paymentMethod]:checked')?.value || 'card';
+      const labels = {
+        card: 'Credit / Debit Card ending in ' + (document.getElementById('cardNumber')?.value?.slice(-4) || '****'),
+        bkash: 'bKash Mobile Banking (' + (document.getElementById('bkashNumber')?.value || '') + ')',
+        nagad: 'Nagad Digital Wallet (' + (document.getElementById('nagadNumber')?.value || '') + ')',
+        ssl: 'SSLCOMMERZ Payment Gateway'
+      };
+      setText('[data-review-payment]', labels[method]);
+    }
+function validateStep(step) {
+      const stepEl = document.querySelector("[data-step-form='" + step + "']");
+      if (!stepEl) return true;
+      const inputs = stepEl.querySelectorAll('input[required], select[required]');
+      let valid = true;
+      inputs.forEach(input => {
+        if (!input.value.trim()) {
+          input.classList.add('border-red-500');
+          valid = false;
+        } else {
+          input.classList.remove('border-red-500');
+        }
+      });
+      return valid;
+    }
+
+    function showStep(step) {
+      steps.forEach((s, i) => {
+        if (parseInt(s.dataset.stepForm) === step) { s.classList.remove('hidden'); }
+        else { s.classList.add('hidden'); }
+      });
+      progressSteps.forEach((ps, i) => {
+        const stepNum = i + 1;
+        if (stepNum < step) {
+          ps.className = 'flex h-6 w-6 items-center justify-center rounded-full border-2 text-sm font-semibold transition-all bg-ink border-ink text-paper';
+          ps.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>';
+        } else if (stepNum === step) {
+          ps.className = 'flex h-6 w-6 items-center justify-center rounded-full border-2 text-sm font-semibold transition-all bg-ink border-ink text-paper';
+          const icon = checkoutSteps[step - 1]?.icon;
+          ps.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="' + icon + '"/></svg>';
+        } else {
+          ps.className = 'flex h-6 w-6 items-center justify-center rounded-full border-2 text-sm font-semibold transition-all bg-paper border-line text-muted';
+          const icon = checkoutSteps[step - 1]?.icon;
+          ps.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="' + icon + '"/></svg>';
+        }
+      });
+      currentStep = step;
+      prevBtn.classList.toggle('hidden', step === 1);
+      nextBtn.classList.toggle('hidden', step === totalSteps);
+      placeOrderBtn.classList.toggle('hidden', step !== totalSteps);
+      if (step === totalSteps) { renderReview(); }
+      updateTotals();
+      renderSummaryItems();
+    }
+nextBtn?.addEventListener('click', () => {
+      if (validateStep(currentStep)) {
+        showStep(currentStep + 1);
+      }
+    });
+
+    prevBtn?.addEventListener('click', () => {
+      if (currentStep > 1) { showStep(currentStep - 1); }
+    });
+
+    document.querySelectorAll('input[name=paymentMethod]').forEach(r => {
+      r.addEventListener('change', () => {
+        document.querySelector('[data-payment-card]')?.classList.toggle('hidden', r.value !== 'card');
+        document.querySelector('[data-payment-bkash]')?.classList.toggle('hidden', r.value !== 'bkash');
+        document.querySelector('[data-payment-nagad]')?.classList.toggle('hidden', r.value !== 'nagad');
+        document.querySelector('[data-payment-ssl]')?.classList.toggle('hidden', r.value !== 'ssl');
+      });
+    });
+
+    document.querySelectorAll('input[name=shippingMethod]').forEach(r => {
+      r.addEventListener('change', updateTotals);
+    });
+
+    const cardNumber = document.getElementById('cardNumber');
+    cardNumber?.addEventListener('input', e => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+      v = v.replace(/(.{4})/g, '$1 ').trim();
+      e.target.value = v;
+    });
+
+    const cardExpiry = document.getElementById('cardExpiry');
+    cardExpiry?.addEventListener('input', e => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+      if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+      e.target.value = v;
+    });
+
+    const cardCvc = document.getElementById('cardCvc');
+    cardCvc?.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validateStep(totalSteps)) return;
+
+      placeOrderBtn.disabled = true;
+      placeOrderBtn.textContent = 'Processing...';
+
+      // Collect form data
+      const formData = new FormData(form as HTMLFormElement);
+      const email = document.getElementById('email')?.value || '';
+      const firstName = document.getElementById('firstName')?.value || '';
+      const lastName = document.getElementById('lastName')?.value || '';
+      const name = `${firstName} ${lastName}`.trim();
+      const address1 = document.getElementById('address1')?.value || '';
+      const address2 = document.getElementById('address2')?.value || '';
+      const city = document.getElementById('city')?.value || '';
+      const state = document.getElementById('state')?.value || '';
+      const zip = document.getElementById('zip')?.value || '';
+      const country = document.getElementById('country')?.value || '';
+      const phone = document.getElementById('phone')?.value || '';
+      const paymentMethod = document.querySelector('input[name=paymentMethod]:checked')?.value || 'card';
+      const shippingMethod = document.querySelector('input[name=shippingMethod]:checked')?.value || 'standard';
+
+      const shippingAddress = {
+        firstName,
+        lastName,
+        address1,
+        address2,
+        city,
+        state,
+        zip,
+        country,
+        phone,
+      };
+
+      const billingAddress = { ...shippingAddress }; // Use same for now
+
+      // Get cart lines
+      const cart = cartLines.get();
+      const lines = cart.map(i => ({
+        variantId: i.variantId,
+        productHandle: i.productHandle,
+        title: i.title,
+        variantTitle: i.variantTitle,
+        image: i.image,
+        price: i.price,
+        quantity: i.quantity,
+      }));
+
+      const subtotal = cart.reduce((s, i) => s + (i.price?.amount || 0) * (i.quantity || 1), 0);
+      const shipping = calcShipping(subtotal);
+      const tax = Math.round((subtotal + shipping) * TAX_RATE);
+      const totalAmount = subtotal + shipping + tax;
+
+      try {
+        const response = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            name,
+            shippingAddress,
+            billingAddress,
+            paymentMethod,
+            paymentDetails: {},
+            lines,
+            totalAmount,
+            currency: 'USD',
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Clear cart and redirect to success page
+          clearCart();
+          window.location.href = `/checkout/success?order=${data.orderId}`;
+        } else {
+          throw new Error(data.error || 'Failed to create order');
+        }
+      } catch (error) {
+        console.error('Order error:', error);
+        alert('Failed to place order. Please try again.');
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.textContent = 'Place Order';
+        return;
+      }
+    });
+
+    // Subscribe to cart changes for real-time updates
+    unsubscribe = cartLines.subscribe(() => {
+      updateTotals();
+      renderSummaryItems();
+    });
+
+    showStep(1);
+    updateTotals();
+    renderSummaryItems();
+  });
+</script>
+
+

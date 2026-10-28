@@ -1,8 +1,19 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-const order = Astro.url.searchParams.get('order');
-const orderId = order || 'KH-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+const orderId = Astro.url.searchParams.get('order');
+let orderData: any = null;
+
+if (orderId) {
+  try {
+    const res = await fetch(`${Astro.request.url.split('/checkout')[0]}/api/orders/${orderId}`);
+    if (res.ok) {
+      orderData = await res.json();
+    }
+  } catch (e) {
+    console.error('Failed to fetch order:', e);
+  }
+}
 ---
 
 <Layout title='Order Confirmed — KitchenHub' description='Your order has been placed successfully.'>
@@ -27,10 +38,21 @@ const orderId = order || 'KH-' + Math.random().toString(36).substring(2, 8).toUp
       {/* Order Reference */}
       <div class='rounded-2xl border border-line bg-paper/90 p-6'>
         <p class='text-sm text-muted'>Order Reference</p>
-        <p class='mt-1 font-mono text-2xl font-semibold text-ink break-all'>{orderId}</p>
+        <p class='mt-1 font-mono text-2xl font-semibold text-ink break-all'>{orderId || 'KH-' + Math.random().toString(36).substring(2, 8).toUpperCase()}</p>
         <p class='mt-3 text-sm text-muted'>
           Save this reference for future inquiries.
         </p>
+        
+        {orderData && (
+          <>
+            <div class='mt-4 pt-4 border-t border-line text-left'>
+              <p class='text-sm text-muted'>Customer: {orderData.name || orderData.email}</p>
+              <p class='text-sm text-muted'>Phone: {orderData.phone}</p>
+              <p class='text-sm text-muted'>Payment: {orderData.paymentMethod === 'cod' ? 'Cash on Delivery' : orderData.paymentMethod.toUpperCase()}</p>
+              <p class='text-sm text-muted font-semibold'>Total: ৳{(orderData.totalAmount / 100).toLocaleString('en-BD', { minimumFractionDigits: 2 })}</p>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Next Steps */}

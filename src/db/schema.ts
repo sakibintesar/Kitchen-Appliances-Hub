@@ -69,13 +69,15 @@ export const orders = sqliteTable('orders', {
   sessionId: text('session_id'),
   email: text('email').notNull(),
   name: text('name').notNull(),
-  status: text('status').notNull().default('pending'), // pending, paid, fulfilled, cancelled
+  phone: text('phone'), // Customer phone for WhatsApp notifications
+  status: text('status').notNull().default('pending'), // pending, pending_payment, confirmed, payment_failed, fulfilled, cancelled
   totalAmount: integer('total_amount').notNull(),
   currency: text('currency').notNull().default('USD'),
   lines: text('lines').notNull(), // JSON array of CartLine
   shippingAddress: text('shipping_address'), // JSON
   billingAddress: text('billing_address'), // JSON
-  paymentIntentId: text('payment_intent_id'), // Stripe payment intent
+  paymentMethod: text('payment_method'), // cod, sslcommerz, bkash, nagad, rocket
+  paymentIntentId: text('payment_intent_id'), // Stripe payment intent or SSLCommerz tran_id
   createdAt: integer('created_at').default(sql`(unixepoch())`),
   updatedAt: integer('updated_at').default(sql`(unixepoch())`),
 });

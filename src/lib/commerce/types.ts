@@ -6,7 +6,7 @@
 
 export interface Money {
   amount: number;
-  currency: string; // ISO 4217, e.g. "USD"
+  currency: string; // ISO 4217, e.g. "BDT", "USD"
 }
 
 export interface ProductImage {
@@ -52,6 +52,26 @@ export interface CartLine {
   quantity: number;
 }
 
+/** Bangladesh-specific payment methods */
+export type BDPaymentMethod = 
+  | 'cod'           // Cash on Delivery
+  | 'sslcommerz'    // SSLCommerz gateway (bKash, Nagad, Rocket, Card, Bank)
+  | 'bkash'         // bKash direct
+  | 'nagad'         // Nagad direct
+  | 'rocket';       // Rocket direct
+
+/** Checkout session result */
+export interface CheckoutSession {
+  success: boolean;
+  sessionId?: string;
+  sessionUrl?: string;      // For SSLCommerz redirect
+  paymentUrl?: string;      // For direct bKash/Nagad deep links
+  orderId: number;
+  orderNumber: string;
+  paymentMethod: BDPaymentMethod;
+  whatsappSent?: boolean;
+}
+
 /** Contract every commerce provider implements. */
 export interface CommerceProvider {
   listProducts(opts?: { collection?: string; limit?: number }): Promise<Product[]>;
@@ -60,4 +80,35 @@ export interface CommerceProvider {
   getCollection(handle: string): Promise<Collection | null>;
   /** Returns the URL to send the buyer to for checkout. */
   checkoutUrl(lines: CartLine[]): Promise<string>;
+}
+
+/** Order status for BD market */
+export type BDOrderStatus = 
+  | 'pending'           // COD order placed, awaiting confirmation
+  | 'pending_payment'   // MFS order placed, awaiting payment
+  | 'confirmed'         // COD confirmed by admin / MFS payment received
+  | 'processing'        // Order being prepared
+  | 'shipped'           // Out for delivery
+  | 'delivered'         // Completed
+  | 'cancelled'         // Cancelled
+  | 'returned';         // Returned
+
+/** WhatsApp message templates */
+export interface WhatsAppTemplate {
+  name: string;
+  language: string; // e.g. 'en', 'bn'
+  components: WhatsAppComponent[];
+}
+
+export interface WhatsAppComponent {
+  type: 'header' | 'body' | 'footer' | 'button';
+  text?: string;
+  parameters?: WhatsAppParameter[];
+}
+
+export interface WhatsAppParameter {
+  type: 'text' | 'currency' | 'date_time';
+  text?: string;
+  currency?: { fallback_value: string; code: string; amount_1000: number };
+  date_time?: { fallback_value: string };
 }

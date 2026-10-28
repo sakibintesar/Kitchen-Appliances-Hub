@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS orders (
   session_id TEXT,
   email TEXT NOT NULL,
   name TEXT NOT NULL,
+  phone TEXT,
   status TEXT NOT NULL DEFAULT 'pending',
   total_amount INTEGER NOT NULL,
   currency TEXT NOT NULL DEFAULT 'USD',
@@ -71,9 +72,14 @@ CREATE TABLE IF NOT EXISTS orders (
   shipping_address TEXT,
   billing_address TEXT,
   payment_intent_id TEXT,
+  payment_method TEXT,
+  tran_id TEXT,
   created_at INTEGER NOT NULL DEFAULT (unixepoch()),
   updated_at INTEGER NOT NULL DEFAULT (unixepoch())
 );
+
+-- Add index for tran_id lookups (SSLCommerz webhook)
+CREATE INDEX IF NOT EXISTS idx_orders_tran_id ON orders(tran_id);
 
 -- Favorites table
 CREATE TABLE IF NOT EXISTS favorites (

@@ -33,6 +33,12 @@
     "COMMERCE_PROVIDER": "d1",
     "STRIPE_SECRET_KEY": "",
     "STRIPE_WEBHOOK_SECRET": "",
-    "PUBLIC_SITE_URL": "https://kitchenhub.example.com"
+    "PUBLIC_SITE_URL": "https://kitchenhub.example.com",
+    "SSLCOMMERZ_STORE_ID": "",
+    "SSLCOMMERZ_STORE_PASSWORD": "",
+    "SSLCOMMERZ_SANDBOX": "true",
+    "WHATSAPP_PHONE_NUMBER_ID": "",
+    "WHATSAPP_ACCESS_TOKEN": "",
+    "WHATSAPP_API_VERSION": "v20.0"
   }
 }
