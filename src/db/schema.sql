@@ -7,9 +7,30 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
   name TEXT,
+  email_verified INTEGER NOT NULL DEFAULT 0,
+  email_verify_token TEXT,
+  email_verify_expires INTEGER,
+  phone TEXT,
+  phone_verified INTEGER NOT NULL DEFAULT 0,
+  phone_verify_token TEXT,
+  phone_verify_expires INTEGER,
+  password_reset_token TEXT,
+  password_reset_expires INTEGER,
   created_at INTEGER NOT NULL DEFAULT (unixepoch()),
   updated_at INTEGER NOT NULL DEFAULT (unixepoch())
 );
+
+-- Add email/phone verification columns if they don't exist (for existing databases)
+-- Run these ALTER statements separately if needed:
+-- ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0;
+-- ALTER TABLE users ADD COLUMN email_verify_token TEXT;
+-- ALTER TABLE users ADD COLUMN email_verify_expires INTEGER;
+-- ALTER TABLE users ADD COLUMN phone TEXT;
+-- ALTER TABLE users ADD COLUMN phone_verified INTEGER NOT NULL DEFAULT 0;
+-- ALTER TABLE users ADD COLUMN phone_verify_token TEXT;
+-- ALTER TABLE users ADD COLUMN phone_verify_expires INTEGER;
+-- ALTER TABLE users ADD COLUMN password_reset_token TEXT;
+-- ALTER TABLE users ADD COLUMN password_reset_expires INTEGER;
 
 -- Sessions table
 CREATE TABLE IF NOT EXISTS sessions (

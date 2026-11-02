@@ -6,9 +6,11 @@ let orderData: any = null;
 
 if (orderId) {
   try {
-    const res = await fetch(`${Astro.request.url.split('/checkout')[0]}/api/orders/${orderId}`);
+    // Use origin for same-origin API call in SSR
+    const res = await fetch(`${Astro.url.origin}/api/orders/${orderId}`);
     if (res.ok) {
-      orderData = await res.json();
+      const json = await res.json();
+      orderData = json.order; // Extract the order object from the response
     }
   } catch (e) {
     console.error('Failed to fetch order:', e);
@@ -44,14 +46,13 @@ if (orderId) {
         </p>
         
         {orderData && (
-          <>
-            <div class='mt-4 pt-4 border-t border-line text-left'>
-              <p class='text-sm text-muted'>Customer: {orderData.name || orderData.email}</p>
-              <p class='text-sm text-muted'>Phone: {orderData.phone}</p>
-              <p class='text-sm text-muted'>Payment: {orderData.paymentMethod === 'cod' ? 'Cash on Delivery' : orderData.paymentMethod.toUpperCase()}</p>
-              <p class='text-sm text-muted font-semibold'>Total: ৳{(orderData.totalAmount / 100).toLocaleString('en-BD', { minimumFractionDigits: 2 })}</p>
-            </div>
-          </>
+          <div class='mt-4 pt-4 border-t border-line text-left'>
+            <p class='text-sm text-muted'>Customer: {orderData.name || orderData.email}</p>
+            <p class='text-sm text-muted'>Phone: {orderData.phone}</p>
+            <p class='text-sm text-muted'>Shipping: {orderData.shippingMethod ? orderData.shippingMethod.charAt(0).toUpperCase() + orderData.shippingMethod.slice(1) : 'Standard'}</p>
+            <p class='text-sm text-muted'>Payment: {orderData.paymentMethod ? (orderData.paymentMethod === 'cod' ? 'Cash on Delivery' : orderData.paymentMethod.toUpperCase()) : 'N/A'}</p>
+            <p class='text-sm text-muted font-semibold'>Total: ৳{(orderData.totalAmount / 100).toLocaleString('en-BD', { minimumFractionDigits: 2 })}</p>
+          </div>
         )}
       </div>
 

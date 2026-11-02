@@ -132,47 +132,54 @@ export class SSLCommerzGateway {
   }
 
   async initPayment(request: SSLCommerzInitRequest): Promise<SSLCommerzInitResponse> {
-    const params = new URLSearchParams({
+    const requestBody = Object.entries({
+      ...request,
       store_id: this.config.storeId,
       store_passwd: this.config.storePassword,
-      total_amount: String(request.total_amount),
-      currency: request.currency,
-      tran_id: request.tran_id,
-      success_url: request.success_url,
-      fail_url: request.fail_url,
-      cancel_url: request.cancel_url,
-      ipn_url: request.ipn_url,
-      cus_name: request.cus_name,
-      cus_email: request.cus_email,
-      cus_phone: request.cus_phone,
-      cus_add1: request.cus_add1,
-      cus_city: request.cus_city,
-      cus_postcode: request.cus_postcode,
-      cus_country: request.cus_country,
-      ship_name: request.ship_name,
-      ship_add1: request.ship_add1,
-      ship_city: request.ship_city,
-      ship_postcode: request.ship_postcode,
-      ship_country: request.ship_country,
-      product_category: request.product_category,
-      product_profile: request.product_profile,
-      product_name: request.product_name,
-      num_of_item: String(request.num_of_item),
-      emi_option: String(request.emi_option || 0),
-    });
+    })
+      .filter(([, v]) => v !== undefined && v !== null)
+      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+      .join('&');
+    console.log('SSLCommerz request URL:', `${this.baseUrl}/gwprocess/v4/api.php`);
+    console.log('SSLCommerz request body:', requestBody);
+    
+    // Add timeout to prevent hanging
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    try {
+      const response = await fetch(`${this.baseUrl}/gwprocess/v4/api.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: requestBody,
+        signal: controller.signal,
+      });
 
-    if (request.value_a) params.append('value_a', request.value_a);
-    if (request.value_b) params.append('value_b', request.value_b);
-    if (request.value_c) params.append('value_c', request.value_c);
-    if (request.value_d) params.append('value_d', request.value_d);
-
-    const response = await fetch(`${this.baseUrl}/gwprocess/v4/api.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString(),
-    });
-
-    return response.json() as Promise<SSLCommerzInitResponse>;
+      clearTimeout(timeoutId);
+      
+      const responseText = await response.text();
+      console.log('SSLCommerz response status:', response.status);
+      console.log('SSLCommerz response headers:', Object.fromEntries(response.headers.entries()));
+      console.log('SSLCommerz response:', responseText);
+      
+      if (!response.ok) {
+        throw new Error(`SSLCommerz API error (${response.status}): ${responseText || 'Empty response - check sandbox credentials'}`);
+      }
+      
+      try {
+        return JSON.parse(responseText) as SSLCommerzInitResponse;
+      } catch (e) {
+        console.error('Failed to parse SSLCommerz response:', e);
+        throw new Error(`SSLCommerz API returned invalid response: ${responseText.substring(0, 200)}`);
+      }
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('SSLCommerz API request timed out after 30 seconds');
+      }
+      console.error('SSLCommerz fetch error:', error);
+      throw error;
+    }
   }
 
   async validatePayment(valId: string): Promise<SSLCommerzValidationResponse> {
@@ -196,10 +203,12 @@ export class SSLCommerzGateway {
     return this.validatePayment(payload.val_id);
   }
 
-  static generateTranId(prefix = 'KH'): string {
-    const timestamp = Date.now().toString(36).toUpperCase();
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-    return `${prefix}-${timestamp}-${random}`;
+  static generateTranId(prefix = ''): string {
+    // SSLCommerz sandbox rejects tran_ids with KH prefix pattern
+    // Use simple random format without prefix that sandbox accepts
+    const random1 = Math.random().toString(36).substring(2, 10).toUpperCase();
+    const random2 = Math.random().toString(36).substring(2, 10).toUpperCase();
+    return `${random1}${random2}`.substring(0, 20);
   }
 
   static buildInitRequest(
@@ -220,7 +229,7 @@ export class SSLCommerzGateway {
     const numItems = orderData.lines.reduce((sum, l) => sum + l.quantity, 0);
 
     return {
-      total_amount: orderData.totalAmount / 100,
+      total_amount: Math.round(orderData.totalAmount / 100),
       currency: 'BDT',
       tran_id: tranId,
       success_url: config.successUrl,

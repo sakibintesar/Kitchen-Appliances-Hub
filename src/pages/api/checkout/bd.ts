@@ -1,7 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getDb } from '../../../db';
 import { orders, carts, eq } from '../../../db/schema';
-import { cartLines, clearCart } from '../../../lib/cart';
 import { SSLCommerzGateway } from '../../../lib/payments/sslcommerz';
 import type { SSLCommerzConfig } from '../../../lib/payments/sslcommerz';
 import { createWhatsAppService } from '../../../lib/whatsapp';
@@ -42,11 +41,17 @@ export const POST: APIRoute = async ({ locals, request }) => {
       phone,
       shippingAddress, 
       billingAddress, 
+      shippingMethod,
       paymentMethod = 'cod' as BDPaymentMethod,
       lines, 
       totalAmount, 
       currency = 'BDT' 
     } = body;
+
+    // Calculate totalAmount from lines if not provided
+    const calculatedTotalAmount = totalAmount || lines.reduce((sum: number, line: any) => {
+      return sum + (line.price?.amount || 0) * (line.quantity || 1);
+    }, 0);
 
     if (!email || !name || !phone || !shippingAddress || !lines || !Array.isArray(lines) || lines.length === 0) {
       return new Response(JSON.stringify({ success: false, error: 'Missing required fields' }), {
@@ -72,11 +77,12 @@ export const POST: APIRoute = async ({ locals, request }) => {
       name,
       phone,
       status: initialStatus,
-      totalAmount,
+      totalAmount: calculatedTotalAmount,
       currency,
       lines: JSON.stringify(lines),
       shippingAddress: JSON.stringify(shippingAddress),
       billingAddress: JSON.stringify(billingAddress || shippingAddress),
+      shippingMethod: shippingMethod || 'standard',
       paymentMethod,
       paymentIntentId: null,
       createdAt: Math.floor(Date.now() / 1000),
@@ -86,7 +92,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
     const orderId = orderResult.meta?.last_row_id || 0;
     const orderNumber = `#KH-${String(orderId).padStart(6, '0')}`;
 
-    clearCart();
+    // Clear server-side cart
     await db.delete(carts).where(eq(carts.id, cartId)).run();
 
     let sessionUrl: string | undefined;
@@ -127,7 +133,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
           quantity: l.quantity,
           price: l.price?.amount || 0,
         })),
-        totalAmount,
+        totalAmount: calculatedTotalAmount,
       });
 
       const initResponse = await gateway.initPayment(initRequest);

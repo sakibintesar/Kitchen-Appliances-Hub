@@ -52,6 +52,18 @@ export const onRequest = defineMiddleware(async (context, next) => {
       CART_KV: bindings.CART_KV,
       SESSION_KV: bindings.SESSION_KV,
       SESSION: bindings.SESSION,
+      // Environment variables from wrangler.jsonc / .dev.vars
+      SSLCOMMERZ_STORE_ID: bindings.SSLCOMMERZ_STORE_ID,
+      SSLCOMMERZ_STORE_PASSWORD: bindings.SSLCOMMERZ_STORE_PASSWORD,
+      SSLCOMMERZ_SANDBOX: bindings.SSLCOMMERZ_SANDBOX,
+      PUBLIC_SITE_URL: bindings.PUBLIC_SITE_URL,
+      STRIPE_SECRET_KEY: bindings.STRIPE_SECRET_KEY,
+      STRIPE_WEBHOOK_SECRET: bindings.STRIPE_WEBHOOK_SECRET,
+      WHATSAPP_PHONE_NUMBER_ID: bindings.WHATSAPP_PHONE_NUMBER_ID,
+      WHATSAPP_ACCESS_TOKEN: bindings.WHATSAPP_ACCESS_TOKEN,
+      WHATSAPP_API_VERSION: bindings.WHATSAPP_API_VERSION,
+      NODE_ENV: bindings.NODE_ENV,
+      COMMERCE_PROVIDER: bindings.COMMERCE_PROVIDER,
     };
   }
   

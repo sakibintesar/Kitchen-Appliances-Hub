@@ -9,15 +9,26 @@ export async function getStaticPaths() {
   return collections.map((c) => ({ params: { handle: c.handle }, props: { collection: c } }));
 }
 
-const { collection } = Astro.props;
-const products = await commerce.listProducts({ collection: collection.handle });
-const all = await commerce.listCollections();
+// In dev mode, getStaticPaths is not used, so we fetch the collection dynamically
+const { params } = Astro;
+const handle = params.handle as string;
+const collection = await commerce.getCollection(handle);
 
-// This collection's tags — used by the client-side filter
-const tags = [...new Set(products.flatMap((p) => p.tags))].sort();
+// Handle case where collection might be undefined (invalid handle)
+let products: any[] = [];
+let all: any[] = [];
+let tags: string[] = [];
+
+if (collection) {
+  products = await commerce.listProducts({ collection: collection.handle });
+  all = await commerce.listCollections();
+
+  // This collection's tags — used by the client-side filter
+  tags = [...new Set(products.flatMap((p) => p.tags))].sort();
+}
 ---
 
-<Layout title={`${collection.title} — njX Shop`} description={collection.description}>
+<Layout title={`${collection?.title || 'Collection'} — njX Shop`} description={collection?.description}>
   <section class="mx-auto max-w-6xl px-5 pt-5 md:pt-6">
     <h1 class="font-display text-[clamp(32px,5vw,52px)] font-extrabold tracking-tight">{collection.title}</h1>
     <p class="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-muted">{collection.description}</p>

@@ -15,6 +15,10 @@ export const users = sqliteTable('users', {
   emailVerified: integer('email_verified', { mode: 'boolean' }).notNull().default(false),
   emailVerifyToken: text('email_verify_token'),
   emailVerifyExpires: integer('email_verify_expires'),
+  phone: text('phone'),
+  phoneVerified: integer('phone_verified', { mode: 'boolean' }).notNull().default(false),
+  phoneVerifyToken: text('phone_verify_token'),
+  phoneVerifyExpires: integer('phone_verify_expires'),
   passwordResetToken: text('password_reset_token'),
   passwordResetExpires: integer('password_reset_expires'),
   createdAt: integer('created_at').default(sql`(unixepoch())`),
@@ -76,6 +80,7 @@ export const orders = sqliteTable('orders', {
   lines: text('lines').notNull(), // JSON array of CartLine
   shippingAddress: text('shipping_address'), // JSON
   billingAddress: text('billing_address'), // JSON
+  shippingMethod: text('shipping_method').default('standard'), // standard, express, overnight
   paymentMethod: text('payment_method'), // cod, sslcommerz, bkash, nagad, rocket
   paymentIntentId: text('payment_intent_id'), // Stripe payment intent or SSLCommerz tran_id
   createdAt: integer('created_at').default(sql`(unixepoch())`),
