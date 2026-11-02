@@ -73,7 +73,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
     const subtotal = lines.reduce((s: number, i: any) => s + (i.price?.amount || 0) * (i.quantity || 1), 0);
     const SHIPPING_THRESHOLD = 50000;
     const SHIPPING_COST = 1500;
-    const TAX_RATE = 0.08;
+    const TAX_RATE = 0.05;
     const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
     const tax = Math.round((subtotal + shipping) * TAX_RATE);
 
@@ -97,7 +97,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
           currency: currency.toLowerCase(),
           product_data: {
             name: 'Tax',
-            description: 'Sales tax (8%)',
+            description: 'Sales tax (5%)',
           },
           unit_amount: tax,
         },
@@ -119,8 +119,8 @@ export const POST: APIRoute = async ({ locals, request }) => {
         email,
       },
       shipping_address_collection: {
-        allowed_countries: ['US', 'CA'], // Add more as needed
-      },
+              allowed_countries: ['BD', 'US', 'CA'],
+            },
       billing_address_collection: 'required',
     });
 

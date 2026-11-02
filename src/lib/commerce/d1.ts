@@ -59,16 +59,17 @@ export function createD1Provider(env: { DB: D1Database }): CommerceProvider {
 
   return {
     async listProducts(opts = {}) {
-      let query = db.select().from(db.schema.products);
-      
-      if (opts.collection) {
-        // Filter by collection - need to check JSON array
-        query = query.where(sql`json_each(collection_handles) = ${opts.collection}`) as any;
-      }
-      
-      const rows = opts.limit ? await query.limit(opts.limit).all() : await query.all();
-      return rows.map(mapProduct);
-    },
+          let query = db.select().from(db.schema.products);
+
+          if (opts.collection) {
+            // Filter by collection - check if collection handle exists in JSON array
+            // Using LIKE since Drizzle doesn't support json_each join easily
+            query = query.where(sql`${db.schema.products.collectionHandles} LIKE ${'%' + opts.collection + '%'}`) as any;
+          }
+
+          const rows = opts.limit ? await query.limit(opts.limit).all() : await query.all();
+          return rows.map(mapProduct);
+        },
 
     async getProduct(handle: string) {
       const row = await db.select().from(db.schema.products).where(eq(db.schema.products.id, handle)).get();

@@ -204,12 +204,10 @@ export class SSLCommerzGateway {
   }
 
   static generateTranId(prefix = ''): string {
-    // SSLCommerz sandbox rejects tran_ids with KH prefix pattern
-    // Use simple random format without prefix that sandbox accepts
-    const random1 = Math.random().toString(36).substring(2, 10).toUpperCase();
-    const random2 = Math.random().toString(36).substring(2, 10).toUpperCase();
-    return `${random1}${random2}`.substring(0, 20);
-  }
+      // SSLCommerz sandbox rejects tran_ids with KH prefix pattern
+      // Use crypto.randomUUID() for better uniqueness
+      return crypto.randomUUID().replace(/-/g, '').substring(0, 20).toUpperCase();
+    }
 
   static buildInitRequest(
     config: SSLCommerzConfig,

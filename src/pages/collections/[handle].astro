@@ -4,6 +4,8 @@ import ProductCard from '../../components/ProductCard.astro';
 import { commerce } from '../../lib/commerce';
 import { COLLECTION as T } from '../../constants/pages';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const collections = await commerce.listCollections();
   return collections.map((c) => ({ params: { handle: c.handle }, props: { collection: c } }));

@@ -5,6 +5,8 @@ import { commerce } from '../../lib/commerce';
 import { PRODUCT as T } from '../../constants/pages';
 import { Image } from 'astro:assets';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const products = await commerce.listProducts();
   return products.map((p) => ({ params: { handle: p.handle } }));
