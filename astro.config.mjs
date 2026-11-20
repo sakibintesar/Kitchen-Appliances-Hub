@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import cloudflare from '@astrojs/cloudflare';
+import react from '@astrojs/react';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
@@ -11,6 +12,7 @@ export default defineConfig({
   site: 'https://kitchenhub.store',
   output: 'server',
   adapter: cloudflare(),
+  integrations: [react()],
   image: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },

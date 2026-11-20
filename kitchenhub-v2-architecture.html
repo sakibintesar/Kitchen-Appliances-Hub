@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KitchenHub v2.0 — Target Architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: #020617;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      background: #22d3ee;
+      border-radius: 50%;
+      margin-right: 10px;
+      animation: pulse 2s infinite;
+      vertical-align: middle;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.1); }
+    }
+    h1 { font-size: 28px; font-weight: 700; color: #f8fafc; }
+    .subtitle { font-size: 13px; color: #94a3b8; margin-top: 8px; }
+    .diagram-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    .diagram-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 40 0 L 0 0 0 40' fill='none' stroke='%231e293b' stroke-width='0.5'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    svg { width: 100%; height: auto; display: block; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 24px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .card-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .card-dot.cyan { background: #22d3ee; }
+    .card-dot.emerald { background: #34d399; }
+    .card-dot.violet { background: #a78bfa; }
+    .card-dot.amber { background: #fbbf24; }
+    .card-dot.rose { background: #fb7185; }
+    .card-dot.orange { background: #fb923c; }
+    h3 { font-size: 14px; font-weight: 600; color: #f8fafc; }
+    .card ul { list-style: none; font-size: 12px; color: #94a3b8; line-height: 1.8; }
+    .card li::before { content: '• '; color: currentColor; margin-right: 6px; }
+    footer {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid #1e293b;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .phase-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .phase-1 { background: rgba(34, 211, 238, 0.15); color: #22d3ee; border: 1px solid #22d3ee; }
+    .phase-2 { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid #34d399; }
+    .phase-3 { background: rgba(167, 139, 250, 0.15); color: #a78bfa; border: 1px solid #a78bfa; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><span class="pulse-dot"></span>KitchenHub v2.0 — Target Architecture</h1>
+      <div class="subtitle">Multi-vendor Marketplace Platform on Cloudflare Edge</div>
+      <div style="margin-top: 16px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <span class="phase-badge phase-1">Phase 1: Foundation</span>
+        <span class="phase-badge phase-2">Phase 2: Marketplace</span>
+        <span class="phase-badge phase-3">Phase 3: AI Intelligence</span>
+      </div>
+    </header>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KitchenHub v2.0 Architecture Diagram">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+          </pattern>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowhead-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+          </marker>
+          <marker id="arrowhead-emerald" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#34d399"/>
+          </marker>
+          <marker id="arrowhead-violet" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa"/>
+          </marker>
+          <marker id="arrowhead-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#fbbf24"/>
+          </marker>
+          <marker id="arrowhead-rose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185"/>
+          </marker>
+          <filter id="glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="glow-emerald" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Background Grid -->
+        <rect width="1200" height="700" fill="url(#grid)"/>
+
+        <!-- Cloudflare Edge Boundary -->
+        <rect x="20" y="20" width="1160" height="660" rx="12" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="8,4"/>
+
+        <!-- Cloudflare Label -->
+        <text x="40" y="45" font-size="11" fill="#fbbf24" font-weight="600">☁ CLOUDFLARE EDGE NETWORK</text>
+
+        <!-- Tenant A: KitchenHub (Main) -->
+        <g id="tenant-a">
+          <!-- Outer wrapper -->
+          <rect x="40" y="70" width="350" height="280" rx="8" fill="#0f172a"/>
+          <rect x="40" y="70" width="350" height="280" rx="8" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+
+          <!-- Tenant Label -->
+          <text x="60" y="100" font-size="13" fill="#22d3ee" font-weight="600">🏪 Tenant: kitchenhub (Main)</text>
+          <text x="60" y="120" font-size="10" fill="#94a3b8">subdomain: kitchenhub.workers.dev</text>
+
+          <!-- Frontend Components -->
+          <rect x="55" y="140" width="320" height="50" rx="6" fill="#0f172a"/>
+          <rect x="55" y="140" width="320" height="50" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="70" y="168" font-size="11" fill="#22d3ee" font-weight="500">🌐 Frontend (Astro 7 + Tailwind v4)</text>
+          <text x="70" y="182" font-size="9" fill="#64748b">Home • Collections • Products • Cart • Checkout</text>
+
+          <!-- Vendor Portal (Phase 2) -->
+          <rect x="55" y="205" width="320" height="45" rx="6" fill="#0f172a"/>
+          <rect x="55" y="205" width="320" height="45" rx="6" fill="rgba(52, 211, 153, 0.3)" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="70" y="230" font-size="11" fill="#34d399" font-weight="500">🏪 Vendor Portal (React Islands) — Phase 2</text>
+          <text x="70" y="242" font-size="9" fill="#64748b">Product CRUD • Order Mgmt • Earnings • Payouts</text>
+
+          <!-- Admin Dashboard (Phase 2) -->
+          <rect x="55" y="265" width="320" height="45" rx="6" fill="#0f172a"/>
+          <rect x="55" y="265" width="320" height="45" rx="6" fill="rgba(167, 139, 250, 0.3)" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="70" y="290" font-size="11" fill="#a78bfa" font-weight="500">⚙️ Admin Dashboard (React Islands) — Phase 2</text>
+          <text x="70" y="302" font-size="9" fill="#64748b">Vendor Approval • Analytics • Commission Mgmt</text>
+
+          <!-- Content Pages (Phase 3) -->
+          <rect x="55" y="325" width="320" height="45" rx="6" fill="#0f172a"/>
+          <rect x="55" y="325" width="320" height="45" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="70" y="350" font-size="11" fill="#fb923c" font-weight="500">📝 Content Pages (Sanity CMS + ISR) — Phase 3</text>
+          <text x="70" y="362" font-size="9" fill="#64748b">Blog • Recipes • Buying Guides • SEO Optimized</text>
+        </g>
+
+        <!-- Tenant B: White-label -->
+        <g id="tenant-b">
+          <rect x="420" y="70" width="350" height="280" rx="8" fill="#0f172a"/>
+          <rect x="420" y="70" width="350" height="280" rx="8" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+          <text x="440" y="100" font-size="13" fill="#22d3ee" font-weight="600">🏷️ Tenant: whitelabel (Phase 1)</text>
+          <text x="440" y="120" font-size="10" fill="#94a3b8">subdomain: *.kitchenhub.workers.dev</text>
+
+          <rect x="435" y="140" width="320" height="50" rx="6" fill="#0f172a"/>
+          <rect x="435" y="140" width="320" height="50" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <text x="450" y="168" font-size="11" fill="#22d3ee" font-weight="500">🌐 White-label Frontend (Theme Config)</text>
+          <text x="450" y="182" font-size="9" fill="#64748b">Custom Domain • Theme • Feature Flags</text>
+
+          <rect x="435" y="205" width="320" height="45" rx="6" fill="#0f172a"/>
+          <rect x="435" y="205" width="320" height="45" rx="6" fill="rgba(52, 211, 153, 0.3)" stroke="#34d399" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <text x="450" y="230" font-size="11" fill="#34d399" font-weight="500">🏪 Vendor Portal (Shared)</text>
+
+          <rect x="435" y="265" width="320" height="45" rx="6" fill="#0f172a"/>
+          <rect x="435" y="265" width="320" height="45" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <text x="450" y="290" font-size="11" fill="#fb923c" font-weight="500">📝 Content (Shared Sanity Project)</text>
+        </g>
+
+        <!-- Platform Core (commerce-core package) -->
+        <g id="platform-core">
+          <rect x="800" y="70" width="360" height="280" rx="8" fill="#0f172a"/>
+          <rect x="800" y="70" width="360" height="280" rx="8" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="2"/>
+
+          <text x="820" y="100" font-size="13" fill="#34d399" font-weight="600">⚙️ Platform Core: @kitchenhub/commerce-core</text>
+          <text x="820" y="120" font-size="10" fill="#94a3b8">Shared npm package • Monorepo (Turborepo)</text>
+
+          <rect x="815" y="140" width="330" height="45" rx="6" fill="#0f172a"/>
+          <rect x="815" y="140" width="330" height="45" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="830" y="168" font-size="11" fill="#34d399" font-weight="500">🛒 CartService</text>
+          <text x="830" y="180" font-size="9" fill="#64748b">add/set/clear • persistence (KV) • sync</text>
+
+          <rect x="815" y="200" width="330" height="45" rx="6" fill="#0f172a"/>
+          <rect x="815" y="200" width="330" height="45" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="830" y="228" font-size="11" fill="#34d399" font-weight="500">📦 ProductService</text>
+          <text x="830" y="240" font-size="9" fill="#64748b">CRUD • Variants • Images • Collections</text>
+
+          <rect x="815" y="260" width="330" height="45" rx="6" fill="#0f172a"/>
+          <rect x="815" y="260" width="330" height="45" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="830" y="288" font-size="11" fill="#34d399" font-weight="500">💳 OrderService</text>
+          <text x="830" y="300" font-size="9" fill="#64748b">Create • Status • Commission Calc • Webhooks</text>
+
+          <rect x="815" y="320" width="330" height="45" rx="6" fill="#0f172a"/>
+          <rect x="815" y="320" width="330" height="45" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="830" y="348" font-size="11" fill="#34d399" font-weight="500">🔌 PaymentGateway Interface</text>
+          <text x="830" y="360" font-size="9" fill="#64748b">SSLCommerzAdapter • StripeAdapter • Extensible</text>
+        </g>
+
+        <!-- Data Layer -->
+        <g id="data-layer">
+          <rect x="40" y="380" width="520" height="280" rx="8" fill="#0f172a"/>
+          <rect x="40" y="380" width="520" height="280" rx="8" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="2"/>
+
+          <text x="60" y="410" font-size="13" fill="#a78bfa" font-weight="600">🗄️ Data Layer (D1 Database v2)</text>
+
+          <!-- Tables -->
+          <rect x="55" y="430" width="240" height="200" rx="6" fill="#0f172a"/>
+          <rect x="55" y="430" width="240" height="200" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="70" y="455" font-size="11" fill="#a78bfa" font-weight="500">Core Tables (v1)</text>
+          <text x="70" y="470" font-size="9" fill="#64748b">▸ users, sessions</text>
+          <text x="70" y="482" font-size="9" fill="#64748b">▸ products, collections</text>
+          <text x="70" y="494" font-size="9" fill="#64748b">▸ carts, orders</text>
+          <text x="70" y="506" font-size="9" fill="#64748b">▸ favorites, addresses</text>
+          <text x="70" y="518" font-size="9" fill="#64748b">▸ indexes: tran_id, session</text>
+
+          <rect x="310" y="430" width="235" height="200" rx="6" fill="#0f172a"/>
+          <rect x="310" y="430" width="235" height="200" rx="6" fill="rgba(167, 139, 250, 0.4)" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="325" y="455" font-size="11" fill="#a78bfa" font-weight="500">Marketplace Tables (v2)</text>
+          <text x="325" y="470" font-size="9" fill="#64748b">▸ vendors, commissions</text>
+          <text x="325" y="482" font-size="9" fill="#64748b">▸ tenants, feature_flags</text>
+          <text x="325" y="494" font-size="9" fill="#64748b">▸ webhooks, audit_logs</text>
+          <text x="325" y="506" font-size="9" fill="#64748b">▸ vendor_payouts</text>
+          <text x="325" y="518" font-size="9" fill="#64748b">▸ vendor_products</text>
+
+          <!-- KV Namespaces -->
+          <rect x="55" y="550" width="490" height="80" rx="6" fill="#0f172a"/>
+          <rect x="55" y="550" width="490" height="80" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="70" y="575" font-size="11" fill="#fbbf24" font-weight="500">☁ KV Namespaces</text>
+          <text x="70" y="590" font-size="9" fill="#94a3b8">▸ SESSION (user sessions)  ▸ CART_KV (guest carts)  ▸ SESSION_KV (auth tokens)</text>
+          <text x="70" y="605" font-size="9" fill="#94a3b8">▸ TENANT_CONFIG (theme, features, domain)  ▸ FEATURE_FLAGS (per-tenant toggles)</text>
+        </g>
+
+        <!-- AI Intelligence Layer -->
+        <g id="ai-layer">
+          <rect x="580" y="380" width="580" height="280" rx="8" fill="#0f172a"/>
+          <rect x="580" y="380" width="580" height="280" rx="8" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="2" stroke-dasharray="6,4"/>
+
+          <text x="600" y="410" font-size="13" fill="#fb923c" font-weight="600">🤖 AI Intelligence Layer (Phase 3)</text>
+
+          <!-- Vectorize -->
+          <rect x="595" y="430" width="270" height="100" rx="6" fill="#0f172a"/>
+          <rect x="595" y="430" width="270" height="100" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+          <text x="610" y="455" font-size="11" fill="#fb923c" font-weight="500">🔍 Cloudflare Vectorize</text>
+          <text x="610" y="470" font-size="9" fill="#94a3b8">▸ 768-dim embeddings (BAAI/bge-base-en-v1.5)</text>
+          <text x="610" y="482" font-size="9" fill="#94a3b8">▸ Cosine similarity • 100K+ vectors</text>
+          <text x="610" y="494" font-size="9" fill="#94a3b8">▸ Auto-sync on product changes</text>
+
+          <!-- Workers AI -->
+          <rect x="885" y="430" width="270" height="100" rx="6" fill="#0f172a"/>
+          <rect x="885" y="430" width="270" height="100" rx="6" fill="rgba(167, 139, 250, 0.3)" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="900" y="455" font-size="11" fill="#a78bfa" font-weight="500">⚡ Workers AI (Embeddings)</text>
+          <text x="900" y="470" font-size="9" fill="#94a3b8">▸ @cf/baai/bge-base-en-v1.5</text>
+          <text x="900" y="482" font-size="9" fill="#94a3b8">▸ Edge inference • <50ms latency</text>
+          <text x="900" y="494" font-size="9" fill="#94a3b8">▸ Batch embedding jobs (Cron)</text>
+
+          <!-- Recommender API -->
+          <rect x="595" y="550" width="560" height="80" rx="6" fill="#0f172a"/>
+          <rect x="595" y="550" width="560" height="80" rx="6" fill="rgba(34, 211, 238, 0.3)" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="610" y="575" font-size="11" fill="#22d3ee" font-weight="500">🎯 Hybrid Recommender API</text>
+          <text x="610" y="590" font-size="9" fill="#94a3b8">▸ GET /api/ai/similar?product_id=X — Content-based (embeddings + tags)</text>
+          <text x="610" y="605" font-size="9" fill="#94a3b8">▸ GET /api/ai/personalize?user_id=Y — Collaborative + Content hybrid (0.6/0.4 weight)</text>
+          <text x="610" y="620" font-size="9" fill="#94a3b8">▸ A/B test framework • CTR tracking • <300ms P99</text>
+        </g>
+
+        <!-- External Integrations -->
+        <g id="external">
+          <rect x="40" y="680" width="1120" height="60" rx="8" fill="#0f172a"/>
+          <rect x="40" y="680" width="1120" height="60" rx="8" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+
+          <text x="60" y="708" font-size="11" fill="#94a3b8" font-weight="500">🔗 External Integrations</text>
+
+          <!-- Payment Gateways -->
+          <g transform="translate(200, 695)">
+            <rect x="0" y="0" width="160" height="30" rx="4" fill="#0f172a"/>
+            <rect x="0" y="0" width="160" height="30" rx="4" fill="rgba(52, 211, 153, 0.3)" stroke="#34d399" stroke-width="1.5"/>
+            <text x="10" y="20" font-size="9" fill="#34d399">💳 SSLCommerz (BD)</text>
+          </g>
+          <g transform="translate(380, 695)">
+            <rect x="0" y="0" width="140" height="30" rx="4" fill="#0f172a"/>
+            <rect x="0" y="0" width="140" height="30" rx="4" fill="rgba(99, 102, 241, 0.3)" stroke="#6366f1" stroke-width="1.5"/>
+            <text x="10" y="20" font-size="9" fill="#6366f1">💳 Stripe (Intl)</text>
+          </g>
+          <g transform="translate(540, 695)">
+            <rect x="0" y="0" width="160" height="30" rx="4" fill="#0f172a"/>
+            <rect x="0" y="0" width="160" height="30" rx="4" fill="rgba(37, 211, 102, 0.3)" stroke="#25d366" stroke-width="1.5"/>
+            <text x="10" y="20" font-size="9" fill="#25d366">📱 WhatsApp Cloud API</text>
+          </g>
+          <g transform="translate(720, 695)">
+            <rect x="0" y="0" width="130" height="30" rx="4" fill="#0f172a"/>
+            <rect x="0" y="0" width="130" height="30" rx="4" fill="rgba(0, 0, 0, 0.3)" stroke="#000" stroke-width="1.5"/>
+            <text x="10" y="20" font-size="9" fill="#f8fafc">📧 Resend (Email)</text>
+          </g>
+          <g transform="translate(870, 695)">
+            <rect x="0" y="0" width="120" height="30" rx="4" fill="#0f172a"/>
+            <rect x="0" y="0" width="120" height="30" rx="4" fill="rgba(245, 101, 101, 0.3)" stroke="#f56565" stroke-width="1.5"/>
+            <text x="10" y="20" font-size="9" fill="#f56565">📝 Sanity CMS</text>
+          </g>
+          <g transform="translate(1010, 695)">
+            <rect x="0" y="0" width="130" height="30" rx="4" fill="#0f172a"/>
+            <rect x="0" y="0" width="130" height="30" rx="4" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+            <text x="10" y="20" font-size="9" fill="#fb923c">☁ Cloudflare Images</text>
+          </g>
+        </g>
+
+        <!-- Connections (Arrows) -->
+        <g stroke-width="1.5" fill="none">
+          <!-- Tenant A → Platform Core -->
+          <path d="M 390 200 L 800 200" stroke="#22d3ee" marker-end="url(#arrowhead-cyan)" opacity="0.8"/>
+          <path d="M 390 250 L 800 250" stroke="#34d399" marker-end="url(#arrowhead-emerald)" opacity="0.8" stroke-dasharray="4,2"/>
+          <path d="M 390 300 L 800 300" stroke="#a78bfa" marker-end="url(#arrowhead-violet)" opacity="0.8" stroke-dasharray="4,2"/>
+          <path d="M 390 350 L 800 350" stroke="#fb923c" marker-end="url(#arrowhead-amber)" opacity="0.8" stroke-dasharray="4,2"/>
+
+          <!-- Tenant B → Platform Core -->
+          <path d="M 770 200 L 800 200" stroke="#22d3ee" marker-end="url(#arrowhead-cyan)" opacity="0.6" stroke-dasharray="6,4"/>
+          <path d="M 770 250 L 800 250" stroke="#34d399" marker-end="url(#arrowhead-emerald)" opacity="0.6" stroke-dasharray="6,4"/>
+
+          <!-- Platform Core → Data Layer -->
+          <path d="M 815 280 L 815 380" stroke="#34d399" marker-end="url(#arrowhead-emerald)" opacity="0.8"/>
+          <path d="M 815 320 L 815 380" stroke="#34d399" marker-end="url(#arrowhead-emerald)" opacity="0.8"/>
+          <path d="M 815 360 L 815 380" stroke="#34d399" marker-end="url(#arrowhead-emerald)" opacity="0.8"/>
+
+          <!-- Data Layer → KV -->
+          <path d="M 300 550 L 300 550" stroke="#fbbf24" marker-end="url(#arrowhead-amber)" opacity="0.5"/>
+
+          <!-- Platform Core → AI Layer -->
+          <path d="M 1160 250 L 1160 380" stroke="#a78bfa" marker-end="url(#arrowhead-violet)" opacity="0.6" stroke-dasharray="4,2"/>
+          <path d="M 1160 300 L 1160 380" stroke="#fb923c" marker-end="url(#arrowhead-amber)" opacity="0.6" stroke-dasharray="4,2"/>
+
+          <!-- Vectorize ↔ Workers AI -->
+          <path d="M 865 480 L 885 480" stroke="#a78bfa" marker-end="url(#arrowhead-violet)" opacity="0.8" stroke-dasharray="2,2"/>
+          <path d="M 885 480 L 865 480" stroke="#fb923c" marker-end="url(#arrowhead-amber)" opacity="0.8" stroke-dasharray="2,2"/>
+
+          <!-- Vectorize → Recommender -->
+          <path d="M 730 500 L 730 550" stroke="#fb923c" marker-end="url(#arrowhead-amber)" opacity="0.8"/>
+          <path d="M 1020 500 L 1020 550" stroke="#a78bfa" marker-end="url(#arrowhead-violet)" opacity="0.8"/>
+
+          <!-- Tenant A → External (Payments) -->
+          <path d="M 150 250 L 200 695" stroke="#34d399" marker-end="url(#arrowhead-emerald)" opacity="0.4" stroke-dasharray="4,4"/>
+          <path d="M 150 300 L 380 695" stroke="#6366f1" marker-end="url(#arrowhead)" opacity="0.4" stroke-dasharray="4,4"/>
+          <path d="M 150 350 L 540 695" stroke="#25d366" marker-end="url(#arrowhead)" opacity="0.4" stroke-dasharray="4,4"/>
+        </g>
+
+        <!-- Phase Labels -->
+        <g font-size="10" font-weight="600">
+          <text x="40" y="365" fill="#22d3ee">PHASE 1: Foundation & Platformization</text>
+          <text x="40" y="365" fill="#34d399" dx="320">PHASE 2: Marketplace & Multi-Vendor</text>
+          <text x="580" y="365" fill="#fb923c">PHASE 3: AI Intelligence & Scale</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="summary-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>Phase 1: Foundation (Weeks 1-4)</h3>
+        </div>
+        <ul>
+          <li>Extract commerce-core npm package (Cart, Product, Order, PaymentGateway)</li>
+          <li>D1 Schema v2: vendors, commissions, tenants, webhooks, audit_logs</li>
+          <li>Tenant middleware: subdomain routing, feature flags, KV config</li>
+          <li>GitHub Actions matrix: preview/PR, staging/main, production/tag</li>
+          <li>Cloudflare Preview URLs for every PR</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>Phase 2: Marketplace (Weeks 5-8)</h3>
+        </div>
+        <ul>
+          <li>Vendor API: register, dashboard, product CRUD, order management</li>
+          <li>Vendor Portal (React Islands): drag-drop images, earnings, payouts</li>
+          <li>Commission engine: configurable rates, daily cron, Stripe Connect/SSLCommerz payouts</li>
+          <li>Admin Dashboard: vendor approval, analytics, commission management</li>
+          <li>Security: vendor isolation, rate limits, load test (100 VUs), audit logging</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot violet"></div>
+          <h3>Phase 3: AI Intelligence (Weeks 9-12)</h3>
+        </div>
+        <ul>
+          <li>Vectorize index: 768-dim embeddings (BAAI/bge-base-en-v1.5)</li>
+          <li>Workers AI: edge inference <50ms, batch embedding jobs</li>
+          <li>Hybrid Recommender: content (0.6) + collaborative (0.4)</li>
+          <li>Personalization API: /api/ai/personalize?user_id=Y</li>
+          <li>Sanity CMS + ISR: Blog, Recipes, Buying Guides, SEO</li>
+          <li>Observability: OpenTelemetry → Grafana Cloud, SLOs, alerting</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>Platform KPIs (v2.0 Targets)</h3>
+        </div>
+        <ul>
+          <li>P99 Latency: <500ms global</li>
+          <li>Error Rate: <0.1%</li>
+          <li>Build/Deploy: <3 min / <2 min</li>
+          <li>Vendors: 20+ by Week 12</li>
+          <li>Products: 500+ listed</li>
+          <li>GMV: $50K+/mo</li>
+          <li>Commission Revenue: $7.5K+/mo</li>
+          <li>Recommender CTR: >15% lift</li>
+          <li>Uptime: 99.9%</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot rose"></div>
+          <h3>Security & Compliance</h3>
+        </div>
+        <ul>
+          <li>PCI DSS SAQ-A (Stripe/SSLCommerz handle cards)</li>
+          <li>GDPR/PDPA: data export, deletion</li>
+          <li>Vendor KYC before payouts</li>
+          <li>Rate limiting: per vendor, IP, endpoint</li>
+          <li>Audit logging: all admin/vendor actions</li>
+          <li>Secrets rotation: quarterly, automated</li>
+          <li>Dependabot + npm audit CI</li>
+          <li>Pen test: Week 8, annually</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot orange"></div>
+          <h3>Team & Budget</h3>
+        </div>
+        <ul>
+          <li>4 Skill Agents + 1 Human Orchestrator</li>
+          <li>Agent-1: Backend Architect (claude-code)</li>
+          <li>Agent-2: Frontend Engineer (claude-code)</li>
+          <li>Agent-3: Data/AI Engineer (codex)</li>
+          <li>Agent-4: Platform/DevOps (hermes-agent)</li>
+          <li>Monthly cost at scale: ~$200-400</li>
+          <li>12 weeks / 12 sprints</li>
+          <li>Go/No-Go: Week 12 criteria</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      KitchenHub Elevation Plan v1.0 • Generated with Architecture Diagram Skill • Cloudflare Edge Native
+    </footer>
+  </div>
+</body>
+</html>

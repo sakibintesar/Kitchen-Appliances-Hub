@@ -5,13 +5,78 @@ import { commerce } from '../lib/commerce';
 import { HOME as T } from '../constants/pages';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
+import FluidCursor from '../components/islands/FluidCursor.tsx';
+import InfiniteGrid from '../components/islands/InfiniteGrid.tsx';
+import MagneticCursor from '../components/islands/MagneticCursor.tsx';
+import KineticHero from '../components/islands/KineticHero.tsx';
+import Product3DViewer from '../components/islands/Product3DViewer.tsx';
+import ScrollTriggered3D from '../components/islands/ScrollTriggered3D.tsx';
 
 const [products, collections] = await Promise.all([
-  commerce.listProducts({ limit: 8 }),
+  commerce.listProducts({ limit: 12 }),
   commerce.listCollections(),
 ]);
 
-// Collection image mapping for the collections shelf
+// Hero slides with 3D integration
+const heroSlides = [
+  {
+    id: 'wolf',
+    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1920&h=1080&fit=crop',
+    alt: 'Wolf professional range in luxury kitchen',
+    badge: 'Professional Cooking',
+    eyebrow: 'Wolf Range Series',
+    title: 'Where culinary ambition meets engineering excellence',
+    subtitle: 'Restaurant-grade precision for the home chef. Dual-stacked burners, infrared charbroiler, and convection oven.',
+    cta: { label: 'Explore Wolf Ranges', href: '/collections/cooking' },
+    accentColor: 'from-amber-500/20 to-orange-500/10',
+    productHandle: 'wolf-36-dual-fuel-range',
+    model3d: 'wolf',
+  },
+  {
+    id: 'subzero',
+    image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=1920&h=1080&fit=crop',
+    alt: 'Sub-Zero refrigerator in modern kitchen',
+    badge: 'Premium Refrigeration',
+    eyebrow: 'Sub-Zero Collection',
+    title: 'Preservation perfected. Freshness redefined.',
+    subtitle: 'Dual refrigeration system. NASA-inspired air purification. 20-year design life.',
+    cta: { label: 'Discover Sub-Zero', href: '/collections/refrigeration' },
+    accentColor: 'from-sky-500/20 to-blue-500/10',
+    productHandle: 'sub-zero-48-pro-french-door',
+    model3d: 'subzero',
+  },
+  {
+    id: 'miele',
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&h=1080&fit=crop',
+    alt: 'Miele dishwasher with 3D+ cutlery tray',
+    badge: 'German Engineering',
+    eyebrow: 'Miele Dishwashers',
+    title: 'The quietest clean you\'ll ever experience.',
+    subtitle: '3D+ cutlery tray. AutoOpen drying. 38 dB silence. 20-year tested longevity.',
+    cta: { label: 'View Miele', href: '/collections/dishwashers' },
+    accentColor: 'from-emerald-500/20 to-teal-500/10',
+    productHandle: 'miele-g7000-dishwasher',
+    model3d: 'miele',
+  },
+  {
+    id: 'lamarzocco',
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&h=1080&fit=crop',
+    alt: 'La Marzocco Linea Micra espresso machine',
+    badge: 'Barista Quality',
+    eyebrow: 'La Marzocco Home',
+    title: 'Café-grade espresso. Kitchen counter footprint.',
+    subtitle: 'Dual boiler. PID temperature control. Saturated groups. Commercial steam power.',
+    cta: { label: 'Shop Espresso', href: '/collections/small-appliances' },
+    accentColor: 'from-amber-600/20 to-amber-800/10',
+    productHandle: 'la-marzocco-linea-micra',
+    model3d: 'lamarzocco',
+  },
+];
+
+const experienceSlides = (await getCollection('experiences'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => entry.data);
+
 const collectionImages: Record<string, string> = {
   cooking: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=600&fit=crop',
   refrigeration: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=800&h=600&fit=crop',
@@ -19,436 +84,480 @@ const collectionImages: Record<string, string> = {
   ventilation: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
   'small-appliances': 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=600&fit=crop',
 };
-
-// Hero slides for the animated webslide
-const heroSlides = [
-  {
-    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1200&h=800&fit=crop',
-    alt: 'Woman cooking with Wolf range',
-    badge: 'Professional Cooking',
-    title: 'Craft your culinary masterpiece',
-    subtitle: 'Wolf ranges deliver restaurant-grade precision for the home chef',
-    cta: { label: 'Shop Cooking', href: '/collections/cooking' },
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=1200&h=800&fit=crop',
-    alt: 'Woman opening Sub-Zero refrigerator',
-    badge: 'Premium Refrigeration',
-    title: 'Preserve perfection',
-    subtitle: 'Sub-Zero dual refrigeration keeps ingredients at peak freshness',
-    cta: { label: 'Explore Refrigeration', href: '/collections/refrigeration' },
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=800&fit=crop',
-    alt: 'Woman using Miele dishwasher',
-    badge: 'German Engineering',
-    title: 'Effortless cleanup',
-    subtitle: 'Miele dishwashers with 3D+ cutlery tray and AutoOpen drying',
-    cta: { label: 'View Dishwashers', href: '/collections/dishwashers' },
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&h=800&fit=crop',
-    alt: 'Woman making espresso with La Marzocco',
-    badge: 'Barista Quality',
-    title: 'Café experience at home',
-    subtitle: 'La Marzocco commercial espresso machines for the discerning palate',
-    cta: { label: 'Shop Espresso', href: '/collections/small-appliances' },
-  },
-];
-
-// Experience slides from the content collection (src/content/experiences/*.json)
-const experienceSlides = (await getCollection('experiences'))
-  .sort((a, b) => a.data.order - b.data.order)
-  .map((entry) => entry.data);
 ---
 
 <Layout>
-  <!-- Hero Webslide -->
-  <section class="relative w-full overflow-hidden" data-hero-webslide>
-    <!-- Background Slides -->
-    <div class="absolute inset-0" data-slides-container>
-      {heroSlides.map((slide, i) => (
-        <div
-          class={`absolute inset-0 transition-all duration-1000 ease-out ${i === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
-          data-slide={String(i)}
-          style={`z-index: ${heroSlides.length - i}`}
-        >
-          <Image
-            src={slide.image}
-            alt={slide.alt}
-            class="w-full h-full object-cover"
-            width={1200}
-            height={800}
-            loading={i === 0 ? 'eager' : 'lazy'}
-            fetchpriority={i === 0 ? 'high' : 'auto'}
-            decoding="async"
-          />
-          <div class="absolute inset-0 bg-gradient-to-r from-neutral-900/60 via-neutral-900/30 to-transparent" />
-          <div class="absolute inset-0 bg-gradient-to-t from-neutral-900/50 to-transparent" />
-        </div>
-      ))}
-    </div>
-
-    <!-- Navigation Dots -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20" data-slide-dots>
-      {heroSlides.map((_, i) => (
-        <button
-          type="button"
-          data-dot={String(i)}
-          class={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${i === 0 ? 'bg-white w-8' : 'bg-white/40 hover:bg-white/60'}`}
-          aria-label={`Go to slide ${i + 1}`}
-          aria-current={i === 0 ? 'true' : 'false'}
-        />
-      ))}
-    </div>
-
-    <!-- Content Overlay -->
-    <div class="relative z-10 mx-auto max-w-6xl px-5 py-20 md:py-32 lg:py-40">
-      <div class="max-w-3xl" data-slide-content>
-        {heroSlides.map((slide, i) => (
-          <div
-            class={`absolute inset-0 transition-all duration-700 ease-out ${i === 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
-            data-content={String(i)}
-          >
-            <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[13px] font-medium text-white backdrop-blur border border-white/20">
-              {slide.badge}
-            </span>
-            <h1 class="mt-5 font-display text-[clamp(36px,6vw,64px)] font-extrabold leading-[0.95] tracking-tight text-white">
-              {slide.title}
-            </h1>
-            <p class="mt-4 text-[clamp(16px,2.5vw,20px)] leading-relaxed text-white/80 max-w-[48ch]">
-              {slide.subtitle}
-            </p>
-            <div class="mt-8 flex flex-wrap gap-3">
-              <a
-                href={slide.cta.href}
-                class="rounded-md bg-gold-500 px-7 py-3.5 text-[15px] font-semibold text-white hover:bg-gold-600 transition-colors shadow-lg shadow-gold-500/30"
-              >
-                {slide.cta.label}
-              </a>
-              <a
-                href="/collections"
-                class="rounded-md border border-white/30 bg-white/5 px-7 py-3.5 text-[15px] font-semibold text-white hover:bg-white/10 transition-colors backdrop-blur"
-              >
-                View All Collections
-              </a>
-            </div>
-            <p class="mt-6 text-[14px] text-white/60">
-              Free shipping on orders over $500. White-glove delivery & installation available.
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <!-- Scroll Indicator -->
-    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce z-20" aria-hidden="true">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white/60">
-        <path d="M12 5v14M19 12l-7 7-7-7" />
-      </svg>
-    </div>
-  </section>
-
-  <!-- Theme bar: quiet strip under the hero -->
-  <div class="border-y border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50">
-    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-5 gap-y-1 px-5 py-3 text-[13px] text-muted">
-      <span>{T.themeBar.text}</span>
-      <a href={T.themeBar.cta.href} class="font-semibold text-neutral-900 dark:text-white underline underline-offset-4 hover:text-gold-600">{T.themeBar.cta.label}</a>
-      <a href={T.themeBar.cta2.href} class="font-semibold text-neutral-900 dark:text-white underline underline-offset-4 hover:text-gold-600">{T.themeBar.cta2.label}</a>
-    </div>
-  </div>
-
-  <!-- Collections shelf -->
-  <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14">
-    <h2 class="font-display text-3xl font-bold tracking-tight">{T.collections.title}</h2>
-    <div class="mt-7 grid gap-5 sm:grid-cols-3">
-      {collections.map((c) => (
-        <a href={`/collections/${c.handle}`} class="group block">
-          <div class="overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800">
-            <Image
-              src={collectionImages[c.handle] || 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=600&fit=crop'}
-              alt={c.title}
-              class="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-              loading="lazy"
-              width={800}
-              height={600}
-              decoding="async"
-            />
-          </div>
-          <h3 class="mt-3 text-[17px] font-semibold group-hover:underline group-hover:underline-offset-4">{c.title}</h3>
-          <p class="mt-1 text-[14px] text-muted">{c.description}</p>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- Products -->
-  <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14">
-    <div class="flex items-baseline justify-between">
-      <h2 class="font-display text-3xl font-bold tracking-tight">{T.products.title}</h2>
-      <p class="text-[14px] text-muted">{products.length} {T.products.countLabel}</p>
-    </div>
-    <div class="mt-7 grid grid-cols-2 gap-x-5 gap-y-5 md:grid-cols-4">
-      {products.map((p) => <ProductCard product={p} />)}
-    </div>
-  </section>
-
-  <!-- Values -->
-  <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14">
-    <h2 class="font-display text-3xl font-bold tracking-tight">{T.values.title}</h2>
-    <div class="mt-7 grid gap-5 md:grid-cols-3">
-      {T.values.items.map((v) => (
-        <article class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 transition hover:border-gold-300 dark:hover:border-gold-700">
-          <h3 class="font-display text-xl font-bold">{v.title}</h3>
-          <p class="mt-3 text-[15px] leading-relaxed text-muted">{v.text}</p>
-        </article>
-      ))}
-    </div>
-  </section><!-- Experiences & Testimonials Grid -->
-  <section class="mx-auto max-w-6xl px-5 py-4 sm:py-14" aria-labelledby="experience-heading">
-    <div class="flex items-baseline justify-between mb-7">
-      <header>
-        <span class="inline-flex items-center gap-2 rounded-full bg-gold-500/10 px-3 py-1 text-[12px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20">
-          Curated Experiences
-        </span>
-        <h2 id="experience-heading" class="mt-3 font-display text-3xl font-bold tracking-tight">
-          Kitchens Designed for How You Live
-        </h2>
-      </header>
-      <a href="/builder" class="hidden sm:inline-flex items-center gap-1.5 text-[14px] font-medium text-muted hover:text-ink transition-colors">
-        View All
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </a>
-    </div>
-
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
-      {experienceSlides.map((slide, i) => (
-        <article class="group relative overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition hover:border-gold-300 dark:hover:border-gold-700" style={{animationDelay: `${i * 100}ms`}}>
-          <a href={slide.cta.href} class="block" aria-label={"View " + slide.label + " experience"}>
-            <div class="aspect-[4/3] overflow-hidden">
-              <Image
-                src={slide.heroImage}
-                alt={slide.heroAlt}
-                class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                loading="lazy"
-                width={600}
-                height={450}
-                decoding="async"
-              >
-                <source media="(max-width: 767px)" srcset={slide.heroImageMobile} />
-              </Image>
-            </div>
-          </a>
-
-          <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-neutral-900/90 via-neutral-900/20 to-transparent" aria-hidden="true" />
-
-          <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white backdrop-blur border border-white/20">
-              {slide.label}
-            </span>
-
-            <h3 class="mt-3 font-display text-[clamp(20px,3vw,28px)] font-extrabold leading-[1.05] tracking-tight text-white group-hover:underline group-hover:underline-offset-4 transition-colors">
-              <a href={slide.cta.href}>{slide.tagline}</a>
-            </h3>
-
-            <p class="mt-2 text-[14px] leading-relaxed text-neutral-300 line-clamp-2 max-w-[42ch]">
-              {slide.description}
-            </p>
-
-            <div class="mt-4 flex flex-wrap gap-3" role="list" aria-label="Key highlights">
-              {slide.stats.map((stat, sIdx) => (
-                <div class="flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 text-white/80 transition hover:bg-white/10" role="listitem" style={{animationDelay: `${300 + sIdx * 60}ms`}}>
-                  <span class="font-display font-extrabold text-white">{stat.value}</span>
-                  <span class="text-[11px] font-medium uppercase tracking-wider">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div class="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-white/10">
-              <div class="flex flex-col">
-                <span class="text-[10px] font-medium text-gold-400 uppercase tracking-wider">Total Investment</span>
-                <span class="font-display text-lg font-bold text-white">${slide.totalInvestment.toLocaleString()}</span>
-              </div>
-              <a
-                href={slide.cta.href}
-                class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-lg bg-gold-500 text-neutral-900 font-semibold text-sm hover:bg-gold-400 transition-all duration-300 shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40"
-              >
-                {slide.cta.label}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </article>
-      ))}
-
-      <!-- Customer Testimonial Card -->
-      <article class="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-2 group relative overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 transition hover:border-gold-300 dark:hover:border-gold-700 flex flex-col">
-        <div class="relative flex-1 flex flex-col p-6 sm:p-8 lg:p-10 bg-gradient-to-br from-neutral-50 via-white to-neutral-50 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-900/50">
-          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500" aria-hidden="true" />
-          <div class="absolute top-6 left-6 w-12 h-12 text-gold-500/20" aria-hidden="true">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 9.012-9.57 2.526 0 4.623 1.145 5.914 2.838l-1.672 1.568c-1.079-1.316-2.55-2.105-4.242-2.105-3.641 0-6.593 3.031-6.593 6.763v4.076h-2.829v-4.076c0-4.381 3.486-7.924 7.831-7.924 2.414 0 4.45 1.189 5.411 2.958l1.905-1.773C19.89 2.855 17.145 1 14.017 1c-7.732 0-14 6.268-14 14v7.391h-2.829v-7.391c0-3.764 3.02-6.763 6.763-6.763 2.072 0 3.954 0.877 5.252 2.273l-1.717 1.714c-0.882-0.947-2.027-1.502-3.535-1.502-1.778 0-3.23 1.452-3.23 3.239v4.076H7.983v7.391h6.034zM2.829 21v-7.391c0-5.704 3.731-9.57 9.012-9.57 2.526 0 4.623 1.145 5.914 2.838l-1.672 1.568c-1.079-1.316-2.55-2.105-4.242-2.105-3.641 0-6.593 3.031-6.593 6.763v4.076H2.829v-4.076c0-4.381 3.486-7.924 7.831-7.924 2.414 0 4.45 1.189 5.411 2.958l1.905-1.773C19.89 2.855 17.145 1 14.017 1c-7.732 0-14 6.268-14 14v7.391h2.829z"/>
-            </svg>
-          </div>
-
-          <div class="absolute bottom-6 right-6 w-12 h-12 text-gold-500/20 rotate-180" aria-hidden="true">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 9.012-9.57 2.526 0 4.623 1.145 5.914 2.838l-1.672 1.568c-1.079-1.316-2.55-2.105-4.242-2.105-3.641 0-6.593 3.031-6.593 6.763v4.076h-2.829v-4.076c0-4.381 3.486-7.924 7.831-7.924 2.414 0 4.45 1.189 5.411 2.958l1.905-1.773C19.89 2.855 17.145 1 14.017 1c-7.732 0-14 6.268-14 14v7.391h-2.829v-7.391c0-3.764 3.02-6.763 6.763-6.763 2.072 0 3.954 0.877 5.252 2.273l-1.717 1.714c-0.882-0.947-2.027-1.502-3.535-1.502-1.778 0-3.23 1.452-3.23 3.239v4.076H7.983v7.391h6.034zM2.829 21v-7.391c0-5.704 3.731-9.57 9.012-9.57 2.526 0 4.623 1.145 5.914 2.838l-1.672 1.568c-1.079-1.316-2.55-2.105-4.242-2.105-3.641 0-6.593 3.031-6.593 6.763v4.076H2.829v-4.076c0-4.381 3.486-7.924 7.831-7.924 2.414 0 4.45 1.189 5.411 2.958l1.905-1.773C19.89 2.855 17.145 1 14.017 1c-7.732 0-14 6.268-14 14v7.391h2.829z"/>
-            </svg>
-          </div>
-
-          <figure class="relative z-10 flex-1 flex flex-col justify-center">
-            <blockquote>
-              <p class="font-display text-[clamp(20px,2.5vw,28px)] font-semibold leading-snug text-neutral-900 dark:text-white">
-                "{T.quote.text}"
-              </p>
-            </blockquote>
-            <figcaption class="mt-8 flex items-center gap-4">
-              <div class="w-12 h-12 rounded-full bg-gold-100 dark:bg-gold-900/30 flex items-center justify-center flex-shrink-0">
-                <svg class="w-6 h-6 text-gold-600 dark:text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                </svg>
-              </div>
-              <div class="text-left">
-                <p class="font-medium text-neutral-900 dark:text-white" set:html={T.quote.author} />
-                <p class="text-[13px] text-muted">Verified Owner</p>
-              </div>
-            </figcaption>
-          </figure>
-        </div>
-
-        <div class="px-6 sm:px-8 lg:px-10 pb-6 sm:pb-8 lg:pb-10 pt-4 border-t border-neutral-200 dark:border-neutral-700 bg-white/50 dark:bg-neutral-900/50">
-          <a
-            href="/reviews"
-            class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-gold-500 text-gold-600 dark:text-gold-400 font-semibold text-sm hover:bg-gold-500 hover:text-neutral-900 dark:hover:text-neutral-900 transition-all duration-300"
-          >
-            Read More Reviews
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </a>
-        </div>
-      </article>
-    </div>
-  </section>
-<!-- Newsletter Section -->
-  <section class="relative overflow-hidden bg-neutral-950 py-16 md:py-24 lg:py-28" aria-labelledby="newsletter-heading">
-    <!-- Subtle background pattern -->
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2760%27 height=%2760%27 viewBox=%270 0 60 60%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cg fill=%27none%27 fill-rule=%27evenodd%27%3E%3Cg fill=%27%23ffffff%27 fill-opacity=%270.015%27%3E%3Cpath d=%27M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h-4zm0-30V0H4v4H0v2h4v4h2V6h4V4H0z%27/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" aria-hidden="true" />
-    <!-- Radial gradient glow -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.08)_0%,_transparent_70%)]" aria-hidden="true" />
-    <!-- Top accent line -->
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-px bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" aria-hidden="true" />
-
-    <div class="relative mx-auto max-w-6xl px-5">
-      <!-- Header -->
-      <header class="text-center max-w-3xl mx-auto mb-12">
-        <span class="inline-flex items-center gap-2 rounded-full bg-gold-500/10 px-4 py-1.5 text-[12px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20 animate-fade-up">
-          {T.newsletter.eyebrow}
-        </span>
-        <h2 id="newsletter-heading" class="mt-5 font-display text-[clamp(28px,4.5vw,42px)] font-extrabold leading-[0.95] tracking-tight text-white animate-slide-up" style={{animationDelay: '80ms'}}>
-          {T.newsletter.title}
-        </h2>
-        <p class="mt-4 text-[clamp(15px,2vw,18px)] leading-relaxed text-neutral-300 max-w-[50ch] mx-auto animate-slide-up" style={{animationDelay: '160ms'}}>
-          {T.newsletter.description}
-        </p>
-      </header>
-
-      <!-- Main content grid -->
-      <div class="grid lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-12 items-start">
-        <!-- Left: Signup Form + Benefits -->
-        <div class="space-y-8 animate-slide-up" style={{animationDelay: '240ms'}}>
-          <!-- Signup Form Card -->
-          <div class="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 p-6 md:p-8 shadow-2xl shadow-black/30">
-            <form class="space-y-4" action="/newsletter" method="POST" data-newsletter-form>
-              <label for="newsletter-email" class="sr-only">Email address</label>
-              <div class="relative">
-                <input
-                  type="email"
-                  id="newsletter-email"
-                  name="email"
-                  placeholder={T.newsletter.placeholder}
-                  required
-                  class="w-full appearance-none rounded-lg bg-neutral-950 border border-white/10 px-5 py-4 text-[16px] text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50 transition-all duration-300"
-                  autocomplete="email"
-                  aria-describedby="newsletter-privacy"
-                />
-                <button
-                  type="submit"
-                  class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-gold-500 px-5 py-2.5 text-sm font-semibold text-neutral-900 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/30 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 focus:ring-offset-neutral-950 transition-all duration-300"
-                  aria-label={T.newsletter.buttonLabel}
-                >
-                  {T.newsletter.buttonLabel}
-                  <svg class="ml-2 w-4 h-4 -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </button>
-              </div>
-              <p id="newsletter-privacy" class="text-[12px] text-neutral-500 text-center" set:html={T.newsletter.privacyText} />
-            </form>
-
-            <!-- Success state (hidden by default) -->
-            <div id="newsletter-success" class="hidden text-center py-4">
-              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/20 text-green-400 mb-3">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
-              </div>
-              <p class="font-semibold text-white">You're on the list!</p>
-              <p class="text-sm text-neutral-400 mt-1">Check your inbox for a welcome note.</p>
-            </div>
-          </div><!-- Benefits List -->
-          <ul class="grid sm:grid-cols-2 gap-3" role="list" aria-label="Newsletter benefits">
-            {T.newsletter.benefits.map((benefit, i) => (
-              <li class="flex items-start gap-3 rounded-lg bg-neutral-900/40 backdrop-blur-sm border border-white/5 p-4 transition-all duration-300 hover:border-gold-500/30 hover:bg-white/5 animate-slide-up" style={{animationDelay: `${320 + i * 80}ms`}}>
-                <span class="flex-shrink-0 mt-0.5 w-6 h-6 rounded-full bg-gold-500/15 flex items-center justify-center">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gold-400">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </span>
-                <span class="text-[14px] leading-relaxed text-neutral-200">{benefit}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <!-- Right: Trust Badges / Social Proof -->
-        <div class="hidden lg:block animate-slide-right" style={{animationDelay: '300ms'}}>
-          <div class="sticky top-24 space-y-4">
-            <!-- Trust badges card -->
-            <div class="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 p-6 shadow-2xl shadow-black/30">
-              <h3 class="font-display text-lg font-bold text-white mb-5 tracking-tight">Trusted by Culinary Enthusiasts</h3>
-              <div class="grid grid-cols-3 gap-4">
-                {T.newsletter.trustBadges.map((badge, i) => (
-                  <div class="text-center p-4 rounded-xl bg-neutral-950 border border-white/5 hover:border-gold-500/20 transition-all duration-300" style={{animationDelay: `${400 + i * 100}ms`}}>
-                    <div class="font-display text-2xl md:text-3xl font-extrabold text-gold-400 leading-none mb-1">{badge.label}</div>
-                    <div class="text-[11px] font-medium text-neutral-400 uppercase tracking-wider">{badge.text}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <!-- Decorative accent -->
-            <div class="rounded-2xl bg-gradient-to-br from-gold-500/10 to-gold-600/5 border border-gold-500/20 p-6 text-center">
-              <svg class="mx-auto w-12 h-12 text-gold-500/50 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 9.09a3 3 0 1 1 5.83 1c0 2-3 3-3 3" />
-              </svg>
-              <p class="font-display text-lg font-semibold text-white mb-1">Curated Weekly</p>
-              <p class="text-sm text-neutral-400">Hand-picked inspiration, no algorithms</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  <!-- Magnetic Cursor (Global) -->
+  <MagneticCursor client:load />
   
+  <!-- Fluid Cursor (Global) -->
+  <FluidCursor client:load />
+
+  <!-- ==========================================
+       KINETIC HERO: SVG Text Warping + Torn Page Anchor + Scroll-Triggered 3D
+       ========================================== -->
+  <KineticHero client:load slides={heroSlides} />
+
+  <!-- Brand Promise Bar - Sticky on Scroll -->
+  <section class="sticky top-0 z-40 border-y border-neutral-200/50 dark:border-neutral-700/50 bg-neutral-50/80 dark:bg-neutral-900/80 backdrop-blur-md">
+    <div class="mx-auto max-w-7xl px-5 py-4">
+      <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[13px] text-muted font-medium">
+        <div class="flex items-center gap-2 group">
+          <svg class="w-5 h-5 text-gold-500 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>White-glove delivery & installation</span>
+        </div>
+        <div class="flex items-center gap-2 group">
+          <svg class="w-5 h-5 text-gold-500 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          <span>2-year warranty on all appliances</span>
+        </div>
+        <div class="flex items-center gap-2 group">
+          <svg class="w-5 h-5 text-gold-500 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H7v-2c0-.656.126-1.283.356-1.857M7 20H7v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span>Expert design consultation</span>
+        </div>
+        <div class="flex items-center gap-2 group">
+          <svg class="w-5 h-5 text-gold-500 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Price match guarantee</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+         INFINITE GRID SCROLL EXPERIENCE
+         ========================================== -->
+    <section class="relative min-h-[200vh] bg-neutral-950" data-infinite-experience>
+      <!-- Scroll-Triggered 3D Background -->
+      <ScrollTriggered3D 
+        client:load 
+        slides={[
+          { id: 'products', model3d: 'wolf', title: 'Wolf 36" Dual Fuel Range', category: 'Professional Cooking', href: '/products/wolf-36-dual-fuel-range' },
+          { id: 'trust', model3d: 'subzero', title: 'Sub-Zero 48" Pro French Door', category: 'Premium Refrigeration', href: '/products/sub-zero-48-pro-french-door' },
+          { id: 'experiences', model3d: 'miele', title: 'Miele G7000 Dishwasher', category: 'German Engineering', href: '/products/miele-g7000-dishwasher' },
+          { id: 'cta', model3d: 'lamarzocco', title: 'La Marzocco Linea Micra', category: 'Barista Quality', href: '/products/la-marzocco-linea-micra' },
+        ]}
+        className="absolute inset-0 -z-10 opacity-30"
+      />
+    
+      <!-- Scroll-Triggered Content Sections -->
+            <div class="relative z-10 w-full">
+
+              <!-- Section 1: Featured 3D Products with Scroll Parallax -->
+              <section class="relative min-h-screen flex items-center justify-center px-5" data-scroll-section="products">
+                <div class="relative z-10 w-full max-w-7xl mx-auto px-5">
+                  <header class="text-center max-w-3xl mx-auto mb-16" data-scroll-fade>
+                    <span class="inline-flex items-center gap-2 rounded-full bg-gold-500/10 px-4 py-1.5 text-[12px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20">
+                      Featured Innovations
+                    </span>
+                    <h2 class="mt-5 font-display text-[clamp(36px,6vw,56px)] font-extrabold leading-[0.9] tracking-tight text-white">
+                      Engineering excellence you can experience
+                    </h2>
+                    <p class="mt-5 text-[clamp(18px,3vw,24px)] leading-relaxed text-white/70 max-w-[60ch] mx-auto">
+                      Each appliance represents decades of engineering mastery. Hover to explore in 3D, configure your dream kitchen, and experience the difference.
+                    </p>
+                  </header>
+
+                  <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                    {[
+                      { handle: 'wolf-36-dual-fuel-range', label: 'Wolf 36" Dual Fuel Range', category: 'Professional Cooking', model3d: 'wolf', href: '/products/wolf-36-dual-fuel-range' },
+                      { handle: 'sub-zero-48-pro-french-door', label: 'Sub-Zero 48" Pro French Door', category: 'Premium Refrigeration', model3d: 'subzero', href: '/products/sub-zero-48-pro-french-door' },
+                      { handle: 'miele-g7000-dishwasher', label: 'Miele G7000 Dishwasher', category: 'German Engineering', model3d: 'miele', href: '/products/miele-g7000-dishwasher' },
+                      { handle: 'la-marzocco-linea-micra', label: 'La Marzocco Linea Micra', category: 'Barista Quality', model3d: 'lamarzocco', href: '/products/la-marzocco-linea-micra' },
+                    ].map((product, i) => (
+                      <article 
+                        class="group relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/50 transition-all duration-700 hover:border-gold-500/50 hover:shadow-[0_0_80px_rgba(212,175,55,0.15)] hover:scale-[1.01] animate-fade-up"
+                        style={{animationDelay: `${100 + i * 100}ms`}}
+                        data-scroll-parallax
+                      >
+                        <div class="relative aspect-[4/3] overflow-hidden bg-neutral-900">
+                          <Product3DViewer 
+                            client:visible
+                            productHandle={product.handle}
+                            className="w-full h-full"
+                            data-magnetic
+                            data-magnetic-strength="1.5"
+                            data-magnetic-scale="1.2"
+                          />
+            
+                          <!-- 3D Badge -->
+                          <div class="absolute top-4 left-4">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-medium text-neutral-900 backdrop-blur border border-white/50 shadow-lg">
+                              <svg class="w-3.5 h-3.5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                              </svg>
+                              3D Interactive
+                            </span>
+                          </div>
+            
+                          <!-- Hover indicator -->
+                          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                            <span class="inline-flex items-center gap-2 rounded-2xl bg-white px-6 py-3 text-[14px] font-semibold text-neutral-900 shadow-2xl hover:bg-gold-50 hover:shadow-[0_0_60px_rgba(212,175,55,0.4)] transition-all duration-300">
+                              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                              </svg>
+                              Hover to Explore
+                            </span>
+                          </div>
+                        </div>
+    
+                        <!-- Product Info -->
+                        <div class="p-6 sm:p-8">
+                          <span class="inline-flex items-center gap-1.5 rounded-full bg-gold-500/10 px-3 py-1 text-[11px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20">
+                            {product.category}
+                          </span>
+                          <h3 class="mt-4 font-display text-xl font-bold tracking-tight text-white group-hover:text-gold-400 transition-colors duration-300">
+                            {product.label}
+                          </h3>
+                          <div class="mt-4 flex items-center gap-4">
+                            <a href={product.href} class="inline-flex items-center gap-1.5 text-[14px] font-medium text-white/60 hover:text-gold-400 transition-colors duration-300">
+                              Configure
+                              <svg class="w-4 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                              </svg>
+                            </a>
+                            <a class="inline-flex items-center gap-1.5 text-[14px] font-medium text-white/60 hover:text-white/400 transition-colors duration-300">
+                              Compare
+                              <svg class="w-4 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                              </svg>
+                            </a>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                  
+                  <div class="mt-16 text-center" data-scroll-fade>
+                    <a href="/collections" class="inline-flex items-center gap-2 rounded-2xl border-2 border-gold-500 text-gold-400 font-semibold px-10 py-5 hover:bg-gold-500 hover:text-neutral-900 transition-all duration-500 shadow-xl shadow-gold-500/20">
+                      View All Collections
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </section>
+
+      <!-- Section 2: Why KitchenHub - Trust Pillars -->
+      <section class="relative min-h-screen flex items-center justify-center px-5 bg-neutral-900/50" data-scroll-section="trust">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.08)_0%,_transparent_70%)]" aria-hidden="true" />
+        
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-5">
+          <header class="text-center max-w-3xl mx-auto mb-16" data-scroll-fade>
+            <span class="inline-flex items-center gap-2 rounded-full bg-gold-500/10 px-4 py-1.5 text-[12px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20">
+              Why KitchenHub
+            </span>
+            <h2 class="mt-5 font-display text-[clamp(36px,6vw,56px)] font-extrabold leading-[0.9] tracking-tight text-white">
+              Trusted by designers, chefs & homeowners
+            </h2>
+            <p class="mt-5 text-[clamp(18px,3vw,24px)] leading-relaxed text-white/70 max-w-[55ch] mx-auto">
+              We don't just sell appliances. We curate the world's finest kitchen engineering and deliver it with expertise that transforms houses into culinary homes.
+            </p>
+          </header>
+
+          <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: 'truck', title: 'White-Glove Delivery', desc: 'Professional installation by certified technicians. We remove packaging, level, calibrate, and demo.' },
+              { icon: 'shield', title: '2-Year Warranty', desc: 'Full coverage on parts & labor. Extended protection plans available up to 5 years.' },
+              { icon: 'headphones', title: 'Expert Support', desc: 'Direct access to product specialists. Design consultation. Post-installation care.' },
+              { icon: 'sparkles', title: 'Curated Selection', desc: 'Every appliance vetted by our design team. Only the top 1% of global engineering makes our catalog.' },
+            ].map((item, i) => (
+              <article class="group relative p-6 sm:p-8 rounded-2xl border border-neutral-800 bg-neutral-900/50 transition-all duration-700 hover:border-gold-500/50 hover:shadow-[0_0_60px_rgba(212,175,55,0.15)] hover:scale-[1.01] animate-fade-up" style={{animationDelay: `${100 + i * 100}ms`}} data-scroll-parallax>
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div class="relative mb-6">
+                  <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gold-500/10 text-gold-500 group-hover:bg-gold-500 group-hover:text-white transition-all duration-500">
+                    {item.icon === 'truck' && (
+                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010.986 10H6a2 2 0 00-2 2v5.66l-1 1.732A1 1 0 004 18.781V19a1 1 0 001 1h16a1 1 0 001-1v-.219a1 1 0 00-.553-.894l-1-1.732V13a1 1 0 00-1-1h-4.465l.496-.331A1 1 0 0014 12.115V9a1 1 0 00-1-1H7.586l-.537-.358A1 1 0 006 9.114V10a1 1 0 01-1.998.115l-.818-.818A2 2 0 013 7.182V5a2 2 0 012-2h14a2 2 0 012 2v2.182l-.818.818A1 1 0 0115 10.885v.5z" />
+                      </svg>
+                    )}
+                    {item.icon === 'shield' && (
+                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0112 2.944a11.959 11.959 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    )}
+                    {item.icon === 'headphones' && (
+                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5" />
+                      </svg>
+                    )}
+                    {item.icon === 'sparkles' && (
+                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 15L9 30m0 0l3-3m-3 3h6M3.75 13.5l10.5-10.5a2.25 2.25 0 013.182 0 2.25 2.25 0 010 3.182l-10.5 10.5a2.25 2.25 0 01-3.182 0 2.25 2.25 0 010-3.182z" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <h3 class="font-display text-xl font-bold text-white">White-Glove Delivery</h3>
+                <p class="mt-3 text-[15px] leading-relaxed text-white/60">Professional installation by certified technicians. We remove packaging, level, calibrate, and demo.</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Experiences Grid -->
+      <section class="relative min-h-screen flex items-center justify-center px-5 bg-neutral-950" data-scroll-section="experiences">
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-5">
+          <header class="text-center max-w-3xl mx-auto mb-12" data-scroll-fade>
+            <span class="inline-flex items-center gap-2 rounded-full bg-gold-500/10 px-4 py-1.5 text-[12px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20">
+              Curated Experiences
+            </span>
+            <h2 class="mt-5 font-display text-[clamp(36px,6vw,56px)] font-extrabold leading-[0.9] tracking-tight text-white">
+              Kitchens Designed for How You Live
+            </h2>
+            <p class="mt-5 text-[clamp(18px,3vw,24px)] leading-relaxed text-white/70 max-w-[55ch] mx-auto">
+              Real kitchens. Real stories. Real inspiration.
+            </p>
+          </header>
+
+          <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
+            {experienceSlides.map((slide, i) => (
+              <article class="group relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/50 transition-all duration-700 hover:border-gold-500/50 hover:shadow-[0_0_60px_rgba(212,175,55,0.15)] hover:scale-[1.01] animate-fade-up" style={{animationDelay: `${100 + i * 100}ms`}} data-scroll-parallax>
+                <a href={slide.cta.href} class="block" aria-label={`View ${slide.label} experience`}>
+                  <div class="aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={slide.heroImage}
+                      alt={slide.heroAlt}
+                      class="h-full w-full object-cover transition-all duration-1000 group-hover:scale-110"
+                      loading="lazy"
+                      width={600}
+                      height={450}
+                      decoding="async"
+                    >
+                      <source media="(max-width: 767px)" srcset={slide.heroImageMobile} />
+                    </Image>
+                  </div>
+                </a>
+                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-neutral-900/95 via-neutral-900/30 to-transparent" aria-hidden="true" />
+                <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                  <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white backdrop-blur border border-white/20">
+                    {slide.label}
+                  </span>
+                  <h3 class="mt-3 font-display text-[clamp(22px,3.5vw,32px)] font-extrabold leading-[1.0] tracking-tight text-white group-hover:underline group-hover:underline-offset-4 transition-colors duration-300">
+                    <a href={slide.cta.href}>{slide.tagline}</a>
+                  </h3>
+                  <p class="mt-2 text-[14px] leading-relaxed text-white/70 line-clamp-2 max-w-[42ch]">
+                    {slide.description}
+                  </p>
+                  <div class="mt-4 flex flex-wrap gap-3" role="list" aria-label="Key highlights">
+                    {slide.stats.map((stat, sIdx) => (
+                      <div class="flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1.5 text-white/80 transition hover:bg-white/10" role="listitem" style={{animationDelay: `${300 + sIdx * 60}ms`}}>
+                        <span class="font-display font-extrabold text-white">{stat.value}</span>
+                        <span class="text-[11px] font-medium uppercase tracking-wider">{stat.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div class="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-white/10">
+                    <div class="flex flex-col">
+                      <span class="text-[10px] font-medium text-gold-400 uppercase tracking-wider">Total Investment</span>
+                      <span class="font-display text-lg font-bold text-white">${slide.totalInvestment.toLocaleString()}</span>
+                    </div>
+                    <a
+                      href={slide.cta.href}
+                      class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gold-500 text-neutral-900 font-semibold text-sm hover:bg-gold-400 transition-all duration-300 shadow-xl shadow-gold-500/30 hover:shadow-[0_0_40px_rgba(212,175,55,0.4)]"
+                    >
+                      {slide.cta.label}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Newsletter - Immersive -->
+      <section class="relative min-h-screen flex items-center justify-center px-5 bg-neutral-950" data-scroll-section="newsletter">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2760%27 height=%2760%27 viewBox=%270 0 60 60%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cg fill=%27none%27 fill-rule=%27evenodd%27%3E%3Cg fill=%27%23ffffff%27 fill-opacity=%270.015%27%3E%3Cpath d=%27M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h-4zm0-30V0H4v4H0v2h4v4h2V6h4V4H0z%27/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" aria-hidden="true" />
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.12)_0%,_transparent_70%)]" aria-hidden="true" />
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-px bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" aria-hidden="true" />
+
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-5">
+          <header class="text-center max-w-3xl mx-auto mb-12" data-scroll-fade>
+            <span class="inline-flex items-center gap-2 rounded-full bg-gold-500/10 px-4 py-1.5 text-[12px] font-medium text-gold-400 uppercase tracking-wider border border-gold-500/20">
+              {T.newsletter.eyebrow}
+            </span>
+            <h2 class="mt-5 font-display text-[clamp(36px,6vw,56px)] font-extrabold leading-[0.9] tracking-tight text-white">
+              {T.newsletter.title}
+            </h2>
+            <p class="mt-5 text-[clamp(18px,3vw,24px)] leading-relaxed text-white/70 max-w-[55ch] mx-auto">
+              {T.newsletter.description}
+            </p>
+          </header>
+
+          <div class="grid lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-12 items-start">
+            <div class="space-y-8" data-scroll-fade>
+              <div class="rounded-3xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 p-6 md:p-8 shadow-[0_0_100px_rgba(0,0,0,0.5)]">
+                <form class="space-y-4" action="/newsletter" method="POST" data-newsletter-form>
+                  <label for="newsletter-email" class="sr-only">Email address</label>
+                  <div class="relative">
+                    <input
+                      type="email"
+                      id="newsletter-email"
+                      name="email"
+                      placeholder={T.newsletter.placeholder}
+                      required
+                      class="w-full appearance-none rounded-2xl bg-neutral-950 border border-white/10 px-6 py-5 text-[17px] text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50 transition-all duration-300"
+                      autocomplete="email"
+                      aria-describedby="newsletter-privacy"
+                    />
+                    <button
+                      type="submit"
+                      class="absolute right-2 top-1/2 -translate-y-1/2 rounded-2xl bg-gold-500 px-8 py-3.5 text-[15px] font-semibold text-neutral-900 hover:bg-gold-400 hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all duration-300"
+                      aria-label={T.newsletter.buttonLabel}
+                    >
+                      {T.newsletter.buttonLabel}
+                      <svg class="ml-2 w-5 h-5 -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    </button>
+                  </div>
+                  <p id="newsletter-privacy" class="text-[12px] text-neutral-500 text-center" set:html={T.newsletter.privacyText} />
+                </form>
+                <div id="newsletter-success" class="hidden text-center py-6">
+                  <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-green-500/20 text-green-400 mb-4">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                  </div>
+                  <p class="font-semibold text-white text-lg">You're on the list!</p>
+                  <p class="text-sm text-neutral-400 mt-1">Check your inbox for a welcome note.</p>
+                </div>
+              </div>
+              <ul class="grid sm:grid-cols-2 gap-4" role="list" aria-label="Newsletter benefits">
+                {T.newsletter.benefits.map((benefit, i) => (
+                  <li class="flex items-start gap-4 rounded-2xl bg-neutral-900/40 backdrop-blur-sm border border-white/5 p-5 transition-all duration-500 hover:border-gold-500/30 hover:bg-white/5 animate-fade-up" style={{animationDelay: `${320 + i * 80}ms`}}>
+                    <span class="flex-shrink-0 mt-0.5 w-7 h-7 rounded-full bg-gold-500/15 flex items-center justify-center">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gold-400">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span class="text-[15px] leading-relaxed text-white">{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="hidden lg:block" data-scroll-fade>
+              <div class="sticky top-24 space-y-4">
+                <div class="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 p-6 shadow-[0_0_100px_rgba(0,0,0,0.5)]">
+                  <h3 class="font-display text-lg font-bold text-white mb-5 tracking-tight">Trusted by Culinary Enthusiasts</h3>
+                  <div class="grid grid-cols-3 gap-4">
+                    {T.newsletter.trustBadges.map((badge, i) => (
+                      <div class="text-center p-4 rounded-2xl bg-neutral-950 border border-white/5 hover:border-gold-500/20 transition-all duration-300" style={{animationDelay: `${400 + i * 100}ms`}}>
+                        <div class="font-display text-3xl md:text-4xl font-extrabold text-gold-400 leading-none mb-1">{badge.label}</div>
+                        <div class="text-[11px] font-medium text-neutral-400 uppercase tracking-wider">{badge.text}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div class="rounded-2xl bg-gradient-to-br from-gold-500/10 to-gold-600/5 border border-gold-500/20 p-6 text-center">
+                  <svg class="mx-auto w-14 h-14 text-gold-500/50 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9.09a3 3 0 1 1 5.83 1c0 2-3 3-3 3" />
+                  </svg>
+                  <p class="font-display text-lg font-semibold text-white mb-1">Curated Weekly</p>
+                  <p class="text-sm text-neutral-400">Hand-picked inspiration, no algorithms</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Theme Colophon -->
+      <section class="relative min-h-[60vh] flex items-center justify-center px-5 bg-neutral-950" data-scroll-section="colophon">
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-5">
+          <div class="grid gap-6 rounded-3xl border border-gold-300/50 dark:border-gold-700/50 bg-gold-50/20 dark:bg-gold-900/10 p-4 text-neutral-900 dark:text-white sm:gap-10 sm:p-10 md:grid-cols-[1.2fr_1fr] md:items-center" data-scroll-fade>
+            <div>
+              <p class="text-[13px] font-medium text-gold-700 dark:text-gold-300">{T.colophon.eyebrow}</p>
+              <h2 class="mt-3 font-display text-[clamp(32px,5vw,48px)] font-bold leading-tight tracking-tight text-neutral-900 dark:text-white">
+                {T.colophon.title}
+              </h2>
+              <p class="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-neutral-700 dark:text-neutral-300">{T.colophon.text}</p>
+              <div class="mt-7 flex flex-wrap gap-3">
+                <a href={T.colophon.ctaPrimary.href} class="inline-flex items-center gap-2 rounded-2xl bg-neutral-900 dark:bg-white px-8 py-4 text-[16px] font-semibold text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-all duration-300">
+                  {T.colophon.ctaPrimary.label}
+                </a>
+                <a href={T.colophon.ctaSecondary.href} class="inline-flex items-center gap-2 rounded-2xl border border-neutral-300 dark:border-neutral-600 px-8 py-4 text-[16px] font-semibold text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-300">
+                  {T.colophon.ctaSecondary.label}
+                </a>
+                <a href={T.colophon.ctaThemes.href} class="inline-flex items-center gap-2 px-4 py-4 text-[16px] font-semibold text-neutral-700 dark:text-neutral-300 underline decoration-neutral-400 dark:decoration-neutral-600 underline-offset-4 hover:text-gold-600 dark:hover:text-gold-400 transition-all duration-300">
+                  {T.colophon.ctaThemes.label}
+                </a>
+              </div>
+            </div>
+            <ul class="grid min-w-0 gap-3 rounded-2xl bg-neutral-900/10 dark:bg-neutral-900/30 p-4 text-[14px] leading-relaxed sm:p-7">
+              {T.colophon.stack.map((s, i) => (
+                <li class="flex gap-3">
+                  <span class="mt-0.5 text-neutral-500 dark:text-neutral-400">{String(i + 1).padStart(2, '0')}</span>
+                  <span><strong class="font-semibold">{s.strong}</strong> {s.text}</span>
+                </li>
+              ))}
+              {T.colophon.env.value && (
+                <li>
+                  <button
+                    type="button"
+                    data-copy-env={T.colophon.env.copyValue}
+                    class="group/copy mt-2 flex w-full items-center justify-between gap-3 rounded-2xl bg-neutral-900/10 dark:bg-neutral-800 px-4 py-3 text-left font-mono text-[13px] text-neutral-700 dark:text-neutral-300 transition hover:bg-neutral-900/20 dark:hover:bg-neutral-700"
+                    aria-label={`Copy ${T.colophon.env.copyValue} to clipboard`}
+                  >
+                    <span>{T.colophon.env.prefix}<span class="text-neutral-900 dark:text-white">{T.colophon.env.value}</span></span>
+                    <span data-copy-icon class="text-neutral-500 dark:text-neutral-400 transition group-hover/copy:text-neutral-900 dark:group-hover/copy:text-white">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" />
+                      </svg>
+                    </span>
+                    <span data-copy-done class="hidden text-[12px] font-sans font-semibold text-gold-600 dark:text-gold-400">{T.colophon.env.copiedLabel}</span>
+                  </button>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer CTA -->
+      <section class="relative min-h-[60vh] flex items-center justify-center px-5 bg-neutral-950" data-scroll-section="cta">
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-5 text-center">
+          <h2 class="font-display text-[clamp(36px,7vw,64px)] font-extrabold leading-[0.85] tracking-tight text-white mb-6" data-scroll-fade>
+            Ready to transform your kitchen?
+          </h2>
+          <p class="text-[clamp(18px,3.5vw,24px)] leading-relaxed text-white/70 max-w-[55ch] mx-auto mb-10" data-scroll-fade>
+            Schedule a design consultation. Visit our showroom. Or start building your dream kitchen online.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-4" data-scroll-fade>
+            <a href="/contact" class="inline-flex items-center gap-2 rounded-2xl bg-white px-10 py-5 text-[17px] font-semibold text-neutral-900 hover:bg-gold-50 hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all duration-500">
+              Schedule Consultation
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </a>
+            <a href="/collections" class="inline-flex items-center gap-2 rounded-2xl border border-white/30 bg-white/5 px-10 py-5 text-[17px] font-semibold text-white hover:bg-white/10 transition-all duration-500 backdrop-blur">
+              Shop Collections
+            </a>
+            <a href="/showroom" class="inline-flex items-center gap-2 rounded-2xl border border-gold-500 bg-transparent px-10 py-5 text-[17px] font-semibold text-gold-400 hover:bg-gold-500/10 transition-all duration-500">
+              Visit Showroom
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </section>
 
   <!-- Newsletter Success Toast Script -->
   <script>
@@ -463,101 +572,29 @@ const experienceSlides = (await getCollection('experiences'))
         if (!email) return;
 
         try {
-          // Simulate API call - replace with actual endpoint
           await new Promise(r => setTimeout(r, 800));
-          // form.reset();
           form.style.display = 'none';
           successEl.classList.remove('hidden');
           successEl.classList.add('animate-fade-up');
-        } catch {
-          // Handle error silently or show toast
-        }
+        } catch {}
       });
     })();
   </script>
 
-<!-- Theme colophon: this store is the product -->
-  <section class="mx-auto max-w-6xl px-5 pb-4 sm:pb-8">
-    <div class="grid gap-5 rounded-2xl border border-gold-300 dark:border-gold-700 bg-gold-50 dark:bg-gold-900/20 p-4 text-neutral-900 dark:text-white sm:gap-10 sm:p-10 md:grid-cols-[1.2fr_1fr] md:items-center">
-      <div>
-        <p class="text-[13px] font-medium text-gold-700 dark:text-gold-300">{T.colophon.eyebrow}</p>
-        <h2 class="mt-3 font-display text-[clamp(26px,3.5vw,38px)] font-bold leading-tight tracking-tight">
-          {T.colophon.title}
-        </h2>
-        <p class="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-neutral-700 dark:text-neutral-300">{T.colophon.text}</p>
-        <div class="mt-7 flex flex-wrap gap-3">
-          <a href={T.colophon.ctaPrimary.href} class="rounded-md bg-neutral-900 dark:bg-white px-6 py-3.5 text-[15px] font-semibold text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-100">
-            {T.colophon.ctaPrimary.label}
-          </a>
-          <a href={T.colophon.ctaSecondary.href} class="rounded-md border border-neutral-300 dark:border-neutral-600 px-6 py-3.5 text-[15px] font-semibold text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800">
-            {T.colophon.ctaSecondary.label}
-          </a>
-          <a href={T.colophon.ctaThemes.href} class="px-2 py-3.5 text-[15px] font-semibold text-neutral-700 dark:text-neutral-300 underline decoration-neutral-400 dark:decoration-neutral-600 underline-offset-4 hover:text-gold-600 dark:hover:text-gold-400">
-            {T.colophon.ctaThemes.label}
-          </a>
-        </div>
-      </div>
-      <ul class="grid min-w-0 gap-3 rounded-xl bg-neutral-900/10 dark:bg-neutral-900/30 p-4 text-[14px] leading-relaxed sm:p-7">
-        {T.colophon.stack.map((s, i) => (
-          <li class="flex gap-3">
-            <span class="mt-0.5 text-neutral-500 dark:text-neutral-400">{String(i + 1).padStart(2, '0')}</span>
-            <span><strong class="font-semibold">{s.strong}</strong> {s.text}</span>
-          </li>
-        ))}
-        {T.colophon.env.value && (
-          <li>
-            <button
-              type="button"
-              data-copy-env={T.colophon.env.copyValue}
-              class="group/copy mt-2 flex w-full items-center justify-between gap-3 rounded-md bg-neutral-900/10 dark:bg-neutral-800 px-4 py-2.5 text-left font-mono text-[13px] text-neutral-700 dark:text-neutral-300 transition hover:bg-neutral-900/20 dark:hover:bg-neutral-700"
-              aria-label={`Copy ${T.colophon.env.copyValue} to clipboard`}
-            >
-              <span>{T.colophon.env.prefix}<span class="text-neutral-900 dark:text-white">{T.colophon.env.value}</span></span>
-              <span data-copy-icon class="text-neutral-500 dark:text-neutral-400 transition group-hover/copy:text-neutral-900 dark:group-hover/copy:text-white">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" />
-                </svg>
-              </span>
-              <span data-copy-done class="hidden text-[12px] font-sans font-semibold text-gold-600 dark:text-gold-400">{T.colophon.env.copiedLabel}</span>
-            </button>
-          </li>
-        )}
-      </ul>
-    </div>
-  </section>
-
-  <script>
-    document.querySelectorAll<HTMLButtonElement>('[data-copy-env]').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        await navigator.clipboard.writeText(btn.dataset.copyEnv!);
-        const icon = btn.querySelector('[data-copy-icon]')!;
-        const done = btn.querySelector('[data-copy-done]')!;
-        icon.classList.add('hidden');
-        done.classList.remove('hidden');
-        setTimeout(() => {
-          done.classList.add('hidden');
-          icon.classList.remove('hidden');
-        }, 1600);
-      });
-    });
-  </script>
-
-  <!-- Hero Webslide Script -->
+  <!-- ScrollTrigger Script for Hero 3D -->
   <script>
     (function() {
-      const container = document.querySelector<HTMLElement>('[data-hero-webslide]');
+      const container = document.querySelector('[data-immersive-hero]');
       if (!container) return;
 
-      const slides = container.querySelectorAll<HTMLElement>('[data-slide]');
-      const contents = container.querySelectorAll<HTMLElement>('[data-content]');
-      const dots = container.querySelectorAll<HTMLButtonElement>('[data-dot]');
+      const slides = container.querySelectorAll('[data-hero-slide]');
+      const dots = container.querySelectorAll('[data-hero-dot]');
       const totalSlides = slides.length;
       let currentSlide = 0;
       let isTransitioning = false;
-      /** @type {number | null} */
       let autoSlideInterval = null;
-      const AUTO_SLIDE_DELAY = 6000;
-      const TRANSITION_DURATION = 1000;
+      const AUTO_SLIDE_DELAY = 8000;
+      const TRANSITION_DURATION = 1200;
 
       function showSlide(index: number, direction = 'next') {
         if (isTransitioning || index === currentSlide) return;
@@ -566,65 +603,42 @@ const experienceSlides = (await getCollection('experiences'))
         const prevSlide = currentSlide;
         currentSlide = index;
 
-        // Update slides
         slides.forEach((slide, i) => {
           if (i === currentSlide) {
             slide.style.opacity = '1';
-            slide.style.transform = 'scale(1)';
+            slide.style.transform = 'translateY(0)';
+            slide.style.pointerEvents = 'auto';
             slide.style.zIndex = String(totalSlides);
           } else if (i === prevSlide) {
             slide.style.opacity = '0';
-            slide.style.transform = direction === 'next' ? 'scale(0.95)' : 'scale(1.05)';
+            slide.style.transform = direction === 'next' ? 'translateY(-40px)' : 'translateY(40px)';
+            slide.style.pointerEvents = 'none';
             slide.style.zIndex = String(totalSlides - 1);
           } else {
             slide.style.opacity = '0';
-            slide.style.transform = 'scale(1.05)';
+            slide.style.transform = 'translateY(40px)';
+            slide.style.pointerEvents = 'none';
             slide.style.zIndex = String(totalSlides - i - 1);
           }
         });
 
-        // Update content
-        contents.forEach((content, i) => {
-          if (i === currentSlide) {
-            content.style.opacity = '1';
-            content.style.transform = 'translateY(0)';
-            content.style.pointerEvents = 'auto';
-          } else {
-            content.style.opacity = '0';
-            content.style.transform = direction === 'next' ? 'translateY(20px)' : 'translateY(-20px)';
-            content.style.pointerEvents = 'none';
-          }
-        });
-
-        // Update dots
         dots.forEach((dot, i) => {
           if (i === currentSlide) {
-            dot.classList.remove('bg-white/40', 'hover:bg-white/60', 'w-2.5');
-            dot.classList.add('bg-white', 'w-8');
+            dot.classList.remove('bg-white/40', 'hover:bg-white/60', 'w-3');
+            dot.classList.add('bg-white', 'w-14');
           } else {
-            dot.classList.remove('bg-white', 'w-8');
-            dot.classList.add('bg-white/40', 'hover:bg-white/60', 'w-2.5');
+            dot.classList.remove('bg-white', 'w-14');
+            dot.classList.add('bg-white/40', 'hover:bg-white/60', 'w-3');
           }
           dot.setAttribute('aria-current', i === currentSlide ? 'true' : 'false');
         });
 
-        // Reset transition lock
-        setTimeout(() => {
-          isTransitioning = false;
-        }, TRANSITION_DURATION);
+        setTimeout(() => { isTransitioning = false; }, TRANSITION_DURATION);
       }
 
-      function nextSlide() {
-        const next = (currentSlide + 1) % totalSlides;
-        showSlide(next, 'next');
-      }
+      function nextSlide() { showSlide((currentSlide + 1) % totalSlides, 'next'); }
+      function prevSlide() { showSlide((currentSlide - 1 + totalSlides) % totalSlides, 'prev'); }
 
-      function prevSlide() {
-        const prev = (currentSlide - 1 + totalSlides) % totalSlides;
-        showSlide(prev, 'prev');
-      }
-
-      // Dot navigation
       dots.forEach((dot, i) => {
         dot.addEventListener('click', () => {
           const direction = i > currentSlide ? 'next' : 'prev';
@@ -633,70 +647,30 @@ const experienceSlides = (await getCollection('experiences'))
         });
       });
 
-      // Keyboard navigation
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') {
-          nextSlide();
-          resetAutoSlide();
-        } else if (e.key === 'ArrowLeft') {
-          prevSlide();
-          resetAutoSlide();
-        }
+        if (e.key === 'ArrowRight') { nextSlide(); resetAutoSlide(); }
+        else if (e.key === 'ArrowLeft') { prevSlide(); resetAutoSlide(); }
       });
 
-      // Touch/swipe support
       let touchStartX = 0;
-      container.addEventListener('touchstart', (e: TouchEvent) => {
-        touchStartX = e.touches[0].clientX;
-      }, { passive: true });
-
-      container.addEventListener('touchend', (e: TouchEvent) => {
+      const heroContainer = document.querySelector('[data-immersive-hero]');
+      heroContainer?.addEventListener('touchstart', (e: TouchEvent) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+      heroContainer?.addEventListener('touchend', (e: TouchEvent) => {
         const touchEndX = e.changedTouches[0].clientX;
         const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 50) {
-          if (diff > 0) nextSlide();
-          else prevSlide();
-          resetAutoSlide();
-        }
+        if (Math.abs(diff) > 50) { if (diff > 0) nextSlide(); else prevSlide(); resetAutoSlide(); }
       }, { passive: true });
 
-      // Pause on hover
-      container.addEventListener('mouseenter', () => {
-        clearInterval(autoSlideInterval);
-      });
+      const heroEl = document.querySelector('[data-immersive-hero]');
+      heroEl?.addEventListener('mouseenter', () => { clearInterval(autoSlideInterval); });
+      heroEl?.addEventListener('mouseleave', () => { startAutoSlide(); });
 
-      container.addEventListener('mouseleave', () => {
-        startAutoSlide();
-      });
-
-      // Auto-slide
-      function startAutoSlide() {
-        clearInterval(autoSlideInterval);
-        autoSlideInterval = window.setInterval(nextSlide, AUTO_SLIDE_DELAY);
-      }
-
-      function resetAutoSlide() {
-        startAutoSlide();
-      }
-
-      // Start auto-slide
+      function startAutoSlide() { clearInterval(autoSlideInterval); autoSlideInterval = window.setInterval(nextSlide, AUTO_SLIDE_DELAY); }
+      function resetAutoSlide() { startAutoSlide(); }
       startAutoSlide();
 
-      // Pause when tab is not visible
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          clearInterval(autoSlideInterval);
-        } else {
-          startAutoSlide();
-        }
-      });
-
-      // Cleanup on page unload
-      window.addEventListener('beforeunload', () => {
-        clearInterval(autoSlideInterval);
-      });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) clearInterval(autoSlideInterval); else startAutoSlide(); });
+      window.addEventListener('beforeunload', () => { clearInterval(autoSlideInterval); });
     })();
   </script>
-
-  
 </Layout>
