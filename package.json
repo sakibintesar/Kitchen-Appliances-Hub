@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "prebuild": "node -e \"import('fs').then(fs => fs.rmSync('.wrangler', { recursive: true, force: true })).catch(() => {})\"",
-    "build": "astro build",
+    "build": "node scripts/setup-local-db.mjs && astro build",
     "build:pages": "$env:DEPLOY_TARGET='pages'; astro build",
     "preview": "astro preview",
     "seed": "tsx scripts/seed.ts",
